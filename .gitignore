@@ -1,0 +1,27 @@
+cat > .gitignore << 'EOF'
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+api/.venv/
+
+# Node / Web
+node_modules/
+web/node_modules/
+web/dist/
+
+# Env & secrets
+.env
+*.env
+api/.env
+web/.env
+web/.env.local
+.env.local
+
+# Misc
+coverage/
+EOF

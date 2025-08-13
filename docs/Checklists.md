@@ -1,0 +1,6 @@
+- [ ] Importar feed
+- [ ] Gerar violações
+- [ ] Publicar políticas
+- [ ] Bloquear item
+- [ ] Gerar PDF/ZIP/TEXTO
+- [ ] Notificação diária

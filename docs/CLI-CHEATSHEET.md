@@ -1,0 +1,187 @@
+# GMC Shield – CLI Cheatsheet (API + RBAC dev)
+
+Use este guia rápido para testar a API localmente, gerar tokens, rodar o smoke test e depurar problemas comuns.
+
+> Convenções:
+>
+> - **api** = container FastAPI (`gmc-shield-api-1`)
+> - **db** = container Postgres (`gmc-shield-db-1`)
+> - Base URL padrão: `http://localhost:8000`
+
+---
+
+## 0) Verificar containers e saúde
+
+```bash
+docker compose ps
+curl http://localhost:8000/healthz   # deve responder {"ok":true}
+```
+
+---
+
+## 1) Gerar JWT no container (sem passar pelo /login)
+
+Script em `api/scripts/mint_token.py` (o volume da pasta `api/` monta em `/app` dentro do container).
+
+### Gerar o token e guardar em `TOKEN`
+
+```bash
+# gera o token dentro do container (usa SECRET_KEY do container)
+TOKEN=$(docker compose exec -T api python /app/scripts/mint_token.py | tr -d '
+')
+echo "${TOKEN:0:32}..."
+```
+
+### Teste rápido com o token
+
+```bash
+curl -H "Authorization: Bearer $TOKEN"   http://localhost:8000/api/stores/3/violations
+```
+
+> Dica: o script `mint_token.py` usa por padrão:
+>
+> - EMAIL=`owner@gmcshield.dev`
+> - ROLE=`owner`
+> - ACCOUNT_ID=`1`
+> - SECRET_KEY obtida do container (variável de ambiente).  
+>   Para trocar temporariamente:  
+>   `docker compose exec -T api bash -lc 'EMAIL=foo@bar.dev ROLE=owner ACCOUNT_ID=1 python /app/scripts/mint_token.py'`
+
+---
+
+## 2) Smoke test completo (RBAC)
+
+O script aceita `TOKEN` vindo do ambiente. Se não houver, ele tenta fazer login (em dev o recomendado é passar o token).
+
+### Modo recomendado (com TOKEN)
+
+```bash
+# gera o token dentro do container e passa pro script
+TOKEN=$(docker compose exec -T api python /app/scripts/mint_token.py | tr -d '
+') bash scripts/smoke_rbac.sh   --api http://localhost:8000   --store-name "Loja RBAC"   --feed docs/seed/demo_feed.xml
+```
+
+### Alternativa em duas linhas
+
+```bash
+TOKEN=$(docker compose exec -T api python /app/scripts/mint_token.py | tr -d '
+')
+bash scripts/smoke_rbac.sh --api http://localhost:8000 --store-name "Loja RBAC" --feed docs/seed/demo_feed.xml
+```
+
+Saída esperada (resumida): criação de loja, configuração do feed, scan enfileirado, lista de violações, bloqueio de item e overview.
+
+---
+
+## 3) Sequência manual de chamadas (com TOKEN)
+
+> Substitua `STORE_ID` quando necessário.
+
+```bash
+# 3.1 Criar loja
+curl -X POST http://localhost:8000/api/stores   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"name":"Loja RBAC","platform":"woocommerce","base_url":"http://localhost","country":"ES","currency":"EUR","contact_email":"admin@example.com"}'
+
+# 3.2 Configurar feed
+curl -X POST http://localhost:8000/api/stores/STORE_ID/feed   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"source_type":"file","url":"docs/seed/demo_feed.xml","format":"xml"}'
+
+# 3.3 Disparar scan
+curl -X POST http://localhost:8000/api/stores/STORE_ID/scan   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"limit_items":50,"recrawl":false}'
+
+# 3.4 Listar violações
+curl http://localhost:8000/api/stores/STORE_ID/violations   -H "Authorization: Bearer $TOKEN"
+
+# 3.5 Bloquear item
+curl -X POST http://localhost:8000/api/stores/STORE_ID/blocks   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"feed_item_id":"SKU-001"}'
+
+# 3.6 Overview
+curl http://localhost:8000/api/stores/STORE_ID/overview   -H "Authorization: Bearer $TOKEN"
+
+# 3.7 Outras rotas úteis
+curl http://localhost:8000/api/stores/STORE_ID/feed/versions -H "Authorization: Bearer $TOKEN"
+curl http://localhost:8000/api/stores/STORE_ID/notifications -H "Authorization: Bearer $TOKEN"
+```
+
+---
+
+## 4) Ajuda rápida no banco (psql)
+
+### Conferir contas
+
+```bash
+docker compose exec -T db psql -U postgres -d gmc_shield -c "select id,name,type from accounts;"
+```
+
+### Garantir usuário OWNER vinculado à conta 1
+
+```bash
+docker compose exec -T db psql -U postgres -d gmc_shield -c "INSERT INTO users (account_id,email,password_hash,role)
+ VALUES (1,'owner@gmcshield.dev','x','owner')
+ ON CONFLICT (email) DO UPDATE SET account_id=EXCLUDED.account_id, role=EXCLUDED.role
+ RETURNING id,email,role,account_id;"
+```
+
+> Observação: para desenvolvimento, estamos evitando o fluxo de `/login` e usando JWT “mintado” manualmente (se precisar senha real, gere hash bcrypt e atualize `password_hash`).
+
+---
+
+## 5) Troubleshooting
+
+### 401 Unauthorized
+
+- Token expirado ou **SECRET_KEY** divergente.
+- Gere novo token **dentro do container**: `docker compose exec -T api python /app/scripts/mint_token.py | tr -d '
+'`
+- Confira a chave no container (dev):  
+  `docker compose exec -T api env | grep SECRET_KEY`  
+  Se alterar a `SECRET_KEY` no `.env`/compose, **recrie a API**.
+
+### 422 no /login com e-mail “.local/.test”
+
+- O validador de e-mail (Pydantic) pode bloquear domínios especiais.
+- Use `owner@gmcshield.dev` (ou outro domínio válido) **ou** siga com token mintado (recomendado em dev).
+
+### API saudável mas script falha logo no login
+
+- Prefira setar o TOKEN no ambiente e rodar o script (modo recomendado acima).
+- Cheque se a hora do host e do container estão corretas (JWT depende do relógio).
+
+### Reciclar a API
+
+```bash
+docker compose restart api
+docker compose logs -f --tail=200 api
+```
+
+---
+
+## 6) Docs interativos (Swagger)
+
+```bash
+open http://localhost:8000/docs   # macOS
+# ou apenas acesse no navegador
+```
+
+---
+
+## 7) Anexos
+
+### `api/scripts/mint_token.py` (referência)
+
+```python
+import os, datetime
+from jose import jwt
+
+EMAIL = os.getenv("EMAIL", "owner@gmcshield.dev")
+ROLE = os.getenv("ROLE", "owner")
+ACCOUNT_ID = int(os.getenv("ACCOUNT_ID", "1"))
+SECRET_KEY = os.getenv("SECRET_KEY", "change_me")
+
+payload = {
+    "sub": EMAIL,
+    "role": ROLE,
+    "account_id": ACCOUNT_ID,
+    "iat": datetime.datetime.utcnow(),
+    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=12),
+}
+print(jwt.encode(payload, SECRET_KEY, algorithm="HS256"))
+```

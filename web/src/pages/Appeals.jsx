@@ -1,0 +1,1 @@
+export default function Appeals(){return <h1>Appeals</h1>}

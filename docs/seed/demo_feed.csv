@@ -1,0 +1,61 @@
+id,title,link,price,sale_price,availability,brand,gtin,mpn,shipping
+SKU-001,Produto Demo 001,https://demo.gmcshield.local/produto/001,81.34 EUR,73.21 EUR,in stock,Globex,8000000000001,MPN-001,ES:standard:4.99 EUR
+SKU-002,Produto Demo 002,https://demo.gmcshield.local/produto/002,28.39 EUR,25.55 EUR,in stock,Soylent,8000000000002,MPN-002,ES:standard:4.99 EUR
+SKU-003,Produto Demo 003,https://demo.gmcshield.local/produto/003,79.41 EUR,71.47 EUR,in stock,Umbrella,8000000000003,MPN-003,ES:standard:4.99 EUR
+SKU-004,Produto Demo 004,https://demo.gmcshield.local/produto/004,192.69 EUR,173.42 EUR,in stock,Soylent,8000000000004,MPN-004,ES:standard:4.99 EUR
+SKU-005,Produto Demo 005,https://demo.gmcshield.local/produto/005,91.85 EUR,82.66 EUR,preorder,Acme,8000000000005,MPN-005,ES:standard:4.99 EUR
+SKU-006,Produto Demo 006,https://demo.gmcshield.local/produto/006,83.39 EUR,75.05 EUR,preorder,Globex,8000000000006,MPN-006,ES:standard:4.99 EUR
+SKU-007,Produto Demo 007,https://demo.gmcshield.local/produto/007,187.46 EUR,168.71 EUR,preorder,Umbrella,8000000000007,MPN-007,ES:standard:4.99 EUR
+SKU-008,Produto Demo 008,https://demo.gmcshield.local/produto/008,178.05 EUR,160.25 EUR,in stock,Soylent,8000000000008,MPN-008,ES:standard:4.99 EUR
+SKU-009,Produto Demo 009,https://demo.gmcshield.local/produto/009,51.36 EUR,46.22 EUR,out of stock,Soylent,8000000000009,MPN-009,ES:standard:4.99 EUR
+SKU-010,Produto Demo 010,https://demo.gmcshield.local/produto/010,147.26 EUR,132.53 EUR,preorder,Umbrella,8000000000010,MPN-010,ES:standard:4.99 EUR
+SKU-011,Produto Demo 011,https://demo.gmcshield.local/produto/011,39.45 EUR,35.51 EUR,preorder,Contoso,8000000000011,MPN-011,ES:standard:4.99 EUR
+SKU-012,Produto Demo 012,https://demo.gmcshield.local/produto/012,41.29 EUR,37.16 EUR,in stock,Globex,8000000000012,MPN-012,ES:standard:4.99 EUR
+SKU-013,Produto Demo 013,https://demo.gmcshield.local/produto/013,168.62 EUR,151.76 EUR,preorder,Acme,8000000000013,MPN-013,ES:standard:4.99 EUR
+SKU-014,Produto Demo 014,https://demo.gmcshield.local/produto/014,187.41 EUR,168.67 EUR,out of stock,Soylent,8000000000014,MPN-014,ES:standard:4.99 EUR
+SKU-015,Produto Demo 015,https://demo.gmcshield.local/produto/015,43.66 EUR,39.29 EUR,in stock,Contoso,8000000000015,MPN-015,ES:standard:4.99 EUR
+SKU-016,Produto Demo 016,https://demo.gmcshield.local/produto/016,46.05 EUR,41.45 EUR,preorder,Contoso,8000000000016,MPN-016,ES:standard:4.99 EUR
+SKU-017,Produto Demo 017,https://demo.gmcshield.local/produto/017,122.9 EUR,110.61 EUR,in stock,Umbrella,8000000000017,MPN-017,ES:standard:4.99 EUR
+SKU-018,Produto Demo 018,https://demo.gmcshield.local/produto/018,34.8 EUR,31.32 EUR,out of stock,Contoso,8000000000018,MPN-018,ES:standard:4.99 EUR
+SKU-019,Produto Demo 019,https://demo.gmcshield.local/produto/019,130.21 EUR,117.19 EUR,preorder,Contoso,8000000000019,MPN-019,ES:standard:4.99 EUR
+SKU-020,Produto Demo 020,https://demo.gmcshield.local/produto/020,112.3 EUR,101.07 EUR,in stock,Soylent,8000000000020,MPN-020,ES:standard:4.99 EUR
+SKU-021,Produto Demo 021,https://demo.gmcshield.local/produto/021,166.93 EUR,150.24 EUR,preorder,Globex,8000000000021,MPN-021,ES:standard:4.99 EUR
+SKU-022,Produto Demo 022,https://demo.gmcshield.local/produto/022,63.02 EUR,56.72 EUR,preorder,Umbrella,8000000000022,MPN-022,ES:standard:4.99 EUR
+SKU-023,Produto Demo 023,https://demo.gmcshield.local/produto/023,31.19 EUR,28.07 EUR,in stock,Soylent,8000000000023,MPN-023,ES:standard:4.99 EUR
+SKU-024,Produto Demo 024,https://demo.gmcshield.local/produto/024,147.72 EUR,132.95 EUR,out of stock,Globex,8000000000024,MPN-024,ES:standard:4.99 EUR
+SKU-025,Produto Demo 025,https://demo.gmcshield.local/produto/025,77.14 EUR,69.43 EUR,in stock,Umbrella,8000000000025,MPN-025,ES:standard:4.99 EUR
+SKU-026,Produto Demo 026,https://demo.gmcshield.local/produto/026,197.91 EUR,178.12 EUR,preorder,Soylent,8000000000026,MPN-026,ES:standard:4.99 EUR
+SKU-027,Produto Demo 027,https://demo.gmcshield.local/produto/027,97.41 EUR,87.67 EUR,out of stock,Contoso,8000000000027,MPN-027,ES:standard:4.99 EUR
+SKU-028,Produto Demo 028,https://demo.gmcshield.local/produto/028,186.21 EUR,167.59 EUR,preorder,Umbrella,8000000000028,MPN-028,ES:standard:4.99 EUR
+SKU-029,Produto Demo 029,https://demo.gmcshield.local/produto/029,170.29 EUR,153.26 EUR,preorder,Acme,8000000000029,MPN-029,ES:standard:4.99 EUR
+SKU-030,Produto Demo 030,https://demo.gmcshield.local/produto/030,142.38 EUR,128.14 EUR,out of stock,Umbrella,8000000000030,MPN-030,ES:standard:4.99 EUR
+SKU-031,Produto Demo 031,https://demo.gmcshield.local/produto/031,45.71 EUR,41.14 EUR,out of stock,Globex,8000000000031,MPN-031,ES:standard:4.99 EUR
+SKU-032,Produto Demo 032,https://demo.gmcshield.local/produto/032,33.34 EUR,30.01 EUR,out of stock,Soylent,8000000000032,MPN-032,ES:standard:4.99 EUR
+SKU-033,Produto Demo 033,https://demo.gmcshield.local/produto/033,117.63 EUR,105.87 EUR,preorder,Acme,8000000000033,MPN-033,ES:standard:4.99 EUR
+SKU-034,Produto Demo 034,https://demo.gmcshield.local/produto/034,94.43 EUR,84.99 EUR,preorder,Acme,8000000000034,MPN-034,ES:standard:4.99 EUR
+SKU-035,Produto Demo 035,https://demo.gmcshield.local/produto/035,63.85 EUR,57.47 EUR,out of stock,Globex,8000000000035,MPN-035,ES:standard:4.99 EUR
+SKU-036,Produto Demo 036,https://demo.gmcshield.local/produto/036,94.17 EUR,84.75 EUR,in stock,Umbrella,8000000000036,MPN-036,ES:standard:4.99 EUR
+SKU-037,Produto Demo 037,https://demo.gmcshield.local/produto/037,138.75 EUR,124.88 EUR,preorder,Soylent,8000000000037,MPN-037,ES:standard:4.99 EUR
+SKU-038,Produto Demo 038,https://demo.gmcshield.local/produto/038,179.69 EUR,161.72 EUR,preorder,Globex,8000000000038,MPN-038,ES:standard:4.99 EUR
+SKU-039,Produto Demo 039,https://demo.gmcshield.local/produto/039,67.12 EUR,60.41 EUR,in stock,Soylent,8000000000039,MPN-039,ES:standard:4.99 EUR
+SKU-040,Produto Demo 040,https://demo.gmcshield.local/produto/040,169.18 EUR,152.26 EUR,out of stock,Globex,8000000000040,MPN-040,ES:standard:4.99 EUR
+SKU-041,Produto Demo 041,https://demo.gmcshield.local/produto/041,191.31 EUR,172.18 EUR,out of stock,Globex,8000000000041,MPN-041,ES:standard:4.99 EUR
+SKU-042,Produto Demo 042,https://demo.gmcshield.local/produto/042,192.85 EUR,173.56 EUR,preorder,Globex,8000000000042,MPN-042,ES:standard:4.99 EUR
+SKU-043,Produto Demo 043,https://demo.gmcshield.local/produto/043,71.48 EUR,64.33 EUR,in stock,Soylent,8000000000043,MPN-043,ES:standard:4.99 EUR
+SKU-044,Produto Demo 044,https://demo.gmcshield.local/produto/044,105.27 EUR,94.74 EUR,in stock,Umbrella,8000000000044,MPN-044,ES:standard:4.99 EUR
+SKU-045,Produto Demo 045,https://demo.gmcshield.local/produto/045,34.97 EUR,31.47 EUR,in stock,Soylent,8000000000045,MPN-045,ES:standard:4.99 EUR
+SKU-046,Produto Demo 046,https://demo.gmcshield.local/produto/046,135.74 EUR,122.17 EUR,in stock,Contoso,8000000000046,MPN-046,ES:standard:4.99 EUR
+SKU-047,Produto Demo 047,https://demo.gmcshield.local/produto/047,196.11 EUR,176.50 EUR,preorder,Umbrella,8000000000047,MPN-047,ES:standard:4.99 EUR
+SKU-048,Produto Demo 048,https://demo.gmcshield.local/produto/048,152.71 EUR,137.44 EUR,out of stock,Globex,8000000000048,MPN-048,ES:standard:4.99 EUR
+SKU-049,Produto Demo 049,https://demo.gmcshield.local/produto/049,177.0 EUR,159.30 EUR,out of stock,Soylent,8000000000049,MPN-049,ES:standard:4.99 EUR
+SKU-050,Produto Demo 050,https://demo.gmcshield.local/produto/050,104.28 EUR,93.85 EUR,out of stock,Contoso,8000000000050,MPN-050,ES:standard:4.99 EUR
+SKU-051,Produto Demo 051,https://demo.gmcshield.local/produto/051,61.32 EUR,55.19 EUR,in stock,Contoso,8000000000051,MPN-051,ES:standard:4.99 EUR
+SKU-052,Produto Demo 052,https://demo.gmcshield.local/produto/052,53.07 EUR,47.76 EUR,preorder,Umbrella,8000000000052,MPN-052,ES:standard:4.99 EUR
+SKU-053,Produto Demo 053,https://demo.gmcshield.local/produto/053,97.55 EUR,87.80 EUR,out of stock,Contoso,8000000000053,MPN-053,ES:standard:4.99 EUR
+SKU-054,Produto Demo 054,https://demo.gmcshield.local/produto/054,22.08 EUR,19.87 EUR,preorder,Soylent,8000000000054,MPN-054,ES:standard:4.99 EUR
+SKU-055,Produto Demo 055,https://demo.gmcshield.local/produto/055,145.68 EUR,131.11 EUR,in stock,Contoso,8000000000055,MPN-055,ES:standard:4.99 EUR
+SKU-056,Produto Demo 056,https://demo.gmcshield.local/produto/056,187.48 EUR,168.73 EUR,in stock,Umbrella,8000000000056,MPN-056,ES:standard:4.99 EUR
+SKU-057,Produto Demo 057,https://demo.gmcshield.local/produto/057,133.43 EUR,120.09 EUR,in stock,Globex,8000000000057,MPN-057,ES:standard:4.99 EUR
+SKU-058,Produto Demo 058,https://demo.gmcshield.local/produto/058,58.38 EUR,52.54 EUR,preorder,Globex,8000000000058,MPN-058,ES:standard:4.99 EUR
+SKU-059,Produto Demo 059,https://demo.gmcshield.local/produto/059,168.33 EUR,151.50 EUR,preorder,Contoso,8000000000059,MPN-059,ES:standard:4.99 EUR
+SKU-060,Produto Demo 060,https://demo.gmcshield.local/produto/060,147.43 EUR,132.69 EUR,in stock,Acme,8000000000060,MPN-060,ES:standard:4.99 EUR

@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Docker: up db+redis", "type": "shell", "command": "docker compose up -d redis db" },
+    { "label": "DB: migrate", "type": "shell", "command": "docker compose run --rm api alembic upgrade head" },
+    { "label": "Docker: up api+worker", "type": "shell", "command": "docker compose up -d api worker" },
+    { "label": "Web: dev", "type": "shell", "command": "cd web && npm install && npm run dev" },
+    { "label": "Demo script", "type": "shell", "command": "bash scripts/demo.sh" }
+  ]
+}

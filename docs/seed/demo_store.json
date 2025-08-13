@@ -1,0 +1,14 @@
+{
+  "name": "Loja Demo GMC Shield",
+  "platform": "woo",
+  "base_url": "https://demo.gmcshield.local",
+  "country": "ES",
+  "currency": "EUR",
+  "contact_email": "soporte@demo.gmcshield.local",
+  "policies": {
+    "shipping_days": 3,
+    "returns_days": 14,
+    "address": "Calle Falsa 123, Madrid 28000",
+    "tax_id": "ESB12345678"
+  }
+}

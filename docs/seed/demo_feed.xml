@@ -1,0 +1,1028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>Loja Demo GMC Shield</title>
+    <link>https://demo.gmcshield.local</link>
+    <description>Feed de exemplo</description>
+
+  <item>
+    <g:id>SKU-001</g:id>
+    <g:title>Produto Demo 001</g:title>
+    <g:link>https://demo.gmcshield.local/produto/001</g:link>
+    <g:price>88.93 EUR</g:price>
+    <g:sale_price>80.04 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000001</g:gtin>
+    <g:mpn>MPN-001</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-002</g:id>
+    <g:title>Produto Demo 002</g:title>
+    <g:link>https://demo.gmcshield.local/produto/002</g:link>
+    <g:price>189.55 EUR</g:price>
+    <g:sale_price>170.60 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000002</g:gtin>
+    <g:mpn>MPN-002</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-003</g:id>
+    <g:title>Produto Demo 003</g:title>
+    <g:link>https://demo.gmcshield.local/produto/003</g:link>
+    <g:price>133.21 EUR</g:price>
+    <g:sale_price>119.89 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000003</g:gtin>
+    <g:mpn>MPN-003</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-004</g:id>
+    <g:title>Produto Demo 004</g:title>
+    <g:link>https://demo.gmcshield.local/produto/004</g:link>
+    <g:price>45.84 EUR</g:price>
+    <g:sale_price>41.26 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000004</g:gtin>
+    <g:mpn>MPN-004</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-005</g:id>
+    <g:title>Produto Demo 005</g:title>
+    <g:link>https://demo.gmcshield.local/produto/005</g:link>
+    <g:price>138.01 EUR</g:price>
+    <g:sale_price>124.21 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000005</g:gtin>
+    <g:mpn>MPN-005</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-006</g:id>
+    <g:title>Produto Demo 006</g:title>
+    <g:link>https://demo.gmcshield.local/produto/006</g:link>
+    <g:price>166.35 EUR</g:price>
+    <g:sale_price>149.72 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000006</g:gtin>
+    <g:mpn>MPN-006</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-007</g:id>
+    <g:title>Produto Demo 007</g:title>
+    <g:link>https://demo.gmcshield.local/produto/007</g:link>
+    <g:price>87.89 EUR</g:price>
+    <g:sale_price>79.10 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000007</g:gtin>
+    <g:mpn>MPN-007</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-008</g:id>
+    <g:title>Produto Demo 008</g:title>
+    <g:link>https://demo.gmcshield.local/produto/008</g:link>
+    <g:price>147.08 EUR</g:price>
+    <g:sale_price>132.37 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000008</g:gtin>
+    <g:mpn>MPN-008</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-009</g:id>
+    <g:title>Produto Demo 009</g:title>
+    <g:link>https://demo.gmcshield.local/produto/009</g:link>
+    <g:price>43.31 EUR</g:price>
+    <g:sale_price>38.98 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000009</g:gtin>
+    <g:mpn>MPN-009</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-010</g:id>
+    <g:title>Produto Demo 010</g:title>
+    <g:link>https://demo.gmcshield.local/produto/010</g:link>
+    <g:price>183.44 EUR</g:price>
+    <g:sale_price>165.10 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000010</g:gtin>
+    <g:mpn>MPN-010</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-011</g:id>
+    <g:title>Produto Demo 011</g:title>
+    <g:link>https://demo.gmcshield.local/produto/011</g:link>
+    <g:price>105.74 EUR</g:price>
+    <g:sale_price>95.17 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000011</g:gtin>
+    <g:mpn>MPN-011</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-012</g:id>
+    <g:title>Produto Demo 012</g:title>
+    <g:link>https://demo.gmcshield.local/produto/012</g:link>
+    <g:price>182.05 EUR</g:price>
+    <g:sale_price>163.85 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000012</g:gtin>
+    <g:mpn>MPN-012</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-013</g:id>
+    <g:title>Produto Demo 013</g:title>
+    <g:link>https://demo.gmcshield.local/produto/013</g:link>
+    <g:price>168.52 EUR</g:price>
+    <g:sale_price>151.67 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000013</g:gtin>
+    <g:mpn>MPN-013</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-014</g:id>
+    <g:title>Produto Demo 014</g:title>
+    <g:link>https://demo.gmcshield.local/produto/014</g:link>
+    <g:price>101.74 EUR</g:price>
+    <g:sale_price>91.57 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000014</g:gtin>
+    <g:mpn>MPN-014</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-015</g:id>
+    <g:title>Produto Demo 015</g:title>
+    <g:link>https://demo.gmcshield.local/produto/015</g:link>
+    <g:price>115.08 EUR</g:price>
+    <g:sale_price>103.57 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000015</g:gtin>
+    <g:mpn>MPN-015</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-016</g:id>
+    <g:title>Produto Demo 016</g:title>
+    <g:link>https://demo.gmcshield.local/produto/016</g:link>
+    <g:price>131.28 EUR</g:price>
+    <g:sale_price>118.15 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000016</g:gtin>
+    <g:mpn>MPN-016</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-017</g:id>
+    <g:title>Produto Demo 017</g:title>
+    <g:link>https://demo.gmcshield.local/produto/017</g:link>
+    <g:price>141.94 EUR</g:price>
+    <g:sale_price>127.75 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000017</g:gtin>
+    <g:mpn>MPN-017</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-018</g:id>
+    <g:title>Produto Demo 018</g:title>
+    <g:link>https://demo.gmcshield.local/produto/018</g:link>
+    <g:price>69.09 EUR</g:price>
+    <g:sale_price>62.18 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000018</g:gtin>
+    <g:mpn>MPN-018</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-019</g:id>
+    <g:title>Produto Demo 019</g:title>
+    <g:link>https://demo.gmcshield.local/produto/019</g:link>
+    <g:price>149.18 EUR</g:price>
+    <g:sale_price>134.26 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000019</g:gtin>
+    <g:mpn>MPN-019</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-020</g:id>
+    <g:title>Produto Demo 020</g:title>
+    <g:link>https://demo.gmcshield.local/produto/020</g:link>
+    <g:price>108.31 EUR</g:price>
+    <g:sale_price>97.48 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000020</g:gtin>
+    <g:mpn>MPN-020</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-021</g:id>
+    <g:title>Produto Demo 021</g:title>
+    <g:link>https://demo.gmcshield.local/produto/021</g:link>
+    <g:price>124.62 EUR</g:price>
+    <g:sale_price>112.16 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000021</g:gtin>
+    <g:mpn>MPN-021</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-022</g:id>
+    <g:title>Produto Demo 022</g:title>
+    <g:link>https://demo.gmcshield.local/produto/022</g:link>
+    <g:price>150.53 EUR</g:price>
+    <g:sale_price>135.48 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000022</g:gtin>
+    <g:mpn>MPN-022</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-023</g:id>
+    <g:title>Produto Demo 023</g:title>
+    <g:link>https://demo.gmcshield.local/produto/023</g:link>
+    <g:price>22.09 EUR</g:price>
+    <g:sale_price>19.88 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000023</g:gtin>
+    <g:mpn>MPN-023</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-024</g:id>
+    <g:title>Produto Demo 024</g:title>
+    <g:link>https://demo.gmcshield.local/produto/024</g:link>
+    <g:price>144.07 EUR</g:price>
+    <g:sale_price>129.66 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000024</g:gtin>
+    <g:mpn>MPN-024</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-025</g:id>
+    <g:title>Produto Demo 025</g:title>
+    <g:link>https://demo.gmcshield.local/produto/025</g:link>
+    <g:price>12.47 EUR</g:price>
+    <g:sale_price>11.22 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000025</g:gtin>
+    <g:mpn>MPN-025</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-026</g:id>
+    <g:title>Produto Demo 026</g:title>
+    <g:link>https://demo.gmcshield.local/produto/026</g:link>
+    <g:price>113.19 EUR</g:price>
+    <g:sale_price>101.87 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000026</g:gtin>
+    <g:mpn>MPN-026</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-027</g:id>
+    <g:title>Produto Demo 027</g:title>
+    <g:link>https://demo.gmcshield.local/produto/027</g:link>
+    <g:price>146.57 EUR</g:price>
+    <g:sale_price>131.91 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000027</g:gtin>
+    <g:mpn>MPN-027</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-028</g:id>
+    <g:title>Produto Demo 028</g:title>
+    <g:link>https://demo.gmcshield.local/produto/028</g:link>
+    <g:price>182.25 EUR</g:price>
+    <g:sale_price>164.03 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000028</g:gtin>
+    <g:mpn>MPN-028</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-029</g:id>
+    <g:title>Produto Demo 029</g:title>
+    <g:link>https://demo.gmcshield.local/produto/029</g:link>
+    <g:price>123.26 EUR</g:price>
+    <g:sale_price>110.93 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000029</g:gtin>
+    <g:mpn>MPN-029</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-030</g:id>
+    <g:title>Produto Demo 030</g:title>
+    <g:link>https://demo.gmcshield.local/produto/030</g:link>
+    <g:price>170.63 EUR</g:price>
+    <g:sale_price>153.57 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000030</g:gtin>
+    <g:mpn>MPN-030</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-031</g:id>
+    <g:title>Produto Demo 031</g:title>
+    <g:link>https://demo.gmcshield.local/produto/031</g:link>
+    <g:price>155.17 EUR</g:price>
+    <g:sale_price>139.65 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000031</g:gtin>
+    <g:mpn>MPN-031</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-032</g:id>
+    <g:title>Produto Demo 032</g:title>
+    <g:link>https://demo.gmcshield.local/produto/032</g:link>
+    <g:price>61.76 EUR</g:price>
+    <g:sale_price>55.58 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000032</g:gtin>
+    <g:mpn>MPN-032</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-033</g:id>
+    <g:title>Produto Demo 033</g:title>
+    <g:link>https://demo.gmcshield.local/produto/033</g:link>
+    <g:price>172.14 EUR</g:price>
+    <g:sale_price>154.93 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000033</g:gtin>
+    <g:mpn>MPN-033</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-034</g:id>
+    <g:title>Produto Demo 034</g:title>
+    <g:link>https://demo.gmcshield.local/produto/034</g:link>
+    <g:price>160.45 EUR</g:price>
+    <g:sale_price>144.41 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000034</g:gtin>
+    <g:mpn>MPN-034</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-035</g:id>
+    <g:title>Produto Demo 035</g:title>
+    <g:link>https://demo.gmcshield.local/produto/035</g:link>
+    <g:price>129.65 EUR</g:price>
+    <g:sale_price>116.69 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000035</g:gtin>
+    <g:mpn>MPN-035</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-036</g:id>
+    <g:title>Produto Demo 036</g:title>
+    <g:link>https://demo.gmcshield.local/produto/036</g:link>
+    <g:price>153.47 EUR</g:price>
+    <g:sale_price>138.12 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000036</g:gtin>
+    <g:mpn>MPN-036</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-037</g:id>
+    <g:title>Produto Demo 037</g:title>
+    <g:link>https://demo.gmcshield.local/produto/037</g:link>
+    <g:price>119.26 EUR</g:price>
+    <g:sale_price>107.33 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000037</g:gtin>
+    <g:mpn>MPN-037</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-038</g:id>
+    <g:title>Produto Demo 038</g:title>
+    <g:link>https://demo.gmcshield.local/produto/038</g:link>
+    <g:price>95.52 EUR</g:price>
+    <g:sale_price>85.97 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000038</g:gtin>
+    <g:mpn>MPN-038</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-039</g:id>
+    <g:title>Produto Demo 039</g:title>
+    <g:link>https://demo.gmcshield.local/produto/039</g:link>
+    <g:price>128.29 EUR</g:price>
+    <g:sale_price>115.46 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000039</g:gtin>
+    <g:mpn>MPN-039</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-040</g:id>
+    <g:title>Produto Demo 040</g:title>
+    <g:link>https://demo.gmcshield.local/produto/040</g:link>
+    <g:price>161.59 EUR</g:price>
+    <g:sale_price>145.43 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000040</g:gtin>
+    <g:mpn>MPN-040</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-041</g:id>
+    <g:title>Produto Demo 041</g:title>
+    <g:link>https://demo.gmcshield.local/produto/041</g:link>
+    <g:price>130.47 EUR</g:price>
+    <g:sale_price>117.42 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000041</g:gtin>
+    <g:mpn>MPN-041</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-042</g:id>
+    <g:title>Produto Demo 042</g:title>
+    <g:link>https://demo.gmcshield.local/produto/042</g:link>
+    <g:price>50.72 EUR</g:price>
+    <g:sale_price>45.65 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000042</g:gtin>
+    <g:mpn>MPN-042</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-043</g:id>
+    <g:title>Produto Demo 043</g:title>
+    <g:link>https://demo.gmcshield.local/produto/043</g:link>
+    <g:price>181.36 EUR</g:price>
+    <g:sale_price>163.22 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000043</g:gtin>
+    <g:mpn>MPN-043</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-044</g:id>
+    <g:title>Produto Demo 044</g:title>
+    <g:link>https://demo.gmcshield.local/produto/044</g:link>
+    <g:price>18.44 EUR</g:price>
+    <g:sale_price>16.60 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000044</g:gtin>
+    <g:mpn>MPN-044</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-045</g:id>
+    <g:title>Produto Demo 045</g:title>
+    <g:link>https://demo.gmcshield.local/produto/045</g:link>
+    <g:price>33.85 EUR</g:price>
+    <g:sale_price>30.47 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000045</g:gtin>
+    <g:mpn>MPN-045</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-046</g:id>
+    <g:title>Produto Demo 046</g:title>
+    <g:link>https://demo.gmcshield.local/produto/046</g:link>
+    <g:price>189.65 EUR</g:price>
+    <g:sale_price>170.69 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000046</g:gtin>
+    <g:mpn>MPN-046</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-047</g:id>
+    <g:title>Produto Demo 047</g:title>
+    <g:link>https://demo.gmcshield.local/produto/047</g:link>
+    <g:price>168.62 EUR</g:price>
+    <g:sale_price>151.76 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000047</g:gtin>
+    <g:mpn>MPN-047</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-048</g:id>
+    <g:title>Produto Demo 048</g:title>
+    <g:link>https://demo.gmcshield.local/produto/048</g:link>
+    <g:price>70.53 EUR</g:price>
+    <g:sale_price>63.48 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000048</g:gtin>
+    <g:mpn>MPN-048</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-049</g:id>
+    <g:title>Produto Demo 049</g:title>
+    <g:link>https://demo.gmcshield.local/produto/049</g:link>
+    <g:price>162.78 EUR</g:price>
+    <g:sale_price>146.50 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000049</g:gtin>
+    <g:mpn>MPN-049</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-050</g:id>
+    <g:title>Produto Demo 050</g:title>
+    <g:link>https://demo.gmcshield.local/produto/050</g:link>
+    <g:price>190.62 EUR</g:price>
+    <g:sale_price>171.56 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000050</g:gtin>
+    <g:mpn>MPN-050</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-051</g:id>
+    <g:title>Produto Demo 051</g:title>
+    <g:link>https://demo.gmcshield.local/produto/051</g:link>
+    <g:price>20.15 EUR</g:price>
+    <g:sale_price>18.13 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000051</g:gtin>
+    <g:mpn>MPN-051</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-052</g:id>
+    <g:title>Produto Demo 052</g:title>
+    <g:link>https://demo.gmcshield.local/produto/052</g:link>
+    <g:price>41.31 EUR</g:price>
+    <g:sale_price>37.18 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000052</g:gtin>
+    <g:mpn>MPN-052</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-053</g:id>
+    <g:title>Produto Demo 053</g:title>
+    <g:link>https://demo.gmcshield.local/produto/053</g:link>
+    <g:price>189.98 EUR</g:price>
+    <g:sale_price>170.98 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000053</g:gtin>
+    <g:mpn>MPN-053</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-054</g:id>
+    <g:title>Produto Demo 054</g:title>
+    <g:link>https://demo.gmcshield.local/produto/054</g:link>
+    <g:price>175.78 EUR</g:price>
+    <g:sale_price>158.20 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Umbrella</g:brand>
+    <g:gtin>8000000000054</g:gtin>
+    <g:mpn>MPN-054</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-055</g:id>
+    <g:title>Produto Demo 055</g:title>
+    <g:link>https://demo.gmcshield.local/produto/055</g:link>
+    <g:price>198.77 EUR</g:price>
+    <g:sale_price>178.89 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Soylent</g:brand>
+    <g:gtin>8000000000055</g:gtin>
+    <g:mpn>MPN-055</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-056</g:id>
+    <g:title>Produto Demo 056</g:title>
+    <g:link>https://demo.gmcshield.local/produto/056</g:link>
+    <g:price>60.83 EUR</g:price>
+    <g:sale_price>54.75 EUR</g:sale_price>
+    <g:availability>out of stock</g:availability>
+    <g:brand>Globex</g:brand>
+    <g:gtin>8000000000056</g:gtin>
+    <g:mpn>MPN-056</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-057</g:id>
+    <g:title>Produto Demo 057</g:title>
+    <g:link>https://demo.gmcshield.local/produto/057</g:link>
+    <g:price>79.2 EUR</g:price>
+    <g:sale_price>71.28 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000057</g:gtin>
+    <g:mpn>MPN-057</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-058</g:id>
+    <g:title>Produto Demo 058</g:title>
+    <g:link>https://demo.gmcshield.local/produto/058</g:link>
+    <g:price>98.63 EUR</g:price>
+    <g:sale_price>88.77 EUR</g:sale_price>
+    <g:availability>in stock</g:availability>
+    <g:brand>Acme</g:brand>
+    <g:gtin>8000000000058</g:gtin>
+    <g:mpn>MPN-058</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-059</g:id>
+    <g:title>Produto Demo 059</g:title>
+    <g:link>https://demo.gmcshield.local/produto/059</g:link>
+    <g:price>110.1 EUR</g:price>
+    <g:sale_price>99.09 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000059</g:gtin>
+    <g:mpn>MPN-059</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+
+  <item>
+    <g:id>SKU-060</g:id>
+    <g:title>Produto Demo 060</g:title>
+    <g:link>https://demo.gmcshield.local/produto/060</g:link>
+    <g:price>63.34 EUR</g:price>
+    <g:sale_price>57.01 EUR</g:sale_price>
+    <g:availability>preorder</g:availability>
+    <g:brand>Contoso</g:brand>
+    <g:gtin>8000000000060</g:gtin>
+    <g:mpn>MPN-060</g:mpn>
+    <g:shipping>
+      <g:country>ES</g:country>
+      <g:service>standard</g:service>
+      <g:price>4.99 EUR</g:price>
+    </g:shipping>
+  </item>
+  </channel>
+</rss>

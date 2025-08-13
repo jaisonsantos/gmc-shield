@@ -1,0 +1,122 @@
+// web/src/pages/Stores.jsx
+
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Stores as Api } from "../lib/api";
+import { useAuth } from "../lib/auth";
+import { useToast } from "../lib/toast";
+
+export default function Stores() {
+  const { user, logout, can } = useAuth();
+  const toast = useToast();
+
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const [scanning, setScanning] = useState({}); // { [storeId]: true }
+
+  const load = async () => {
+    setErr("");
+    setLoading(true);
+    try {
+      const data = await Api.list();
+      setItems(Array.isArray(data) ? data : data.items || []);
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const createDemo = async () => {
+    try {
+      await Api.createDemo();
+      await load();
+      toast.success("Loja demo criada.");
+    } catch (e) {
+      setErr(e.message);
+      toast.error(e.message);
+    }
+  };
+
+  const doScan = async (storeId) => {
+    try {
+      setScanning((m) => ({ ...m, [storeId]: true }));
+      await Api.scan(storeId);
+      toast.show("Scan em processamento…");
+      // simulação de ~3.5s
+      setTimeout(() => {
+        setScanning((m) => ({ ...m, [storeId]: false }));
+        toast.success("Scan concluído (simulado). Abra as violações para ver os resultados.");
+      }, 3500);
+    } catch (e) {
+      setScanning((m) => ({ ...m, [storeId]: false }));
+      toast.error(e.message || "Falha ao iniciar scan");
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 900, margin: "32px auto", padding: 16 }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <h2>Lojas</h2>
+        <div>
+          <span style={{ marginRight: 12 }}>
+            {user?.email} ({user?.role})
+          </span>
+          <button onClick={logout}>Sair</button>
+        </div>
+      </header>
+
+      <div style={{ marginBottom: 12 }}>
+        {can("scan") && <button onClick={createDemo}>Criar Demo Store</button>}
+        <button onClick={load} style={{ marginLeft: 8 }}>
+          Recarregar
+        </button>
+      </div>
+
+      {err && <div style={{ color: "crimson", marginBottom: 8 }}>{err}</div>}
+
+      {loading ? (
+        <div>Carregando…</div>
+      ) : items.length === 0 ? (
+        <div>Nenhuma loja ainda.</div>
+      ) : (
+        <table width="100%" cellPadding="8" style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ textAlign: "left", borderBottom: "1px solid #eee" }}>
+              <th>ID</th>
+              <th>Platform</th>
+              <th>Base URL</th>
+              <th>País</th>
+              <th>Moeda</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((s) => (
+              <tr key={s.id} style={{ borderBottom: "1px solid #f3f3f3" }}>
+                <td>{s.id}</td>
+                <td>{s.platform}</td>
+                <td>{s.base_url}</td>
+                <td>{s.country || "-"}</td>
+                <td>{s.currency || "-"}</td>
+                <td style={{ display: "flex", gap: 8 }}>
+                  <Link to={`/stores/${s.id}/violations`}>Ver violações</Link>
+                  {can("scan") && (
+                    <button disabled={!!scanning[s.id]} onClick={() => doScan(s.id)}>
+                      {scanning[s.id] ? "Em processamento…" : "Scan"}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}

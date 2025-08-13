@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  api-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r api/requirements.txt
+      - run: python -m compileall api
+  web-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: cd web && npm install && npm run build
+  docs-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check D0..D30
+        run: |
+          for i in $(seq -w 0 30); do
+            test -f docs/issues/D${i}* || (echo "Missing docs/issues/D${i}*.md" && exit 1)
+          done
+      - name: Compose config
+        run: docker compose config -q

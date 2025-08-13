@@ -1,0 +1,1 @@
+export default function Scans(){return <h1>Scans</h1>}

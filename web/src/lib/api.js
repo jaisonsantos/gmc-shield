@@ -1,23 +1,18 @@
 // web/src/lib/api.js
+const API_BASE =
+  (import.meta.env.VITE_API ?? import.meta.env.VITE_API_BASE ?? "http://localhost:8000")
+    .replace(/\/$/, ""); // sem barra final
 
-const API_BASE = import.meta.env.VITE_API || import.meta.env.VITE_API_BASE || "http://localhost:8000";
-export const api = (p, opts={}) => fetch(`${API_BASE}${p}`, { ...opts, headers:{ 'Content-Type':'application/json', ...(opts.headers||{}) }});
+console.log("[GMC] API_BASE =", API_BASE);
 
 const TOKEN_KEY = "gmcshield_token";
 
-export function getToken() {
-  return localStorage.getItem(TOKEN_KEY) || "";
-}
-
-export function setToken(t) {
-  if (t) localStorage.setItem(TOKEN_KEY, t);
-}
-
-export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
-}
+export function getToken() { return localStorage.getItem(TOKEN_KEY) || ""; }
+export function setToken(t) { if (t) localStorage.setItem(TOKEN_KEY, t); }
+export function clearToken() { localStorage.removeItem(TOKEN_KEY); }
 
 export async function apiFetch(path, { method = "GET", body, headers = {} } = {}) {
+  const url = `${API_BASE}${path}`;
   const opts = {
     method,
     headers: {
@@ -30,20 +25,23 @@ export async function apiFetch(path, { method = "GET", body, headers = {} } = {}
   const token = getToken();
   if (token) opts.headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}${path}`, opts);
+  const res = await fetch(url, opts);
+  const ct = (res.headers.get("content-type") || "").toLowerCase();
+  const text = await res.text();
+
   if (!res.ok) {
-    let msg = `${res.status} ${res.statusText}`;
-    try {
-      const j = await res.json();
-      msg = j.detail || JSON.stringify(j);
-    } catch {}
-    const err = new Error(msg);
-    err.status = res.status;
-    throw err;
+    // Erro de API: mostre a primeira parte da resposta
+    throw new Error(`HTTP ${res.status} ${res.statusText} from ${url}: ${text.slice(0, 200)}`);
   }
-  // 204 no-content
-  if (res.status === 204) return null;
-  return res.json();
+
+  if (ct.includes("application/json")) {
+    try { return JSON.parse(text); } catch (e) {
+      throw new Error(`Invalid JSON from ${url}: ${text.slice(0, 200)}`);
+    }
+  }
+
+  // Veio HTML? Então você está chamando o host errado (WEB/Vercel) em vez da API
+  throw new Error(`Expected JSON from ${url}, got ${ct || "unknown"}: ${text.slice(0, 200)}`);
 }
 
 // auth
@@ -55,23 +53,18 @@ export const Auth = {
 // stores
 export const Stores = {
   list: () => apiFetch("/api/stores"),
-  createDemo: () =>
-    apiFetch("/api/stores", {
-      method: "POST",
-      body: {
-        name: "Loja UI",
-        platform: "woocommerce",
-        base_url: "http://localhost",
-        country: "ES",
-        currency: "EUR",
-        contact_email: "admin@example.com",
-      },
-    }),
-  scan: (storeId) =>
-    apiFetch(`/api/stores/${storeId}/scan`, {
-      method: "POST",
-      // retorna {queued, skipped,...}
-    }),
+  createDemo: () => apiFetch("/api/stores", {
+    method: "POST",
+    body: {
+      name: "Loja UI",
+      platform: "woocommerce",
+      base_url: "http://localhost",
+      country: "ES",
+      currency: "EUR",
+      contact_email: "admin@example.com",
+    },
+  }),
+  scan: (storeId) => apiFetch(`/api/stores/${storeId}/scan`, { method: "POST" }),
 };
 
 // violations
@@ -83,18 +76,12 @@ export const Violations = {
 export const Blocks = {
   list: (storeId) => apiFetch(`/api/stores/${storeId}/blocks`),
   create: (storeId, feedItemId, reason = "") =>
-    apiFetch(`/api/stores/${storeId}/blocks`, {
-      method: "POST",
-      body: { feed_item_id: feedItemId, reason },
-    }),
+    apiFetch(`/api/stores/${storeId}/blocks`, { method: "POST", body: { feed_item_id: feedItemId, reason } }),
   removeByFeedItem: (storeId, feedItemId) =>
-    apiFetch(`/api/stores/${storeId}/blocks/by-feed-item/${encodeURIComponent(feedItemId)}`, {
-      method: "DELETE",
-    }),
+    apiFetch(`/api/stores/${storeId}/blocks/by-feed-item/${encodeURIComponent(feedItemId)}`, { method: "DELETE" }),
 };
 
 // ops
 export const Ops = {
   workerHealth: () => apiFetch("/api/ops/worker/health"),
 };
-

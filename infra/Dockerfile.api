@@ -1,3 +1,5 @@
+# infra/Dockerfile.api
+
 # Base mais nova, geralmente com menos CVEs abertas
 FROM python:3.11-slim-bookworm
 

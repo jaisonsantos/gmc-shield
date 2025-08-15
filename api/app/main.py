@@ -5,8 +5,10 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops
 
-app     = FastAPI(title="GMC Shield API", version="0.1.0")
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+app          = FastAPI(title="GMC Shield API", version="0.1.0")
+raw          = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "http://localhost:5173")
+origins      = [o.strip() for o in raw.split(",") if o.strip()]
+origin_regex = os.getenv("ALLOWED_ORIGIN_REGEX")  # ^https://([a-z0-9-]+\.)?vercel\.app$|^https://[a-z0-9-]+\.ngrok-free\.app$
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -21,7 +23,15 @@ async def log_requests(request: Request, call_next):
         status = getattr(response, "status_code", "?")
         print(f"[REQ] {method} {path} -> {status} ({dt:.1f}ms)")
 
-app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_origin_regex=origin_regex or None,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 app.include_router(ops.router,              prefix="/api/ops",      tags=["ops"])
 app.include_router(auth.router,             prefix="/api/auth",     tags=["auth"])
 app.include_router(stores.router,           prefix="/api/stores",   tags=["stores"])

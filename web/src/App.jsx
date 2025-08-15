@@ -20,13 +20,13 @@ export default function App() {
         path="/stores/:id/violations"
         element={<ProtectedRoute><Violations /></ProtectedRoute>}
       />
+      {/* ops antes do wildcard, só por legibilidade */}
       <Route
         path="/ops"
-        element={<ProtectedRoute><Ops/></ProtectedRoute>}
+        element={<ProtectedRoute><Ops /></ProtectedRoute>}
       />
 
-      <Route path="*" element={<Navigate to="/stores" replace />} />
+      <Route path="*" element={<Navigate to="/stores" />} />
     </Routes>
   );
 }
-

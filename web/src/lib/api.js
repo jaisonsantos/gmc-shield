@@ -1,6 +1,8 @@
 // web/src/lib/api.js
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API || import.meta.env.VITE_API_BASE || "http://localhost:8000";
+export const api = (p, opts={}) => fetch(`${API_BASE}${p}`, { ...opts, headers:{ 'Content-Type':'application/json', ...(opts.headers||{}) }});
+
 const TOKEN_KEY = "gmcshield_token";
 
 export function getToken() {

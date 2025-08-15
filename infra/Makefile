@@ -1,42 +1,48 @@
+# infra/Makefile
+
 # --- Containers base ---
-up:
+up:          ## Sobe api + db + redis + worker
 	docker compose up -d
-down:
-	docker compose down -v
-restart:
-	docker compose restart api
-ps:
+down:        ## Derruba tudo (com volumes)
+	docker compose down -v --remove-orphans
+ps:          ## Status dos serviços
 	docker compose ps
-logs:
+logs:        ## Logs de todos
 	docker compose logs -f --tail=200
-api-logs:
+api-logs:    ## Logs da API
 	docker compose logs -f --tail=200 api
-worker-logs:
+worker-logs: ## Logs do worker
 	docker compose logs -f --tail=200 worker
+restart:     ## Reinicia API
+	docker compose restart api
 
 # --- Banco / Alembic ---
-migrate:
+migrate:     ## Alembic upgrade head
 	docker compose run --rm api alembic upgrade head
-revision:
+revision:    ## Alembic autogenerate
 	docker compose run --rm api alembic revision --autogenerate -m "auto"
 
 # --- Seeds & util ---
-seed:
+seed:        ## Seed de usuários (owner/manager/viewer)
 	docker compose exec -T api python -m app.scripts.seed_users
-token:
+token:       ## Gera JWT local
 	docker compose exec -T api python -m app.scripts.mint_token | tr -d '\r'
 
 # --- WordPress opcional ---
 wp-up:
 	docker compose -f docker-compose.wp.yml up -d
 wp-down:
-	docker compose -f docker-compose.wp.yml down -v
+	docker compose -f docker-compose.wp.yml down -v --remove-orphans
 
 # --- Web (dev) ---
-web:
+web:         ## Vite dev
 	cd web && npm install && npm run dev
 
 # --- Smokes ---
-smoke:
+smoke:       ## Smoke end-to-end (usa TOKEN gerado)
 	TOKEN=$$(docker compose exec -T api python -m app.scripts.mint_token | tr -d '\r') \
-	bash scripts/smoke_rbac.sh --api http://localhost:8000 --store-name "Loja RBAC" --feed docs/seed/demo_feed.xml
+	bash scripts/smoke_rbac.sh --api http://localhost:8000 --store-name "Loja RBAC" --feed docs/seed/demo_feed.xml --quiet
+
+# --- Reset total + boot ---
+reset:       ## Down + (opcional prune) + up + migrate + seed + smoke
+	PRUNE_ALL=false SMOKE=true API_BASE=http://localhost:8000 bash ops/reset_and_boot.sh

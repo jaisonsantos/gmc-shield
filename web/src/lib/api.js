@@ -1,47 +1,52 @@
 // web/src/lib/api.js
-const API_BASE =
-  (import.meta.env.VITE_API ?? import.meta.env.VITE_API_BASE ?? "http://localhost:8000")
-    .replace(/\/$/, ""); // sem barra final
 
-console.log("[GMC] API_BASE =", API_BASE);
+const API_BASE = (import.meta.env.VITE_API || import.meta.env.VITE_API_BASE || "http://localhost:8000").replace(/\/+$/, "");
+export const api = (p, opts = {}) => fetch(`${API_BASE}${p}`, { ...opts, headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) } });
 
 const TOKEN_KEY = "gmcshield_token";
 
-export function getToken() { return localStorage.getItem(TOKEN_KEY) || ""; }
-export function setToken(t) { if (t) localStorage.setItem(TOKEN_KEY, t); }
-export function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+export function getToken()       { return localStorage.getItem(TOKEN_KEY) || ""; }
+export function setToken(t)     { if (t) localStorage.setItem(TOKEN_KEY, t); }
+export function clearToken()    { localStorage.removeItem(TOKEN_KEY); }
+
+function maybeAddNgrokBypass(headers) {
+  try {
+    const u = new URL(API_BASE);
+    if (u.hostname.endsWith("ngrok-free.app")) {
+      headers["ngrok-skip-browser-warning"] = "true";
+    }
+  } catch {}
+  return headers;
+}
 
 export async function apiFetch(path, { method = "GET", body, headers = {} } = {}) {
   const url = `${API_BASE}${path}`;
-  const opts = {
-    method,
-    headers: {
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      ...headers,
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  };
+  const h = maybeAddNgrokBypass({
+    ...(body ? { "Content-Type": "application/json" } : {}),
+    ...headers,
+  });
 
   const token = getToken();
-  if (token) opts.headers["Authorization"] = `Bearer ${token}`;
+  if (token) h["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(url, opts);
-  const ct = (res.headers.get("content-type") || "").toLowerCase();
-  const text = await res.text();
+  const res = await fetch(url, { method, headers: h, ...(body ? { body: JSON.stringify(body) } : {}) });
+
+  // garanta que recebemos JSON; se vier HTML do ngrok, falhe com mensagem clara
+  const ct = res.headers.get("content-type") || "";
+  if (!ct.includes("application/json")) {
+    const text = await res.text();
+    throw new Error(`Expected JSON from ${url}, got ${ct || "unknown"}: ${text.slice(0, 120)}…`);
+  }
 
   if (!res.ok) {
-    // Erro de API: mostre a primeira parte da resposta
-    throw new Error(`HTTP ${res.status} ${res.statusText} from ${url}: ${text.slice(0, 200)}`);
+    const j = await res.json().catch(() => ({}));
+    const msg = j.detail || `${res.status} ${res.statusText}`;
+    const err = new Error(msg);
+    err.status = res.status;
+    throw err;
   }
 
-  if (ct.includes("application/json")) {
-    try { return JSON.parse(text); } catch (e) {
-      throw new Error(`Invalid JSON from ${url}: ${text.slice(0, 200)}`);
-    }
-  }
-
-  // Veio HTML? Então você está chamando o host errado (WEB/Vercel) em vez da API
-  throw new Error(`Expected JSON from ${url}, got ${ct || "unknown"}: ${text.slice(0, 200)}`);
+  return res.status === 204 ? null : res.json();
 }
 
 // auth

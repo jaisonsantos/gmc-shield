@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { Violations as Api, Blocks } from "../lib/api";
 import { useToast } from "../lib/toast";
 import { useAuth } from "../lib/auth";
 
 export default function Violations() {
   const { id } = useParams();
+  const loc = useLocation();
+  const runId = new URLSearchParams(loc.search).get("run");
   const { can } = useAuth();
   const toast = useToast();
 
@@ -19,7 +21,7 @@ export default function Violations() {
     setErr("");
     setLoading(true);
     try {
-      const [viol, blocks] = await Promise.all([Api.list(id), Blocks.list(id)]);
+      const [viol, blocks] = await Promise.all([Api.list(id, runId), Blocks.list(id)]);
       setData(viol);
       const map = {};
       (blocks.items || blocks).forEach((b) => {
@@ -34,7 +36,7 @@ export default function Violations() {
   };
   useEffect(() => {
     load();
-  }, [id]);
+  }, [id, runId]);
 
   const blockItem = async (feedItemId) => {
     if (!feedItemId) return;
@@ -79,6 +81,7 @@ export default function Violations() {
           </button>
         </div>
       </header>
+      {runId && <div style={{ marginBottom: 8 }}>Filtrando por run #{runId}</div>}
 
       {err && <div style={{ color: "crimson", marginBottom: 8 }}>{err}</div>}
       {loading ? (

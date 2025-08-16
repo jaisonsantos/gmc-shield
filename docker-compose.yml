@@ -45,9 +45,13 @@ services:
       context: .
       dockerfile: infra/Dockerfile.api
     env_file: [.env]
+    environment:
+      DEMO_FEED_CSV: /docs/seed/demo_feed.csv
     volumes:
       - ./api:/app
       - ./worker:/worker
+      - ./docs:/docs
+      - artifacts:/worker/artifacts
     depends_on:
       api:   { condition: service_started }
       redis: { condition: service_healthy }
@@ -56,3 +60,4 @@ services:
 
 volumes:
   db_data:
+  artifacts:

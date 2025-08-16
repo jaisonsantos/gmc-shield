@@ -1,13 +1,13 @@
 # api/app/routers/stores.py
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..db import get_db
 from .. import models, schemas
 from ..auth import require_roles, Principal
-from ..queue import publish_scan_job
-from ..models import Store
+from ..queue import publish_scan_job, get_redis
+from ..models import Store, ScanRun
 
 router = APIRouter()
 
@@ -91,22 +91,68 @@ def list_stores(
         for s in rows
     ]
 
-@router.post("/{store_id}/scan", summary="Queue scan", dependencies=[Depends(require_roles("owner","manager"))])
-def queue_scan(store_id: int, principal: Principal = Depends(require_roles("owner","manager"))):
-    """
-    Publica um job de scan na fila (Redis). De-dup curto é feito no publish_scan_job.
-    """
-    job = publish_scan_job(
-        store_id     = store_id,
-        requested_by = principal["email"],
-        limit_items  = 50,
-        recrawl      = False,
+@router.post("/{store_id}/scan", summary="Queue scan")
+def queue_scan(
+    store_id: int,
+    req: schemas.ScanRequest = schemas.ScanRequest(),
+    principal: Principal = Depends(require_roles("owner", "manager")),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Cria um run de scan e publica job na fila."""
+
+    # valida ownership da store
+    store = (
+        db.query(Store)
+        .filter(Store.id == store_id, Store.account_id == principal["account_id"])
+        .first()
     )
-    # propaga skipped → job pode vir com "skipped": True se cair no de-dup
-    return {
-        "queued"        : not job.get("skipped", False),
-        "skipped"       : job.get("skipped", False),
-        "store_id"      : store_id,
-        "limit_items"   : job.get("limit_items", 50),
-        "recrawl"       : job.get("recrawl", False),
-    }
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    # de-dup antes de criar run
+    r = get_redis()
+    if r.set(f"dedup:scan:{store_id}", "1", nx=True, ex=5) is None:
+        return {"queued": False, "skipped": True}
+
+    run = ScanRun(
+        store_id=store_id,
+        requested_by=principal["email"],
+        status="queued",
+    )
+    db.add(run)
+    db.commit()
+    db.refresh(run)
+
+    publish_scan_job(store_id=store_id, run_id=run.id, limit_items=req.limit_items)
+
+    return {"queued": True, "run_id": run.id}
+
+
+@router.get(
+    "/{store_id}/scan/runs",
+    summary="List scan runs",
+    response_model=list[schemas.ScanRunOut],
+)
+def list_runs(
+    store_id: int,
+    limit: int = 20,
+    principal: Principal = Depends(require_roles("owner", "manager", "viewer")),
+    db: Session = Depends(get_db),
+) -> list[schemas.ScanRunOut]:
+    # valida ownership
+    ok = (
+        db.query(Store.id)
+        .filter(Store.id == store_id, Store.account_id == principal["account_id"])
+        .first()
+    )
+    if not ok:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    rows = (
+        db.query(ScanRun)
+        .filter(ScanRun.store_id == store_id)
+        .order_by(ScanRun.id.desc())
+        .limit(limit)
+        .all()
+    )
+    return [schemas.ScanRunOut.model_validate(r) for r in rows]

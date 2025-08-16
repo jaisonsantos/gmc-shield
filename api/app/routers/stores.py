@@ -97,7 +97,7 @@ def queue_scan(
     req: schemas.ScanRequest = schemas.ScanRequest(),
     principal: Principal = Depends(require_roles("owner", "manager")),
     db: Session = Depends(get_db),
-):
+) -> dict:
     """Cria um run de scan e publica job na fila."""
 
     # valida ownership da store
@@ -138,7 +138,7 @@ def list_runs(
     limit: int = 20,
     principal: Principal = Depends(require_roles("owner", "manager", "viewer")),
     db: Session = Depends(get_db),
-):
+) -> list[schemas.ScanRunOut]:
     # valida ownership
     ok = (
         db.query(Store.id)

@@ -41,10 +41,20 @@ def heartbeat(processed: int = 0):
     r.expire(HB_KEY, 30)
     return payload
 
-DEFAULT_FEED_CSV = os.path.join(
-    os.path.dirname(__file__), "..", "docs", "seed", "demo_feed.csv"
-)
-FEED_CSV = os.getenv("DEMO_FEED_CSV", DEFAULT_FEED_CSV)
+# Resolve demo feed CSV path from a few candidates
+CANDIDATES = [
+    os.getenv("DEMO_FEED_CSV"),
+    "/app/docs/seed/demo_feed.csv",
+    os.path.join(os.getcwd(), "docs", "seed", "demo_feed.csv"),
+    os.path.normpath(
+        os.path.join(os.path.dirname(__file__), "..", "docs", "seed", "demo_feed.csv")
+    ),
+]
+FEED_CSV = next((p for p in CANDIDATES if p and os.path.exists(p)), None)
+if not FEED_CSV:
+    raise RuntimeError(
+        "Demo feed CSV not found. Set DEMO_FEED_CSV or mount docs/seed."
+    )
 
 
 def fetch_feed_items(limit: int):

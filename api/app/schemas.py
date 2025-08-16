@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
+from datetime import datetime
 
 class Token(BaseModel):
     access_token: str
@@ -33,6 +34,27 @@ class ViolationOut(BaseModel):
     message: str
     status: str
     feed_item_id: Optional[str] = None
+    run_id: Optional[int] = None
+    class Config:
+        from_attributes = True
+
+
+class ViolationPage(BaseModel):
+    items: List[ViolationOut]
+    page: int
+    total: int
+
+    class Config:
+        from_attributes = True
+
+class ScanRunOut(BaseModel):
+    id: int
+    status: str
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+    items_total: int
+    items_ok: int
+    items_violation: int
     class Config:
         from_attributes = True
 

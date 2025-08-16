@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Stores from "./pages/Stores";
 import Violations from "./pages/Violations";
+import Scans from "./pages/Scans";
 import Ops from "./pages/Ops";
 
 export default function App() {
@@ -19,6 +20,10 @@ export default function App() {
       <Route
         path="/stores/:id/violations"
         element={<ProtectedRoute><Violations /></ProtectedRoute>}
+      />
+      <Route
+        path="/stores/:id/scans"
+        element={<ProtectedRoute><Scans /></ProtectedRoute>}
       />
       {/* ops antes do wildcard, só por legibilidade */}
       <Route

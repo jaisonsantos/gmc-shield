@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Index
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 from .db import Base
 
@@ -46,12 +47,51 @@ class Violation(Base):
     id              = Column(Integer, primary_key=True)
     store_id        = Column(Integer, ForeignKey("stores.id", ondelete="CASCADE"), nullable=False)
     feed_item_id    = Column(String(128))
+    run_id          = Column(Integer, ForeignKey("scan_runs.id", ondelete="SET NULL"))
     rule_code       = Column(String(16), nullable=False)
     severity        = Column(String(16), nullable=False)
     message         = Column(Text, nullable=False)
     status          = Column(String(16), default="open", nullable=False)
     created_at      = Column(DateTime, server_default=func.now(), nullable=False)
     fixed_at        = Column(DateTime)
+    __table_args__ = (
+        Index("ix_violations_store_run", "store_id", "run_id"),
+    )
+
+class ScanRun(Base):
+    __tablename__ = "scan_runs"
+    id              = Column(Integer, primary_key=True)
+    store_id        = Column(Integer, ForeignKey("stores.id", ondelete="CASCADE"), nullable=False)
+    requested_by    = Column(String(255))
+    started_at      = Column(DateTime(timezone=True))
+    finished_at     = Column(DateTime(timezone=True))
+    status          = Column(String(16), default="queued", nullable=False)
+    items_total     = Column(Integer, default=0, nullable=False)
+    items_ok        = Column(Integer, default=0, nullable=False)
+    items_violation = Column(Integer, default=0, nullable=False)
+    error_text      = Column(Text)
+    __table_args__ = (
+        Index("ix_scan_runs_store_started", "store_id", "started_at"),
+        Index("ix_scan_runs_status", "status"),
+    )
+
+class PageSnapshot(Base):
+    __tablename__ = "page_snapshots"
+    id              = Column(Integer, primary_key=True)
+    store_id        = Column(Integer, ForeignKey("stores.id", ondelete="CASCADE"), nullable=False)
+    run_id          = Column(Integer, ForeignKey("scan_runs.id", ondelete="CASCADE"), nullable=False)
+    feed_item_id    = Column(String(128))
+    url             = Column(Text)
+    fetched_at      = Column(DateTime(timezone=True))
+    http_status     = Column(Integer)
+    redirect_chain  = Column(JSONB)
+    html_path       = Column(String(512))
+    screenshot_path = Column(String(512))
+    extracted       = Column(JSONB)
+    __table_args__ = (
+        Index("ix_page_snapshots_store_run", "store_id", "run_id"),
+        Index("ix_page_snapshots_feed_item", "feed_item_id"),
+    )
 
 class Block(Base):
     __tablename__   = "blocks"

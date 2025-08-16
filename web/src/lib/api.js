@@ -69,12 +69,17 @@ export const Stores = {
       contact_email: "admin@example.com",
     },
   }),
-  scan: (storeId) => apiFetch(`/api/stores/${storeId}/scan`, { method: "POST" }),
+  scan: (storeId, limit = 5) => apiFetch(`/api/stores/${storeId}/scan`, { method: "POST", body: { limit_items: limit } }),
 };
 
 // violations
 export const Violations = {
-  list: (storeId) => apiFetch(`/api/stores/${storeId}/violations`),
+  list: (storeId, runId) => apiFetch(`/api/stores/${storeId}/violations${runId ? `?run_id=${runId}` : ""}`),
+};
+
+// runs
+export const Runs = {
+  list: (storeId, limit = 20) => apiFetch(`/api/stores/${storeId}/scan/runs?limit=${limit}`),
 };
 
 // blocks

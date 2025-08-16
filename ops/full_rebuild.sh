@@ -30,7 +30,7 @@ echo "==> Sobe API + Worker…"
 docker compose up -d api worker
 
 echo "==> Migrações Alembic…"
-docker compose run --rm api alembic upgrade head
+docker compose exec -T api alembic upgrade head
 
 echo "==> Seed de usuários (owner/manager/viewer @ demo)…"
 docker compose exec -T api python -m app.scripts.seed_users || true

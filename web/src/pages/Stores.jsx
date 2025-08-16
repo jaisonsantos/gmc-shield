@@ -46,12 +46,12 @@ export default function Stores() {
   const doScan = async (storeId) => {
     try {
       setScanning((m) => ({ ...m, [storeId]: true }));
-      await Api.scan(storeId);
+      const res = await Api.scan(storeId);
+      const runId = res.run_id;
       toast.show("Scan em processamento…");
-      // simulação de ~3.5s
       setTimeout(() => {
         setScanning((m) => ({ ...m, [storeId]: false }));
-        toast.success("Scan concluído (simulado). Abra as violações para ver os resultados.");
+        toast.success(`Scan concluído. Run #${runId}`);
       }, 3500);
     } catch (e) {
       setScanning((m) => ({ ...m, [storeId]: false }));
@@ -106,6 +106,7 @@ export default function Stores() {
                 <td>{s.currency || "-"}</td>
                 <td style={{ display: "flex", gap: 8 }}>
                   <Link to={`/stores/${s.id}/violations`}>Ver violações</Link>
+                  <Link to={`/stores/${s.id}/scans`}>Ver execuções</Link>
                   {can("scan") && (
                     <button disabled={!!scanning[s.id]} onClick={() => doScan(s.id)}>
                       {scanning[s.id] ? "Em processamento…" : "Scan"}

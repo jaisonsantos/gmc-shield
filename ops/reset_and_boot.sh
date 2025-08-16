@@ -28,7 +28,7 @@ main() {
   sleep 2
 
   echo "▶ Rodando migrações Alembic…"
-  docker compose run --rm api alembic upgrade head
+  docker compose exec -T api alembic upgrade head
 
   echo "▶ Seed de usuários…"
   docker compose exec -T api python -m app.scripts.seed_users

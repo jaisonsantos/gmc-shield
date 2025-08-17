@@ -7,6 +7,7 @@ import Stores from "./pages/Stores";
 import Violations from "./pages/Violations";
 import Scans from "./pages/Scans";
 import Ops from "./pages/Ops";
+import WP from "./pages/WP";
 
 export default function App() {
   return (
@@ -24,6 +25,10 @@ export default function App() {
       <Route
         path="/stores/:id/scans"
         element={<ProtectedRoute><Scans /></ProtectedRoute>}
+      />
+      <Route
+        path="/stores/:id/wp"
+        element={<ProtectedRoute><WP /></ProtectedRoute>}
       />
       {/* ops antes do wildcard, só por legibilidade */}
       <Route

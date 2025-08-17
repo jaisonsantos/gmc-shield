@@ -1,5 +1,5 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from pydantic import BaseModel, EmailStr, HttpUrl
+from typing import Optional, List, Literal, Dict
 from datetime import datetime
 
 class Token(BaseModel):
@@ -70,3 +70,44 @@ class PolicyCreate(BaseModel):
 class AppealCreate(BaseModel):
     violations_ids: List[int]
     notes: Optional[str] = None
+
+
+class WpCredsIn(BaseModel):
+    wp_api_base: HttpUrl
+    wp_base_url: Optional[HttpUrl] = None
+    wp_user: str
+    wp_app_password: str
+
+
+class PolicyRenderIn(BaseModel):
+    type: Literal["refund", "shipping", "privacy"]
+    content_md: str
+
+
+class PolicyPublishIn(PolicyRenderIn):
+    status: Literal["publish", "draft"] = "publish"
+
+
+class PolicyPublishOut(BaseModel):
+    type: str
+    page_id: int
+    page_url: str
+    published_at: datetime
+    version: int
+
+
+class WpStatusOut(BaseModel):
+    connected: bool
+    site: Optional[str] = None
+    wp_api_base: Optional[str] = None
+    wp_user: Optional[str] = None
+    last_status_at: Optional[datetime]
+    last_block_sync_at: Optional[datetime] = None
+    last_block_synced: Optional[int] = None
+    policies: Dict[str, Dict]
+
+
+class BlockSyncOut(BaseModel):
+    total: int
+    synced: int
+    mode: Literal["pull", "push"]

@@ -3,7 +3,7 @@
 import time, os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops
+from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops, wp
 
 app          = FastAPI(title="GMC Shield API", version="0.1.0")
 raw          = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "http://localhost:5173")
@@ -12,16 +12,15 @@ origin_regex = os.getenv("ALLOWED_ORIGIN_REGEX")  # ^https://([a-z0-9-]+\.)?verc
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    t0 = time.time()
+    t0 = time.perf_counter()
+    status = 500
     try:
         response = await call_next(request)
+        status = getattr(response, "status_code", 200)
         return response
     finally:
-        dt = (time.time() - t0) * 1000
-        path = request.url.path
-        method = request.method
-        status = getattr(response, "status_code", "?")
-        print(f"[REQ] {method} {path} -> {status} ({dt:.1f}ms)")
+        dt = (time.perf_counter() - t0) * 1000
+        print(f"[REQ] {request.method} {request.url.path} -> {status} ({dt:.1f}ms)")
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,6 +38,7 @@ app.include_router(feeds.router,            prefix="/api/stores",   tags=["feeds
 app.include_router(violations.router,       prefix="/api/stores",   tags=["violations"])
 app.include_router(blocks.router,           prefix="/api/stores",   tags=["blocks"])
 app.include_router(policies.router,         prefix="/api/stores",   tags=["policies"])
+app.include_router(wp.router,               prefix="/api/stores",   tags=["wp"])
 app.include_router(appeals.router,          prefix="/api/stores",   tags=["appeals"])
 app.include_router(notifications.router,    prefix="/api/stores",   tags=["notifications"])
 @app.get("/healthz")

@@ -1,10 +1,11 @@
 // web/src/pages/Login.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 
 export default function Login() {
   const nav = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [email, setEmail] = useState("owner@gmcshield.dev");
   const [password, setPassword] = useState("demo");
@@ -15,7 +16,8 @@ export default function Login() {
     setErr("");
     try {
       await login(email, password);
-      nav("/stores", { replace: true });
+      const from = location.state?.from?.pathname || "/";
+      nav(from, { replace: true });
     } catch (e) {
       setErr(e.message || "Falha no login");
     }

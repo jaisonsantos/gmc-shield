@@ -3,6 +3,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 import Stores from "./pages/Stores";
 import Violations from "./pages/Violations";
 import Scans from "./pages/Scans";
@@ -14,6 +15,10 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
 
+      <Route
+        path="/"
+        element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+      />
       <Route
         path="/stores"
         element={<ProtectedRoute><Stores /></ProtectedRoute>}
@@ -36,7 +41,7 @@ export default function App() {
         element={<ProtectedRoute><Ops /></ProtectedRoute>}
       />
 
-      <Route path="*" element={<Navigate to="/stores" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

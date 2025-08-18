@@ -95,3 +95,56 @@ header.app { display:flex; justify-content:space-between; align-items:center; }
   z-index: 1;
 }
 
+/* === aliases p/ compat com componentes === */
+:root {
+  --accent: var(--color-accent);
+  --border: var(--color-line);
+  --text: var(--color-fg);
+  --bg: var(--color-bg);
+}
+
+/* === utilidades extras usadas nas páginas === */
+.grid { display: grid; gap: var(--space-xl); }       /* usado junto com .grid-2 */
+.card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+/* bloco/section com moldura padrão */
+.section {
+  padding: var(--space-xxl);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--state-muted);
+}
+.section h3 { margin: 0 0 var(--space-xl); }
+
+/* barra de ações fixa no rodapé (mobile-friendly) */
+.actions-sticky {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  padding: var(--space-xl);
+  border-top: 1px solid var(--color-line);
+  background: var(--color-bg);
+  z-index: 5;
+}
+
+/* === campos de formulário esperados pelos componentes === */
+.input {
+  width: 100%;
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  outline: none;
+}
+.input:focus { border-color: var(--color-accent); }
+
+.label  { display:block; font-size: 12px; color: var(--color-muted); margin-bottom: var(--space-sm); }
+.helper { font-size: 12px; color: var(--color-muted); margin-top: var(--space-sm); }
+.error  { font-size: 12px; color: var(--color-accent); margin-top: var(--space-sm); }

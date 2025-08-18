@@ -28,7 +28,7 @@ export default function Ops(){
   if (!data) return <div>Carregando…</div>;
 
   return (
-    <div style={{maxWidth:900, margin:"32px auto", padding:16}}>
+    <div>
       <h2>Worker Health</h2>
       <div style={{margin:"8px 0"}}>Queue len: <b>{data.queue_len}</b></div>
       <div style={{margin:"8px 0"}}>

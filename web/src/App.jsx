@@ -1,5 +1,4 @@
 // web/src/App.jsx
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppShell from "./pages/AppShell";
@@ -23,6 +22,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+
+      {/* Rotas protegidas dentro do AppShell */}
       <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="stores" element={<Stores />} />
@@ -39,6 +40,8 @@ export default function App() {
         <Route path="stores/:id/scans" element={<Scans />} />
         <Route path="stores/:id/wp" element={<WP />} />
       </Route>
+
+      {/* catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

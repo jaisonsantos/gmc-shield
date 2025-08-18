@@ -67,7 +67,7 @@ export default function Stores() {
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: "32px auto", padding: 16 }}>
+    <div>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <h2>Lojas</h2>
         <div>

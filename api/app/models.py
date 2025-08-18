@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Index
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Index, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
 from .db import Base
@@ -31,6 +31,19 @@ class Store(Base):
     contact_email   = Column(String(255))
     whitelist_ip    = Column(String(255))
     created_at      = Column(DateTime, server_default=func.now(), nullable=False)
+
+    # WordPress integration
+    wp_api_base           = Column(String(255))
+    wp_base_url           = Column(String(255))
+    wp_user               = Column(String(255))
+    wp_app_password_enc   = Column(Text)
+    wp_last_status_at     = Column(DateTime(timezone=True))
+    wp_last_block_sync_at = Column(DateTime(timezone=True))
+    wp_last_block_synced  = Column(Integer)
+
+    __table_args__ = (
+        Index("idx_stores_wp_api_base", "wp_api_base"),
+    )
 
 class Feed(Base):
     __tablename__   = "feeds"
@@ -102,3 +115,19 @@ class Block(Base):
     active          = Column(Boolean, default=True, nullable=False)
     created_at      = Column(DateTime, server_default=func.now(), nullable=False)
     deactivated_at  = Column(DateTime)
+
+
+class WpPolicyBinding(Base):
+    __tablename__ = "wp_policy_bindings"
+    id            = Column(Integer, primary_key=True)
+    store_id      = Column(Integer, ForeignKey("stores.id", ondelete="CASCADE"), nullable=False)
+    policy_type   = Column(String(32), nullable=False)
+    page_id       = Column(Integer, nullable=False)
+    page_url      = Column(String(512), nullable=False)
+    version       = Column(Integer, default=1, nullable=False)
+    published_at  = Column(DateTime(timezone=True))
+    content_hash  = Column(String(64))
+    __table_args__ = (
+        UniqueConstraint("store_id", "policy_type"),
+        Index("ix_wp_policy_bindings_store", "store_id"),
+    )

@@ -91,6 +91,15 @@ export const Blocks = {
     apiFetch(`/api/stores/${storeId}/blocks/by-feed-item/${encodeURIComponent(feedItemId)}`, { method: "DELETE" }),
 };
 
+// wordpress
+export const WP = {
+  saveCreds: (id, body) => apiFetch(`/api/stores/${id}/wp/credentials`, { method: 'POST', body }),
+  status: (id) => apiFetch(`/api/stores/${id}/wp/status`),
+  renderPolicy: (id, body) => apiFetch(`/api/stores/${id}/wp/policies/render`, { method: 'POST', body }),
+  publishPolicy: (id, body) => apiFetch(`/api/stores/${id}/wp/policies/publish`, { method: 'POST', body }),
+  syncBlocks: (id, mode='pull') => apiFetch(`/api/stores/${id}/wp/blocks/sync?mode=${mode}`, { method: 'POST' }),
+};
+
 // ops
 export const Ops = {
   workerHealth: () => apiFetch("/api/ops/worker/health"),

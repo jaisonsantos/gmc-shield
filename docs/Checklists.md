@@ -1,7 +1,7 @@
-- [ ] Importar feed
-- [ ] Gerar violações
-- [ ] Publicar políticas
-- [ ] Bloquear item
+- [x] Importar feed
+- [x] Gerar violações
+- [x] Publicar políticas
+- [x] Bloquear item
 - [ ] Gerar PDF/ZIP/TEXTO
 - [ ] Notificação diária
 

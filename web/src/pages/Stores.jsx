@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Stores as Api } from "../lib/api";
+import { Stores as Api, WP } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { useToast } from "../lib/toast";
 
@@ -14,16 +14,23 @@ export default function Stores() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [scanning, setScanning] = useState({}); // { [storeId]: true }
+  const [wpStatus, setWpStatus] = useState({});
 
   const load = async () => {
     setErr("");
     setLoading(true);
-    try {
-      const data = await Api.list();
-      setItems(Array.isArray(data) ? data : data.items || []);
-    } catch (e) {
-      setErr(e.message);
-    } finally {
+      try {
+        const data = await Api.list();
+        setItems(Array.isArray(data) ? data : data.items || []);
+        // fetch WP status for each store
+        const statuses = {};
+        await Promise.all((Array.isArray(data)?data:data.items||[]).map(async (s) => {
+          try { statuses[s.id] = await WP.status(s.id); } catch {}
+        }));
+        setWpStatus(statuses);
+      } catch (e) {
+        setErr(e.message);
+      } finally {
       setLoading(false);
     }
   };
@@ -107,6 +114,14 @@ export default function Stores() {
                 <td style={{ display: "flex", gap: 8 }}>
                   <Link to={`/stores/${s.id}/violations`}>Ver violações</Link>
                   <Link to={`/stores/${s.id}/scans`}>Ver execuções</Link>
+                  <Link to={`/stores/${s.id}/wp`}>
+                    WP{wpStatus[s.id] && (
+                      <span style={{ marginLeft:4, fontSize:'0.8em' }}>
+                        {wpStatus[s.id].connected ? "✅" : "❌"}
+                        ({Object.keys(wpStatus[s.id].policies||{}).length})
+                      </span>
+                    )}
+                  </Link>
                   {can("scan") && (
                     <button disabled={!!scanning[s.id]} onClick={() => doScan(s.id)}>
                       {scanning[s.id] ? "Em processamento…" : "Scan"}

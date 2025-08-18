@@ -17,6 +17,7 @@ export default function App({ children }){
           <Link to="/settings">Settings</Link>
           <Link to="/billing">Billing</Link>
           <Link to="/agency">Agency</Link>
+          <Link to="/ops">Ops</Link>
         </nav>
       </aside>
       <main style={{padding:'24px'}}>{children}</main>

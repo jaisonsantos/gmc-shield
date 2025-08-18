@@ -1,36 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { WP as Api } from "../lib/api";
 import { useToast } from "../lib/toast";
+import Button from "../components/Button";
+import Input, { Textarea } from "../components/Input";
 
 export default function WPIntegration() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const [status, setStatus] = useState(null);
   const [creds, setCreds] = useState({ wp_api_base: "", wp_base_url: "", wp_user: "", wp_app_password: "" });
   const [policy, setPolicy] = useState({ type: "refund", content_md: "" });
   const [previewHtml, setPreviewHtml] = useState("");
+  const [busy, setBusy] = useState(false);
 
   const loadStatus = async () => {
     try {
       const s = await Api.status(id);
       setStatus(s);
-      setCreds((c) => ({ ...c, wp_api_base: s.wp_api_base || "", wp_base_url: s.site || "", wp_user: s.wp_user || "" }));
+      setCreds((c) => ({
+        ...c,
+        wp_api_base: s.wp_api_base || "",
+        wp_base_url: s.site || "",
+        wp_user: s.wp_user || "",
+      }));
     } catch (e) {
       toast.error(e.message);
     }
   };
 
-  useEffect(() => { loadStatus(); }, [id]);
+  useEffect(() => {
+    loadStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const saveCreds = async () => {
+    if (!creds.wp_api_base || !creds.wp_user || !creds.wp_app_password) {
+      toast.error("Preencha API base, usuário e App Password.");
+      return;
+    }
     try {
+      setBusy(true);
       await Api.saveCreds(id, creds);
       toast.success("Credenciais salvas.");
       await loadStatus();
     } catch (e) {
       toast.error(e.message);
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -38,61 +57,137 @@ export default function WPIntegration() {
     try {
       const res = await Api.renderPolicy(id, policy);
       setPreviewHtml(res.html);
-    } catch (e) { toast.error(e.message); }
+    } catch (e) {
+      toast.error(e.message);
+    }
   };
 
   const publish = async () => {
+    if (!policy.content_md.trim()) {
+      toast.error("Conteúdo da política está vazio.");
+      return;
+    }
     try {
+      setBusy(true);
       await Api.publishPolicy(id, policy);
       toast.success("Publicado.");
       setPreviewHtml("");
       await loadStatus();
-    } catch (e) { toast.error(e.message); }
+    } catch (e) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const syncBlocks = async () => {
     try {
+      setBusy(true);
       const res = await Api.syncBlocks(id);
       toast.success(`Sync: ${res.synced}/${res.total}`);
       await loadStatus();
-    } catch (e) { toast.error(e.message); }
+    } catch (e) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
+  const backTo = id ? `/stores/${id}` : "/stores";
+
   return (
-    <div style={{ maxWidth: 800, margin: "24px auto", padding: 16 }}>
-      <h2>WordPress Integration</h2>
-
-      <section style={{ marginBottom: 32 }}>
-        <h3>Credenciais</h3>
-        <input placeholder="API base" value={creds.wp_api_base} onChange={e=>setCreds({...creds, wp_api_base: e.target.value})} style={{display:'block', width:'100%', marginBottom:8}} />
-        <input placeholder="Site público" value={creds.wp_base_url} onChange={e=>setCreds({...creds, wp_base_url: e.target.value})} style={{display:'block', width:'100%', marginBottom:8}} />
-        <input placeholder="Usuário" value={creds.wp_user} onChange={e=>setCreds({...creds, wp_user: e.target.value})} style={{display:'block', width:'100%', marginBottom:8}} />
-        <input placeholder="App Password" type="password" value={creds.wp_app_password} onChange={e=>setCreds({...creds, wp_app_password: e.target.value})} style={{display:'block', width:'100%', marginBottom:8}} />
-        <button onClick={saveCreds}>Salvar & Testar</button>
-      </section>
-
-      <section style={{ marginBottom: 32 }}>
-        <h3>Policies</h3>
-        <select value={policy.type} onChange={e=>setPolicy({...policy, type: e.target.value})}>
-          <option value="refund">Refund</option>
-          <option value="shipping">Shipping</option>
-          <option value="privacy">Privacy</option>
-        </select>
-        <textarea rows="6" style={{display:'block', width:'100%', marginTop:8}} value={policy.content_md} onChange={e=>setPolicy({...policy, content_md:e.target.value})}></textarea>
-        <div style={{ marginTop:8 }}>
-          <button onClick={renderPreview}>Preview</button>
-          <button onClick={publish} style={{ marginLeft:8 }}>Publicar</button>
+    <div className="container">
+      {/* Header com Voltar */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Button variant="outline" onClick={() => navigate(backTo)}>← Voltar</Button>
+          <h2 style={{ margin: 0 }}>Integração WordPress</h2>
         </div>
-        {previewHtml && <div style={{border:'1px solid #ccc', padding:8, marginTop:8}} dangerouslySetInnerHTML={{__html:previewHtml}}></div>}
-      </section>
+      </div>
 
-      <section>
-        <h3>Bloqueios</h3>
-        <button onClick={syncBlocks}>Sync agora</button>
-        {status && status.last_block_sync_at && (
-          <span style={{ marginLeft:8 }}>Último sync: {new Date(status.last_block_sync_at).toLocaleString()} ({status.last_block_synced})</span>
-        )}
-      </section>
+      <div className="grid stack">
+        {/* Credenciais */}
+        <section className="section stack">
+          <h3>Credenciais</h3>
+          <div className="grid grid-2">
+            <Input
+              label="API base (REST do WP)"
+              placeholder="http://localhost:8080/wp-json"
+              value={creds.wp_api_base}
+              onChange={(e) => setCreds({ ...creds, wp_api_base: e.target.value })}
+            />
+            <Input
+              label="Site público (base_url)"
+              placeholder="http://localhost:8080"
+              value={creds.wp_base_url}
+              onChange={(e) => setCreds({ ...creds, wp_base_url: e.target.value })}
+            />
+            <Input
+              label="Usuário (WP)"
+              placeholder="admin"
+              value={creds.wp_user}
+              onChange={(e) => setCreds({ ...creds, wp_user: e.target.value })}
+            />
+            <Input
+              label="App Password (WP)"
+              type="password"
+              placeholder="xxxx xxxx xxxx ..."
+              value={creds.wp_app_password}
+              onChange={(e) => setCreds({ ...creds, wp_app_password: e.target.value })}
+            />
+          </div>
+          <div className="actions-sticky">
+            <Button variant="outline" onClick={() => navigate(backTo)}>Cancelar</Button>
+            <Button onClick={saveCreds} loading={busy}>Salvar & Testar</Button>
+          </div>
+        </section>
+
+        {/* Policies */}
+        <section className="section stack">
+          <h3>Policies</h3>
+          <div className="grid grid-2">
+            <div>
+              <label className="label">Tipo</label>
+              <select
+                className="input"
+                value={policy.type}
+                onChange={(e) => setPolicy({ ...policy, type: e.target.value })}
+              >
+                <option value="refund">Refund</option>
+                <option value="shipping">Shipping</option>
+                <option value="privacy">Privacy</option>
+              </select>
+            </div>
+            <div />
+            <Textarea
+              label="Conteúdo (Markdown)"
+              rows={10}
+              value={policy.content_md}
+              onChange={(e) => setPolicy({ ...policy, content_md: e.target.value })}
+            />
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Button variant="outline" onClick={renderPreview}>Preview</Button>
+            <Button onClick={publish} loading={busy}>Publicar</Button>
+          </div>
+          {previewHtml && (
+            <div className="card" style={{ padding: 12 }} dangerouslySetInnerHTML={{ __html: previewHtml }} />
+          )}
+        </section>
+
+        {/* Bloqueios */}
+        <section className="section stack">
+          <h3>Bloqueios</h3>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <Button variant="outline" onClick={syncBlocks} loading={busy}>Sync agora</Button>
+            {status?.last_block_sync_at && (
+              <span className="helper">
+                Último sync: {new Date(status.last_block_sync_at).toLocaleString()} ({status.last_block_synced})
+              </span>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

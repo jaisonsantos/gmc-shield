@@ -1,51 +1,34 @@
 // web/src/components/Input.jsx
 import React from "react";
 
-const VARIANTS = {
-  outline: {
-    background: "var(--bg)",
-    border: "1px solid var(--line)"
-  },
-  filled: {
-    background: "var(--line)",
-    border: "1px solid var(--line)"
-  }
-};
+/**
+ * Componentes de campo reutilizáveis.
+ * - export default: Input
+ * - export named:   Textarea
+ * Uso:
+ *   import Input, { Textarea } from "../components/Input";
+ */
 
-const SIZES = {
-  sm: { fontSize: 12, padding: "4px 6px" },
-  md: { fontSize: 14, padding: "6px 8px" },
-  lg: { fontSize: 16, padding: "8px 12px" }
-};
-
-function BaseField({ as: Comp = "input", variant = "outline", size = "md", error, helper, style, ...props }) {
-  const variantStyle = VARIANTS[variant] || VARIANTS.outline;
-  const sizeStyle = SIZES[size] || SIZES.md;
-  const fieldStyle = {
-    color: "var(--fg)",
-    borderRadius: 4,
-    width: "100%",
-    ...variantStyle,
-    ...sizeStyle,
-    ...(error ? { borderColor: "var(--accent)" } : {}),
-    ...style
-  };
+export function Input({ label, helper, error, fullWidth = true, style, ...props }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <Comp style={fieldStyle} {...props} />
-      {error ? (
-        <span style={{ color: "var(--accent)", fontSize: 12 }}>{error}</span>
-      ) : helper ? (
-        <span style={{ color: "var(--muted)", fontSize: 12 }}>{helper}</span>
-      ) : null}
+    <div style={{ width: fullWidth ? "100%" : undefined }}>
+      {label && <label className="label">{label}</label>}
+      <input className="input" aria-invalid={!!error} style={style} {...props} />
+      {helper && !error && <div className="helper">{helper}</div>}
+      {error && <div className="error" role="alert">{error}</div>}
     </div>
   );
 }
 
-export default function Input(props) {
-  return <BaseField as="input" {...props} />;
+export function Textarea({ label, helper, error, rows = 6, fullWidth = true, style, ...props }) {
+  return (
+    <div style={{ width: fullWidth ? "100%" : undefined }}>
+      {label && <label className="label">{label}</label>}
+      <textarea className="input" rows={rows} aria-invalid={!!error} style={style} {...props} />
+      {helper && !error && <div className="helper">{helper}</div>}
+      {error && <div className="error" role="alert">{error}</div>}
+    </div>
+  );
 }
 
-export function Textarea(props) {
-  return <BaseField as="textarea" {...props} />;
-}
+export default Input;

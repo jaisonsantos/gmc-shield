@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Carrega o arquivo .env, se existir
+if [ -f .env ]; then
+    set -a  # Exporta automaticamente todas as variáveis definidas
+    source .env
+    set +a
+else
+    echo "Erro: Arquivo .env não encontrado!"
+    exit 1
+fi
+
 # flags
 PRUNE_ALL="${PRUNE_ALL:-false}"  # true => docker system prune -a --volumes
 SMOKE="${SMOKE:-true}"           # true => roda smoke ao final

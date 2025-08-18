@@ -14,6 +14,7 @@ class GMC_Shield {
     const OPT_TOKEN = 'gmcshield_api_token';
     const OPT_INTERVAL = 'gmcshield_interval';
     const TRANSIENT_BLOCKLIST = 'gmcshield_blocked_skus';
+    const REST_NS = 'gmc-shield/v1';
 
     public function __construct() {
         add_action('admin_menu', [$this, 'settings_page']);
@@ -52,6 +53,43 @@ class GMC_Shield {
                     <tr><th scope="row">Intervalo (min)</th><td><input type="number" name="<?php echo self::OPT_INTERVAL; ?>" value="<?php echo esc_attr(get_option(self::OPT_INTERVAL,10)); ?>" /></td></tr>
                 </table>
                 <?php submit_button(); ?>
+
+                <?php if ( current_user_can('manage_options') ):
+                $nonce = wp_create_nonce('wp_rest'); ?>
+                <hr>
+                <h2>Testes rápidos</h2>
+
+                <p>
+                    <a class="button button-secondary" target="_blank"
+                    href="<?php echo esc_url( rest_url( GMC_Shield::REST_NS . '/blocklist' ) . '?_wpnonce=' . $nonce ); ?>">
+                    Abrir /blocklist no navegador
+                    </a>
+                </p>
+
+                <p>
+                    <button id="gmc-sync" class="button button-primary">Sincronizar agora (REST)</button>
+                    <span id="gmc-sync-result" style="margin-left:.5rem;"></span>
+                </p>
+
+                <script>
+                (function(){
+                    const btn = document.getElementById('gmc-sync');
+                    const out = document.getElementById('gmc-sync-result');
+                    btn.addEventListener('click', function(e){
+                    e.preventDefault();
+                    out.textContent = 'Sincronizando...';
+                    fetch('<?php echo esc_js( rest_url( GMC_Shield::REST_NS . '/sync' ) ); ?>', {
+                        method: 'POST',
+                        headers: { 'X-WP-Nonce': '<?php echo esc_js( $nonce ); ?>' }
+                    })
+                    .then(r => r.json())
+                    .then(data => { out.textContent = 'OK: ' + JSON.stringify(data); })
+                    .catch(err => { out.textContent = 'Erro: ' + err; });
+                    });
+                })();
+                </script>
+                <?php endif; ?>
+
             </form>
         </div>
         <?php
@@ -90,23 +128,63 @@ class GMC_Shield {
             'timeout' => 10,
         ]);
         if (is_wp_error($res)) return;
+
         $body  = json_decode(wp_remote_retrieve_body($res), true);
-        $items = isset($body['items']) ? array_map(function($i){ return isset($i['sku']) ? $i['sku'] : $i['feed_item_id']; }, $body['items']) : [];
+        $rows  = (is_array($body) && array_is_list($body)) ? $body : ($body['items'] ?? []);
+        $items = array_map(fn($i) => $i['sku'] ?? $i['feed_item_id'] ?? null, $rows);
+        $items = array_values(array_filter($items)); // remove nulls
         $map   = array_fill_keys($items, true);
         set_transient(self::TRANSIENT_BLOCKLIST, $map, 15 * MINUTE_IN_SECONDS);
         update_option('gmc_last_sync', time());
     }
 
+    public function rest_sync( WP_REST_Request $req ) {
+        $this->fetch_blocklist();
+        $list = get_transient(self::TRANSIENT_BLOCKLIST) ?: [];
+        return [
+            'synced'     => true,
+            'count'      => count($list),
+            'last_sync'  => (int) get_option('gmc_last_sync'),
+        ];
+    }
+
     public function register_routes() {
-        register_rest_route('gmcshield/v1', '/blocklist', [
+        // Ping/healthcheck
+        register_rest_route(self::REST_NS, '/status', [
             'methods'  => 'GET',
-            'permission_callback' => function(){ return current_user_can('manage_options'); },
-            'callback' => function(){
+            'permission_callback' => '__return_true', // aberto para healthcheck
+            'callback' => function () {
+                global $wp_version;
                 return [
-                    'items' => array_keys(get_transient(self::TRANSIENT_BLOCKLIST) ?: []),
-                    'last_sync' => (int) get_option('gmc_last_sync')
+                    'ok'         => true,
+                    'plugin'     => 'gmc-shield',
+                    'version'    => '0.2.0',
+                    'namespace'  => self::REST_NS,
+                    'site'       => home_url(),
+                    'wp'         => $wp_version,
+                    'last_sync'  => (int) get_option('gmc_last_sync'),
+                    'has_blocklist' => (bool) get_transient(self::TRANSIENT_BLOCKLIST),
                 ];
-            }
+            },
+        ]);
+
+        // Sync manual (restrita a admin)
+        register_rest_route(self::REST_NS, '/sync', [
+            'methods'  => 'POST',
+            'permission_callback' => function(){ return current_user_can('manage_options'); },
+            'callback' => [$this, 'rest_sync'],
+        ]);
+
+        // Blocklist (restrita a admin)
+        register_rest_route(self::REST_NS, '/blocklist', [
+            'methods'  => 'GET',
+            'permission_callback' => function () { return current_user_can('manage_options'); },
+            'callback' => function () {
+                return [
+                    'items'     => array_keys(get_transient(self::TRANSIENT_BLOCKLIST) ?: []),
+                    'last_sync' => (int) get_option('gmc_last_sync'),
+                ];
+            },
         ]);
     }
 
@@ -149,8 +227,25 @@ class GMC_Shield {
         if ($sku && self::in_blocklist($sku)) return false;
         return $purchasable;
     }
+
 }
 
 new GMC_Shield();
+
+// Habilita Application Passwords em ambiente local (sem HTTPS).
+add_filter('wp_is_application_passwords_available', function ($available) {
+    // normaliza host removendo porta e forçando minúsculas
+    $host = strtolower($_SERVER['HTTP_HOST'] ?? '');
+    $host = preg_replace('/:\d+$/', '', $host);
+
+    // habilita em localhost/127.0.0.1 ou quando WP_ENVIRONMENT_TYPE = local/development
+    if (in_array($host, ['localhost', '127.0.0.1'], true)) {
+        return true;
+    }
+    if (function_exists('wp_get_environment_type') && in_array(wp_get_environment_type(), ['local','development'], true)) {
+        return true;
+    }
+    return $available;
+});
 
 ?>

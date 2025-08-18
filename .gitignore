@@ -4,10 +4,16 @@ cat > .gitignore << 'EOF'
 
 # Python
 __pycache__/
+*.pyc
 *.py[cod]
 *.egg-info/
 .venv/
 api/.venv/
+
+# --- GMC Shield local ---
+api/artifacts/
+worker/artifacts/
+artifacts/
 
 # Node / Web
 node_modules/

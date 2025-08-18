@@ -8,12 +8,11 @@ export default function AppShell(){
         <h2>GMC Shield</h2>
         <nav style={{display:'grid', gap:8}}>
           <Link to="/">Dashboard</Link>
-          <Link to="/violations">Violations</Link>
+          <Link to="/stores">Stores</Link>
           <Link to="/items">Items</Link>
           <Link to="/policies">Policies</Link>
           <Link to="/appeals">Appeals</Link>
           <Link to="/feeds">Feeds</Link>
-          <Link to="/scans">Scans</Link>
           <Link to="/notifications">Notifications</Link>
           <Link to="/settings">Settings</Link>
           <Link to="/billing">Billing</Link>

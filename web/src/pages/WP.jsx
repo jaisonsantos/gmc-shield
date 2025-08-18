@@ -96,7 +96,7 @@ export default function WPIntegration() {
   const backTo = id ? `/stores/${id}` : "/stores";
 
   return (
-    <div className="container">
+    <div>
       {/* Header com Voltar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "20px 0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

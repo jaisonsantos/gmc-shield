@@ -1,6 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-export default function App({ children }){
+import { Link, Outlet } from 'react-router-dom'
+
+export default function AppShell(){
   return (
     <div style={{fontFamily:'Inter, system-ui', display:'grid', gridTemplateColumns:'240px 1fr', minHeight:'100vh'}}>
       <aside style={{padding:'16px', borderRight:'1px solid #eee'}}>
@@ -20,7 +21,7 @@ export default function App({ children }){
           <Link to="/ops">Ops</Link>
         </nav>
       </aside>
-      <main style={{padding:'24px'}}>{children}</main>
+      <main style={{padding:'24px'}}><Outlet /></main>
     </div>
   )
 }

@@ -1,8 +1,14 @@
+# docker-compose.wp.yml
+# This file is used to set up a WordPress environment with a MySQL database and phpMyAdmin for database management.
+# It includes a WordPress service, a MySQL database service,
+# and a phpMyAdmin service for easy database management.
 services:
   wp:
     image: wordpress:6.5-php8.1-apache
     ports: ["8080:80"]
     environment:
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'local');    
       WORDPRESS_DB_HOST: dbwp
       WORDPRESS_DB_USER: wp
       WORDPRESS_DB_PASSWORD: wp

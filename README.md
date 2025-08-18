@@ -137,7 +137,29 @@ Rotas: auth, stores, feeds, scan, violations (evidence), blocks, policies, appea
 
 ## Plugin WooCommerce
 
-`plugin-woo/` com REST mínimo e metabox. Guia WP local: `docs/WP-LOCAL.md`.
+`plugin-woo/` com REST mínimo, bloqueio por SKU e página de settings.
+Guia WP local: `docs/WP-LOCAL.md`.
+
+### Integração WordPress
+
+1. Gere uma **FERNET_KEY** (32 bytes base64) e defina em `.env`:
+   ```bash
+   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+   ```
+2. No WordPress, crie uma **Application Password** para um usuário admin.
+3. Salve as credenciais via API:
+   ```bash
+   TOKEN=$(python scripts/mint_token.py)
+   curl -X POST "$API/api/stores/1/wp/credentials" \
+     -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+     -d '{"wp_api_base":"http://localhost:8080/wp-json","wp_base_url":"http://localhost:8080","wp_user":"admin","wp_app_password":"XXXX"}'
+   ```
+4. Publique uma política:
+   ```bash
+   curl -X POST "$API/api/stores/1/wp/policies/publish" \
+     -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+     -d '{"type":"refund","content_md":"## Devolução em 30 dias","status":"publish"}'
+   ```
 
 ---
 

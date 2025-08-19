@@ -59,9 +59,13 @@ export default function Items() {
                 <td style={{ fontFamily: "monospace" }}>{it.item_id}</td>
                 <td>{it.title}</td>
                 <td>
-                  <a href={it.link_canonical} target="_blank" rel="noreferrer">
-                    abrir
-                  </a>
+                  {/^(https?:)?\/\//.test(it.link_canonical) ? (
+                    <a href={it.link_canonical} target="_blank" rel="noreferrer">
+                      abrir
+                    </a>
+                  ) : (
+                    "—"
+                  )}
                 </td>
                 <td>
                   {it.currency} {(it.price_cents / 100).toFixed(2)}

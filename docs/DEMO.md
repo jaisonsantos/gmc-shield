@@ -23,13 +23,38 @@
 4. **Configurar feed**
    `POST /api/stores/{id}/feed` usando `docs/seed/demo_feed.xml` (ou CSV).
 
-5. **Primeiro Diagnóstico**
+5. **Ingestão do feed**
+   ```bash
+   TOKEN=$(python scripts/mint_token.py)
+   API=http://localhost:8000
+
+   # via URL previamente configurada
+   curl -H "Authorization: Bearer $TOKEN" \
+     -X POST "$API/api/stores/1/feed/ingest"
+
+   # via upload de arquivo
+   curl -H "Authorization: Bearer $TOKEN" \
+     -F format=csv -F file=@docs/seed/demo_feed.csv \
+     "$API/api/stores/1/feed/upload"
+   ```
+
+6. **Ver versões**
+   `GET /api/stores/{id}/feed/versions`
+
+7. **Checar itens no banco**
+   ```sql
+   SELECT count(*) FROM feed_items WHERE store_id=1;               -- >= 60
+   SELECT item_id, price_cents, currency, link_canonical, availability
+     FROM feed_items WHERE store_id=1 LIMIT 10;
+   ```
+
+8. **Primeiro Diagnóstico**
    `POST /api/stores/{id}/scan`
 
-6. **Ver violações**
+9. **Ver violações**
    `GET /api/stores/{id}/violations`
 
-7. **Bloquear item (exemplo)**
-   `POST /api/stores/{id}/blocks` com `{ "feed_item_id": "SKU-001" }`
+10. **Bloquear item (exemplo)**
+    `POST /api/stores/{id}/blocks` com `{ "feed_item_id": "SKU-001" }`
 
-8. **(Quando implementado)** Publicar políticas no WP e gerar Appeal Kit.
+11. **(Quando implementado)** Publicar políticas no WP e gerar Appeal Kit.

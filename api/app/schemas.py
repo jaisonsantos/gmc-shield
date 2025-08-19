@@ -23,6 +23,40 @@ class FeedConfig(BaseModel):
     url: Optional[str] = None
     format: str
 
+
+class FeedVersionOut(BaseModel):
+    hash: str
+    items_count: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class FeedItemOut(BaseModel):
+    item_id: str
+    title: Optional[str] = None
+    link_canonical: Optional[str] = None
+    price_cents: Optional[int] = None
+    sale_price_cents: Optional[int] = None
+    currency: Optional[str] = None
+    availability: Optional[str] = None
+    brand: Optional[str] = None
+    gtin: Optional[str] = None
+    mpn: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class FeedItemPage(BaseModel):
+    items: List[FeedItemOut]
+    page: int
+    total: int
+
+    class Config:
+        from_attributes = True
+
 class ScanRequest(BaseModel):
     limit_items: Optional[int] = 50
     recrawl: Optional[bool] = False

@@ -114,6 +114,8 @@ export default function Stores() {
                 <td style={{ display: "flex", gap: 8 }}>
                   <Link to={`/stores/${s.id}/violations`}>Ver violações</Link>
                   <Link to={`/stores/${s.id}/scans`}>Ver execuções</Link>
+                  <Link to={`/stores/${s.id}/feeds`}>Feed</Link>
+                  <Link to={`/stores/${s.id}/items`}>Itens</Link>
                   <Link to={`/stores/${s.id}/wp`}>
                     WP{wpStatus[s.id] && (
                       <span style={{ marginLeft:4, fontSize:'0.8em' }}>

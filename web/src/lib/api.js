@@ -19,17 +19,21 @@ function maybeAddNgrokBypass(headers) {
   return headers;
 }
 
-export async function apiFetch(path, { method = "GET", body, headers = {} } = {}) {
+export async function apiFetch(path, { method = "GET", body, headers = {}, json = true } = {}) {
   const url = `${API_BASE}${path}`;
   const h = maybeAddNgrokBypass({
-    ...(body ? { "Content-Type": "application/json" } : {}),
+    ...(json && body ? { "Content-Type": "application/json" } : {}),
     ...headers,
   });
 
   const token = getToken();
   if (token) h["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(url, { method, headers: h, ...(body ? { body: JSON.stringify(body) } : {}) });
+  const res = await fetch(url, {
+    method,
+    headers: h,
+    ...(body ? { body: json ? JSON.stringify(body) : body } : {}),
+  });
 
   // garanta que recebemos JSON; se vier HTML do ngrok, falhe com mensagem clara
   const ct = res.headers.get("content-type") || "";
@@ -70,6 +74,25 @@ export const Stores = {
     },
   }),
   scan: (storeId, limit = 5) => apiFetch(`/api/stores/${storeId}/scan`, { method: "POST", body: { limit_items: limit } }),
+};
+
+export const Feeds = {
+  configure: (storeId, body) => apiFetch(`/api/stores/${storeId}/feed`, { method: "POST", body }),
+  versions: (storeId) => apiFetch(`/api/stores/${storeId}/feed/versions`),
+  ingestFromUrl: (storeId) => apiFetch(`/api/stores/${storeId}/feed/ingest`, { method: "POST" }),
+  upload: (storeId, file, format) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("format", format);
+    return apiFetch(`/api/stores/${storeId}/feed/upload`, { method: "POST", body: fd, json: false });
+  },
+};
+
+export const ItemsApi = {
+  list: (storeId, params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return apiFetch(`/api/stores/${storeId}/items${q ? `?${q}` : ""}`);
+  },
 };
 
 // violations

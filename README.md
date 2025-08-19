@@ -175,6 +175,16 @@ Em `docs/seed/`: `demo_store.json`, `demo_feed.xml` (60 itens) e `demo_feed.csv`
 
 Roteiro: `[docs/DEMO.md](docs/DEMO.md)` ou `bash scripts/demo.sh`.
 
+Exemplo rápido de ingestão do feed via upload:
+
+```bash
+TOKEN=$(python scripts/mint_token.py)
+API=http://localhost:8000
+curl -H "Authorization: Bearer $TOKEN" \
+  -F format=csv -F file=@docs/seed/demo_feed.csv \
+  "$API/api/stores/1/feed/upload"
+```
+
 ---
 
 ## Fluxos do MVP

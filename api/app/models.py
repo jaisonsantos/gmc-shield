@@ -55,6 +55,41 @@ class Feed(Base):
     last_hash       = Column(String(128))
     last_parsed_at  = Column(DateTime)
 
+class FeedVersion(Base):
+    __tablename__ = "feed_versions"
+    id           = Column(Integer, primary_key=True)
+    feed_id      = Column(Integer, ForeignKey("feeds.id", ondelete="CASCADE"), nullable=False)
+    hash         = Column(String(128), nullable=False)
+    items_count  = Column(Integer, nullable=False)
+    created_at   = Column(DateTime, server_default=func.now(), nullable=False)
+    __table_args__ = (
+        Index("idx_feed_versions_feed_created", "feed_id", "created_at"),
+    )
+
+class FeedItem(Base):
+    __tablename__ = "feed_items"
+    id = Column(Integer, primary_key=True)
+    store_id = Column(Integer, ForeignKey("stores.id", ondelete="CASCADE"), nullable=False)
+    feed_id = Column(Integer, ForeignKey("feeds.id", ondelete="CASCADE"), nullable=False)
+    item_id = Column(String(128), nullable=False)
+    title = Column(String(512))
+    link_canonical = Column(Text)
+    price_cents = Column(Integer)
+    sale_price_cents = Column(Integer)
+    currency = Column(String(8))
+    availability = Column(String(32))
+    brand = Column(String(128))
+    gtin = Column(String(64))
+    mpn = Column(String(128))
+    shipping_json = Column(Text)
+    raw_json = Column(Text)
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False)
+    __table_args__ = (
+        UniqueConstraint("store_id", "item_id", name="uq_feed_items_store_item"),
+        Index("ix_feed_items_store_id", "store_id"),
+        Index("ix_feed_items_feed_id", "feed_id"),
+    )
+
 class Violation(Base):
     __tablename__   = "violations"
     id              = Column(Integer, primary_key=True)

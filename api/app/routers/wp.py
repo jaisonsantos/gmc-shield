@@ -1,3 +1,5 @@
+# api/app/routers/wp.py
+
 from datetime import datetime, timezone
 import os
 import hashlib
@@ -39,11 +41,11 @@ def save_credentials(
     store = db.query(models.Store).filter(models.Store.id==store_id, models.Store.account_id==principal["account_id"]).first()
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
-    base = body.wp_api_base.rstrip("/")
+    base = str(body.wp_api_base).rstrip("/")
     if not base.endswith("/wp-json"):
         raise HTTPException(status_code=400, detail="wp_api_base deve apontar para /wp-json")
     store.wp_api_base = base
-    store.wp_base_url = body.wp_base_url or base[: -len("/wp-json")]
+    store.wp_base_url = str(body.wp_base_url) if getattr(body, "wp_base_url", None) else base[: -len("/wp-json")]
     store.wp_user = body.wp_user
     store.wp_app_password_enc = encrypt_str(body.wp_app_password)
     db.add(store)
@@ -54,13 +56,17 @@ def save_credentials(
     timeout = float(os.getenv("WP_TIMEOUT_SEC", "10"))
     try:
         with wp_client(store.wp_api_base, store.wp_user, body.wp_app_password, verify=verify, timeout=timeout) as c:
-            r = c.get("/wp/v2/users/me")
+            r = c.get("wp/v2/users/me")
             r.raise_for_status()
             store.wp_last_status_at = datetime.now(timezone.utc)
             db.add(store)
             db.commit()
-    except Exception:
-        pass
+    except Exception as e:
+        # em dev, ajuda muito retornar erro claro
+        if os.getenv("ENV", "dev") != "prod":
+            detail = getattr(getattr(e, "response", None), "text", str(e))
+            raise HTTPException(status_code=400, detail=f"Falha ao validar WP creds: {detail}")
+        # em prod, só não marca como conectado e segue
 
     return {"ok": True}
 
@@ -145,9 +151,9 @@ def publish_policy(
             binding = db.query(models.WpPolicyBinding).filter(models.WpPolicyBinding.store_id==store.id, models.WpPolicyBinding.policy_type==body.type).first()
             payload = {"title": title_map[body.type], "content": html, "status": body.status}
             if binding:
-                r = c.put(f"/wp/v2/pages/{binding.page_id}", json=payload)
+                r = c.put(f"wp/v2/pages/{binding.page_id}", json=payload)
             else:
-                r = c.post("/wp/v2/pages", json=payload)
+                r = c.post("wp/v2/pages", json=payload)
             r.raise_for_status()
             data = r.json()
             page_id = data.get("id")

@@ -1,3 +1,10 @@
+- seção de **FERNET_KEY + rotação (FERNET_KEYS)**
+- fluxo “**WP integração**” passo-a-passo (inclui script `scripts/wp_connect.sh`, App Password, dicas de `host.docker.internal`)
+- ajustes de variáveis de ambiente e troubleshooting prático
+
+Substitua o conteúdo de `README.md` por este:
+
+```markdown
 # GMC Shield — MVP (SaaS + Plugin WooCommerce) para Prevenção de Suspensões no Google Merchant Center
 
 > **GMC Shield** é um SaaS + Plugin (WooCommerce primeiro) que detecta causas de suspensão (especialmente _Misrepresentation_) no **Google Merchant Center**, previne novos bloqueios e gera o **pacote de apelação** com evidências.  
@@ -17,6 +24,7 @@
 - Fluxos do MVP
 - API & Endpoints
 - Plugin WooCommerce
+  - Integração WordPress (passo a passo)
 - UI Web
 - Backlog D0–D30 (issues)
 - Critérios de Aceite do MVP
@@ -42,18 +50,19 @@
 ---
 
 ## Arquitetura & Serviços
-
-```
-/api           # FastAPI, SQLAlchemy/Alembic, rotas rotas de exemplo (stub)s
-/worker        # RQ Worker (queues: feed, crawl, rules, reports, notify)
-/web           # React + Vite (páginas placeholder)
-/plugin-WooCommerce    # Plugin WordPress (REST mínimo, metabox, coluna)
-/infra         # Dockerfiles, docker-compose, Makefile
-/docs          # OpenAPI rotas de exemplo (stub), checklists, issues (backlog), seeds, DEMO, Kanban
-/scripts       # utilitários (demo script, seed issues)
 ```
 
-**Filas (RQ):** `feed`, `crawl`, `rules`, `reports`, `notify`  
+/api # FastAPI, SQLAlchemy/Alembic, rotas de exemplo (stubs)
+/worker # RQ Worker (queues: feed, crawl, rules, reports, notify)
+/web # React + Vite
+/plugin-woo # Plugin WordPress (REST mínimo, metabox, coluna)
+/infra # Dockerfiles, docker-compose, Makefile
+/docs # OpenAPI, checklists, backlog, seeds, DEMO, Kanban
+/scripts # utilitários (demo script, seed issues, wp_connect, etc.)
+
+````
+
+**Filas (RQ):** `feed`, `crawl`, `rules`, `reports`, `notify`
 **Persistência:** Postgres (Docker), Redis (fila), storage local (MVP).
 
 ---
@@ -64,21 +73,27 @@
 2. Suba DB e Redis:
    ```bash
    docker compose up -d redis db
-   ```
+````
+
 3. Migre o banco:
+
    ```bash
    docker compose run --rm api alembic upgrade head
    ```
+
 4. Suba API + Worker:
+
    ```bash
    docker compose up -d api worker
    ```
+
 5. UI (dev local):
+
    ```bash
    cd web && npm install && npm run dev
    ```
 
-**Docs da API:** http://localhost:8000/docs
+**Docs da API:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
@@ -101,7 +116,46 @@ python -u ../worker/run_worker.py
 
 ## Variáveis de Ambiente
 
-Veja `.env.example`. Principais: `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`, `CORS_ORIGINS`.
+Veja `.env.example`. Principais:
+
+- `DATABASE_URL` — Postgres
+- `REDIS_URL` — Redis (RQ)
+- `SECRET_KEY` — sessão/autenticação web
+- `CORS_ORIGINS` — origens permitidas (ex.: `http://localhost:5173,http://localhost:4173`)
+- `VITE_API` (lado do `web/`) — URL da API (ex.: `http://localhost:8000`)
+- `FERNET_KEY` — **obrigatória** para criptografar segredos (ex.: App Password do WP)
+- `FERNET_KEYS` — **opcional** (rotação de chaves, ver abaixo)
+- `WP_VERIFY_TLS` — `true|false` (default `true`)
+- `WP_TIMEOUT_SEC` — timeout de chamadas ao WP (default `10`)
+
+### 🔐 Fernet (segredos) + Rotação de Chaves
+
+Gere uma chave (32 bytes base64) e coloque no `.env`:
+
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+Uso básico:
+
+```env
+FERNET_KEY=AAA_BASE64
+```
+
+Rotação sem downtime:
+
+```env
+# chave nova (primária) — usada para ENCRYPT
+FERNET_KEY=NEW_BASE64
+# todas aceitas para DECRYPT (nova + antigas, nessa ordem)
+FERNET_KEYS=NEW_BASE64,OLD_BASE64
+```
+
+> Após alterar `.env`, reinicie a API:
+>
+> ```bash
+> docker compose restart api
+> ```
 
 ---
 
@@ -140,26 +194,81 @@ Rotas: auth, stores, feeds, scan, violations (evidence), blocks, policies, appea
 `plugin-woo/` com REST mínimo, bloqueio por SKU e página de settings.
 Guia WP local: `docs/WP-LOCAL.md`.
 
-### Integração WordPress
+### Integração WordPress (passo a passo)
 
-1. Gere uma **FERNET_KEY** (32 bytes base64) e defina em `.env`:
-   ```bash
-   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-   ```
-2. No WordPress, crie uma **Application Password** para um usuário admin.
-3. Salve as credenciais via API:
-   ```bash
-   TOKEN=$(python scripts/mint_token.py)
-   curl -X POST "$API/api/stores/1/wp/credentials" \
-     -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
-     -d '{"wp_api_base":"http://localhost:8080/wp-json","wp_base_url":"http://localhost:8080","wp_user":"admin","wp_app_password":"XXXX"}'
-   ```
-4. Publique uma política:
-   ```bash
-   curl -X POST "$API/api/stores/1/wp/policies/publish" \
-     -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
-     -d '{"type":"refund","content_md":"## Devolução em 30 dias","status":"publish"}'
-   ```
+> **Pré-requisitos**
+>
+> - `FERNET_KEY` configurada (ver seção acima)
+> - WordPress local (vide `docker-compose.wp.yml`), permalinks em “Nome do post”
+> - Application Password criada para o usuário admin
+
+0. **GERAR FERNET** (se ainda não tiver) e reiniciar API:
+
+```bash
+echo "FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())')" >> .env
+docker compose restart api
+```
+
+1. **Subir WordPress local**:
+
+```bash
+docker compose -f docker-compose.wp.yml up -d
+```
+
+- Ative o plugin **GMC Shield** no WP Admin.
+- Em **Configurações → Links permanentes**, selecione **Nome do post**.
+- Em **Usuários → Perfil**, crie uma **Application Password** (ex.: `GMC Shield local`).
+
+2. **Gerar TOKEN de API** (para a conta `account_id=1`):
+
+```bash
+TOKEN=$(docker compose exec -T api python - <<'PY'
+from app.auth import create_token
+print(create_token("owner@gmcshield.dev","owner",1))
+PY
+)
+```
+
+3. **Salvar credenciais do WP no backend**:
+
+> **Dica (Docker Desktop no macOS/Windows):** Use `http://host.docker.internal:8080/wp-json` como `wp_api_base`.
+> **Linux:** use o IP do host (ex.: `http://172.17.0.1:8080/wp-json`) ou configure `extra_hosts`.
+
+```bash
+STORE_ID=1
+APP="xxxx xxxx xxxx xxxx xxxx xxxx"  # sua Application Password do WP
+
+curl -X POST "http://localhost:8000/api/stores/$STORE_ID/wp/credentials" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "wp_api_base": "http://host.docker.internal:8080/wp-json",
+    "wp_base_url": "http://localhost:8080",
+    "wp_user": "admin",
+    "wp_app_password": "'"$APP"'"
+  }'
+```
+
+4. **Verificar status e publicar uma política**:
+
+```bash
+# status
+curl -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:8000/api/stores/$STORE_ID/wp/status"
+
+# publicar (ex.: refund)
+curl -X POST "http://localhost:8000/api/stores/$STORE_ID/wp/policies/publish" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"type":"refund","content_md":"## Devolução em 30 dias","status":"publish"}'
+```
+
+5. **(Opcional) Script 1-click**
+   Use `scripts/wp_connect.sh` para conectar rápido:
+
+```bash
+chmod +x scripts/wp_connect.sh
+scripts/wp_connect.sh <STORE_ID> http://host.docker.internal:8080/wp-json http://localhost:8080 admin "xxxx xxxx xxxx ..."
+```
 
 ---
 
@@ -198,7 +307,19 @@ React+Vite, páginas placeholder (Dashboard, Violations, Items, Policies, Appeal
 
 ## Troubleshooting
 
-- Verifique `DATABASE_URL`/`REDIS_URL` e serviços no ar (`docker compose ps`).
-- CORS: ajuste `CORS_ORIGINS` e `VITE_API`.
+- **401 Unauthorized** nas rotas da API
+  → Regere o `TOKEN` (ele expira). Teste com `GET /api/auth/whoami`.
+
+- **500 Internal Server Error: `FERNET_KEY not set`**
+  → Falta `FERNET_KEY` no `.env`. Gere e `docker compose restart api`.
+
+- **CORS bloqueando o frontend**
+  → Ajuste `CORS_ORIGINS` no `.env` para incluir `http://localhost:5173` (e demais portas).
+
+- **`wp_api_base deve apontar para /wp-json`**
+  → Use um endpoint que termine exatamente em `/wp-json`.
+
+- **WP dentro do Docker no macOS/Windows**
+  → Use `http://host.docker.internal:8080` para o WordPress.
 
 **Preview do Frontend:** veja `docs/PREVIEW.md` e o workflow `.github/workflows/web-preview.yml`. Para Vercel, use `vercel.json` (root `web/`).

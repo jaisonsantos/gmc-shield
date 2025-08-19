@@ -27,10 +27,8 @@ export default function App() {
       <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="stores" element={<Stores />} />
-        <Route path="items" element={<Items />} />
         <Route path="policies" element={<Policies />} />
         <Route path="appeals" element={<Appeals />} />
-        <Route path="feeds" element={<Feeds />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="settings" element={<Settings />} />
         <Route path="billing" element={<Billing />} />
@@ -39,6 +37,8 @@ export default function App() {
         <Route path="stores/:id/violations" element={<Violations />} />
         <Route path="stores/:id/scans" element={<Scans />} />
         <Route path="stores/:id/wp" element={<WP />} />
+        <Route path="stores/:id/feeds" element={<Feeds />} />
+        <Route path="stores/:id/items" element={<Items />} />
       </Route>
 
       {/* catch-all */}

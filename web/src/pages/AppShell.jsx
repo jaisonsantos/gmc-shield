@@ -9,10 +9,8 @@ export default function AppShell(){
         <nav style={{display:'grid', gap:8}}>
           <Link to="/">Dashboard</Link>
           <Link to="/stores">Stores</Link>
-          <Link to="/items">Items</Link>
           <Link to="/policies">Policies</Link>
           <Link to="/appeals">Appeals</Link>
-          <Link to="/feeds">Feeds</Link>
           <Link to="/notifications">Notifications</Link>
           <Link to="/settings">Settings</Link>
           <Link to="/billing">Billing</Link>

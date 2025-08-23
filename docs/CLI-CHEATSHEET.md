@@ -84,6 +84,22 @@ curl -X POST http://localhost:8000/api/stores   -H "Authorization: Bearer $TOKEN
 # 3.2 Configurar feed
 curl -X POST http://localhost:8000/api/stores/STORE_ID/feed   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"source_type":"file","url":"docs/seed/demo_feed.xml","format":"xml"}'
 
+# 3.2b Enviar feed (upload)
+curl -H "Authorization: Bearer $TOKEN" \
+  -F format=csv -F file=@docs/seed/demo_feed.csv \
+  http://localhost:8000/api/stores/STORE_ID/feed/upload
+
+# opcional: enfileirar ingestão
+curl -H "Authorization: Bearer $TOKEN" \
+  -F format=csv -F file=@docs/seed/demo_feed.csv \
+  "http://localhost:8000/api/stores/STORE_ID/feed/upload?async=true"
+# worker RQ
+docker compose up -d rq-feed
+
+# checar hash e contagem
+docker compose exec -T db psql -U postgres -d gmc_shield \
+  -c "select id,last_hash,last_item_count from feeds where store_id=STORE_ID;"
+
 # 3.3 Disparar scan
 curl -X POST http://localhost:8000/api/stores/STORE_ID/scan   -H "Authorization: Bearer $TOKEN"   -H "Content-Type: application/json"   -d '{"limit_items":50,"recrawl":false}'
 

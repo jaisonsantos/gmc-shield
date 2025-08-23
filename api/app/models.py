@@ -54,6 +54,8 @@ class Feed(Base):
     format          = Column(String(8), nullable=False)
     last_hash       = Column(String(128))
     last_parsed_at  = Column(DateTime)
+    last_item_count = Column(Integer)
+    created_at      = Column(DateTime, server_default=func.now(), nullable=False)
 
 class FeedVersion(Base):
     __tablename__ = "feed_versions"

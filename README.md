@@ -80,10 +80,10 @@
    docker compose run --rm api alembic upgrade head
    ```
 
-4. Suba API + Worker:
+4. Suba API + Workers:
 
    ```bash
-   docker compose up -d api worker
+   docker compose up -d api worker rq-feed
    ```
 
 5. UI (dev local):
@@ -267,6 +267,23 @@ API=http://localhost:8000
 curl -H "Authorization: Bearer $TOKEN" \
   -F format=csv -F file=@docs/seed/demo_feed.csv \
   "$API/api/stores/1/feed/upload"
+```
+
+Após a ingestão, verifique `last_hash`, `last_item_count` e `created_at`:
+
+```bash
+docker compose exec -T db psql -U postgres -d gmc_shield \
+  -c "select id,last_hash,last_item_count,created_at from feeds;"
+```
+
+Para enfileirar a ingestão de forma assíncrona (opcional), acrescente `?async=true` e suba o worker `rq-feed`:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  -F format=csv -F file=@docs/seed/demo_feed.csv \
+  "$API/api/stores/1/feed/upload?async=true"
+
+docker compose up -d rq-feed
 ```
 
 ---

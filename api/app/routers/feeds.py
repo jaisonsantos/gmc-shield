@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, Query
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 import httpx
@@ -6,6 +7,7 @@ from ..db import get_db
 from .. import models, schemas
 from ..auth import require_roles
 from ..services.feed_ingest import parse_csv, parse_xml, normalize_row, compute_hash
+from ..jobs import feed as feed_jobs
 
 router = APIRouter()
 
@@ -93,6 +95,7 @@ def _ingest_raw(db: Session, store_id: int, feed: models.Feed, raw: bytes, forma
     db.add(version)
     feed.last_hash = h
     feed.last_parsed_at = func.now()
+    feed.last_item_count = items_count
     db.commit()
 
     return {
@@ -116,6 +119,7 @@ async def import_feed(
     format: str = Form(...),
     url: str | None = Form(None),
     file: UploadFile | None = File(None),
+    enqueue: bool = Query(False, alias="async"),
     db: Session = Depends(get_db),
 ):
     feed = db.query(models.Feed).filter(models.Feed.store_id == store_id).first()
@@ -135,7 +139,12 @@ async def import_feed(
         raw = await file.read()
     else:
         raise HTTPException(400, "invalid source_type")
-
+    if enqueue:
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format)
+        return JSONResponse(
+            status_code=202,
+            content={"status": "queued", "job_id": job_id, "feed_id": feed.id},
+        )
     return _ingest_raw(db, store_id, feed, raw, format)
 
 
@@ -144,7 +153,11 @@ async def import_feed(
     summary="Ingest feed from configured URL",
     dependencies=[Depends(require_roles("owner", "manager"))],
 )
-async def ingest_from_url(store_id: int, db: Session = Depends(get_db)):
+async def ingest_from_url(
+    store_id: int,
+    enqueue: bool = Query(False, alias="async"),
+    db: Session = Depends(get_db),
+):
     feed = db.query(models.Feed).filter(models.Feed.store_id == store_id).first()
     if not feed or not feed.url:
         raise HTTPException(400, "Feed not configured")
@@ -152,6 +165,12 @@ async def ingest_from_url(store_id: int, db: Session = Depends(get_db)):
         res = await client.get(feed.url)
         res.raise_for_status()
         raw = res.content
+    if enqueue:
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed.format)
+        return JSONResponse(
+            status_code=202,
+            content={"status": "queued", "job_id": job_id, "feed_id": feed.id},
+        )
     return _ingest_raw(db, store_id, feed, raw, feed.format)
 
 
@@ -164,6 +183,7 @@ async def upload_feed(
     store_id: int,
     format: str = Form(...),
     file: UploadFile = File(...),
+    enqueue: bool = Query(False, alias="async"),
     db: Session = Depends(get_db),
 ):
     feed = db.query(models.Feed).filter(models.Feed.store_id == store_id).first()
@@ -172,6 +192,12 @@ async def upload_feed(
         db.add(feed)
         db.commit()
     raw = await file.read()
+    if enqueue:
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format)
+        return JSONResponse(
+            status_code=202,
+            content={"status": "queued", "job_id": job_id, "feed_id": feed.id},
+        )
     return _ingest_raw(db, store_id, feed, raw, format)
 
 

@@ -58,6 +58,18 @@ services:
     command: bash -lc "python -u /worker/run_worker.py"
     restart: unless-stopped
 
+  rq-feed:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    env_file: [.env]
+    volumes:
+      - ./api:/app
+    depends_on:
+      redis: { condition: service_healthy }
+    command: bash -lc "rq worker -u $REDIS_URL feed"
+    restart: unless-stopped
+
 volumes:
   db_data:
   artifacts:

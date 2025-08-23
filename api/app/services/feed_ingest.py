@@ -4,22 +4,56 @@ from typing import Iterable, Tuple
 
 UTM_PATTERN = re.compile(r"^utm_|^gclid$|^fbclid$", re.I)
 
-def canonicalize_link(url: str) -> str:
+
+def clean_text(val: str | None) -> str | None:
+    if not val:
+        return None
+    t = re.sub(r"\s+", " ", val).strip()
+    return t or None
+
+
+def extract_currency(s: str | None) -> str | None:
+    if not s:
+        return None
+    m = re.search(r"([a-z]{3})", s, re.I)
+    return m.group(1).upper() if m else None
+
+
+def canonicalize_link(url: str | None) -> str | None:
     if not url:
-        return url
+        return None
     u = urllib.parse.urlsplit(url)
     qs = urllib.parse.parse_qsl(u.query, keep_blank_values=False)
     qs = [(k, v) for (k, v) in qs if not UTM_PATTERN.match(k)]
-    return urllib.parse.urlunsplit((u.scheme, u.netloc, u.path, urllib.parse.urlencode(qs), u.fragment))
+    scheme = u.scheme.lower()
+    host = u.netloc.lower()
+    path = u.path or "/"
+    return urllib.parse.urlunsplit(
+        (scheme, host, path, urllib.parse.urlencode(qs), u.fragment)
+    )
 
-def parse_price(val: str) -> Tuple[int, str]:
+
+def normalize_gtin(val: str | None) -> str | None:
+    if not val:
+        return None
+    digits = re.sub(r"\D", "", val)
+    if len(digits) not in (8, 12, 13, 14):
+        return None
+    total = sum(
+        int(d) * (3 if (len(digits) - i) % 2 == 0 else 1)
+        for i, d in enumerate(digits[:-1])
+    )
+    check = (10 - total % 10) % 10
+    return digits if check == int(digits[-1]) else None
+
+def parse_price(val: str | None) -> Tuple[int | None, str | None]:
     if val is None:
         return None, None
     s = str(val).strip()
     cur = None
-    parts = re.findall(r"[A-Z]{3}", s)
+    parts = re.findall(r"[A-Za-z]{3}", s)
     if parts:
-        cur = parts[0]
+        cur = parts[0].upper()
     num = re.sub(r"[^\d,.\-]", "", s).replace(",", ".")
     if num.count(".") > 1:
         head, tail = num.rsplit(".", 1)
@@ -64,8 +98,10 @@ def parse_xml(buf: bytes) -> Iterable[dict]:
 
 def normalize_row(r: dict) -> dict:
     item_id = r.get("id") or r.get("item_id") or r.get("sku")
-    p, cur = parse_price(r.get("price"))
+    p, _cur = parse_price(r.get("price"))
     sp, _ = parse_price(r.get("sale_price"))
+    price_currency = extract_currency(r.get("price_currency") or r.get("price"))
+    sale_price_currency = extract_currency(r.get("sale_price_currency") or r.get("sale_price"))
     shipping = r.get("shipping")
     if isinstance(shipping, (dict, list)):
         shipping_json = json.dumps(shipping)
@@ -75,15 +111,15 @@ def normalize_row(r: dict) -> dict:
         shipping_json = None
     return {
         "item_id": str(item_id),
-        "title": r.get("title"),
+        "title": clean_text(r.get("title")),
         "link_canonical": canonicalize_link(r.get("link")),
         "price_cents": p,
         "sale_price_cents": sp,
-        "currency": cur,
+        "currency": price_currency,
         "availability": availability_norm(r.get("availability")),
-        "brand": r.get("brand"),
-        "gtin": r.get("gtin"),
-        "mpn": r.get("mpn"),
+        "brand": clean_text(r.get("brand")),
+        "gtin": normalize_gtin(r.get("gtin")),
+        "mpn": clean_text(r.get("mpn")),
         "shipping_json": shipping_json,
         "raw_json": json.dumps(r, ensure_ascii=False),
     }

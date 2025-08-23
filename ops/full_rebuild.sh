@@ -1,3 +1,5 @@
+# ops/full_rebuild.sh
+
 #!/usr/bin/env bash
 set -euo pipefail
 

@@ -2,8 +2,6 @@
 - fluxo “**WP integração**” passo-a-passo (inclui script `scripts/wp_connect.sh`, App Password, dicas de `host.docker.internal`)
 - ajustes de variáveis de ambiente e troubleshooting prático
 
-Substitua o conteúdo de `README.md` por este:
-
 ```markdown
 # GMC Shield — MVP (SaaS + Plugin WooCommerce) para Prevenção de Suspensões no Google Merchant Center
 
@@ -18,6 +16,7 @@ Substitua o conteúdo de `README.md` por este:
 - Arquitetura & Serviços
 - Começando Rápido (Docker)
 - Dev Local (sem Docker)
+- Expor ambiente via ngrok (dev)
 - Variáveis de Ambiente
 - Banco & Migrações
 - Seeds & Demo de 10 minutos
@@ -114,6 +113,91 @@ python -u ../worker/run_worker.py
 
 ---
 
+## Expor ambiente via ngrok (dev)
+
+> Útil para testar o front (Vite) e a API a partir do celular/externo com domínio público e HMR funcionando.
+
+### Pré-requisitos
+
+- Conta ngrok com **authtoken** configurado.
+- `jq` instalado (macOS: `brew install jq`).
+- Arquivo de config do ngrok em `~/.config/ngrok/ngrok.yml`:
+
+````yaml
+version: "2"
+authtoken: SEU_AUTHTOKEN_AQUI
+region: eu
+tunnels:
+  api:
+    proto: http
+    addr: 8000
+    schemes: [https]
+  web:
+    proto: http
+    addr: 5173
+    schemes: [https]
+
+
+### Passo a passo para rodar ngrok + webapp
+
+1. **Suba os túneis:**
+
+```bash
+ngrok start api web --config ~/.config/ngrok/ngrok.yml
+````
+
+2. **Verifique se estão vivos:**
+
+```bash
+curl -s http://127.0.0.1:4040/api/tunnels \
+| jq '.tunnels[] | {name: .name, addr: .config.addr, public: .public_url}'
+```
+
+3. **Atualize o `.env` do front automaticamente:**
+
+```bash
+chmod +x ./scripts/update_web_env_from_ngrok.sh
+./scripts/update_web_env_from_ngrok.sh
+```
+
+Esse script escreve `web/.env.local` com:
+
+```
+VITE_API_BASE=<url-publica-da-api>
+VITE_ALLOWED_HOSTS=<host-publico-do-web>
+VITE_HMR_HOST=<host-publico-do-web>
+```
+
+> **Importante:** ele identifica os túneis pelo **nome** (`api` e `web`) definido no `ngrok.yml`, o que evita problemas quando a API do ngrok retorna `localhost` vs `127.0.0.1`.
+
+#### Modo “um túnel só” (se seu plano não permitir 2 túneis)
+
+- Use apenas o túnel `web` (5173) e deixe o Vite **proxyar** `/api` → `http://localhost:8000`.
+- No front, use **same-origin** (deixe `VITE_API_BASE` vazio ou não defina).
+- Ajuste `VITE_ALLOWED_HOSTS` e `VITE_HMR_HOST` com o host do túnel `web`.
+
+### Troubleshooting (ngrok)
+
+- **“Não achei túneis ativos em 4040”**
+  → Garanta que o ngrok está rodando:
+  `ngrok start api web --config ~/.config/ngrok/ngrok.yml`
+
+- **Script roda e “não acontece nada”**
+  → Rode com debug para ver o motivo:
+  `bash -x ./scripts/update_web_env_from_ngrok.sh`
+  → Confira se os túneis se chamam exatamente `api` e `web` no `~/.config/ngrok/ngrok.yml`.
+
+- **HMR não conecta**
+  → Verifique se `VITE_HMR_HOST` no `web/.env.local` bate com o host público do túnel **web**.
+  → Reinicie o `npm run dev -- --host` após alterar o `.env.local`.
+
+- **CORS bloqueando**
+  → Inclua o domínio do ngrok nas variáveis de CORS da API, se estiver usando CORS estrito.
+
+````
+
+---
+
 ## Variáveis de Ambiente
 
 Veja `.env.example`. Principais:
@@ -134,7 +218,7 @@ Gere uma chave (32 bytes base64) e coloque no `.env`:
 
 ```bash
 python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-```
+````
 
 Uso básico:
 

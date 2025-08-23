@@ -57,7 +57,7 @@ O script aceita `TOKEN` vindo do ambiente. Se não houver, ele tenta fazer login
 
 ```bash
 # gera o token dentro do container e passa pro script
-TOKEN=$(docker compose exec -T api python /app/scripts/mint_token.py | tr -d '
+TOKEN=$(docker compose exec -T api python /scripts/mint_token.py | tr -d '
 ') bash scripts/smoke_rbac.sh   --api http://localhost:8000   --store-name "Loja RBAC"   --feed docs/seed/demo_feed.xml
 ```
 

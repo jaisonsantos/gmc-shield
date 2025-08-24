@@ -24,9 +24,9 @@ docker compose -f docker-compose.wp.yml down -v || true
 docker system prune -f
 docker builder prune -f || true
 
-# Constrói imagens da API e Worker
+# Constrói imagens da API, Worker e RQ workers
 echo "==> Build das imagens…"
-docker compose build api worker
+docker compose build api worker rq-feed rq-crawl
 
 # Inicia db e redis
 echo "==> Sobe db + redis e espera ficarem saudáveis…"
@@ -61,7 +61,7 @@ while [ "$(docker inspect -f '{{.State.Health.Status}}' gmc-shield-redis-1 2>/de
   count_redis=$((count_redis+1))
 done
 
-# Inicia API e Worker
+# Inicia API, Worker e RQ workers
 echo "==> Sobe API + Worker…"
 docker compose up -d api worker
 echo "==> Sobe workers RQ (feed + crawl)…"

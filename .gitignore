@@ -31,3 +31,5 @@ web/.env.local
 # Misc
 coverage/
 EOF
+
+venv/

@@ -22,6 +22,12 @@ api-logs:    ## Logs da API
 	docker compose logs -f --tail=200 api
 worker-logs: ## Logs do worker
 	docker compose logs -f --tail=200 worker
+rq-up:       ## Sobe o rq-feed (fila de feed)
+	docker compose up -d rq-feed
+rq-logs:     ## Logs do rq-feed
+	docker compose logs -f --tail=200 rq-feed
+rq-restart:  ## Reinicia o rq-feed
+	docker compose restart rq-feed	
 restart:     ## Reinicia API
 	docker compose restart api
 

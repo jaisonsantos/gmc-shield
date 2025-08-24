@@ -434,3 +434,31 @@ React+Vite, páginas placeholder (Dashboard, Violations, Items, Policies, Appeal
   → Use `http://host.docker.internal:8080` para o WordPress.
 
 **Preview do Frontend:** veja `docs/PREVIEW.md` e o workflow `.github/workflows/web-preview.yml`. Para Vercel, use `vercel.json` (root `web/`).
+
+## D2 Crawler
+
+Para habilitar o crawler de páginas com Playwright:
+
+```bash
+docker compose up -d rq-crawl
+```
+
+Para enfileirar um scan para os primeiros 20 itens da loja:
+
+```bash
+TOKEN=...; API=http://localhost:8000; STORE_ID=1
+curl -X POST "$API/api/stores/$STORE_ID/scan" \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"limit_items":20}'
+```
+
+Os artefatos (HTML e screenshot) são gravados em
+`api/artifacts/store{STORE_ID}/runs/{RUN_ID}/items/{ITEM_ID}/{ua}/`.
+
+Para listar os snapshots de um run:
+
+```bash
+curl "$API/api/stores/$STORE_ID/runs/$RUN_ID/snapshots" \
+     -H "Authorization: Bearer $TOKEN"
+```

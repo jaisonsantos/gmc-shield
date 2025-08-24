@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, field_validator
 from typing import Optional, List, Literal, Dict
 from datetime import datetime
 
@@ -58,8 +58,14 @@ class FeedItemPage(BaseModel):
         from_attributes = True
 
 class ScanRequest(BaseModel):
-    limit_items: Optional[int] = 50
-    recrawl: Optional[bool] = False
+    item_id: Optional[str] = None
+    limit_items: Optional[int] = 20
+    @field_validator("limit_items")
+    @classmethod
+    def _validate_limit(cls, v):
+        if v is not None and v <= 0:
+            raise ValueError("limit_items must be > 0")
+        return v
 
 class ViolationOut(BaseModel):
     id: int
@@ -89,6 +95,19 @@ class ScanRunOut(BaseModel):
     items_total: int
     items_ok: int
     items_violation: int
+    class Config:
+        from_attributes = True
+
+
+class PageSnapshotOut(BaseModel):
+    feed_item_id: Optional[str] = None
+    url: Optional[str] = None
+    http_status: Optional[int] = None
+    extracted: dict
+    screenshot_path: Optional[str] = None
+    html_path: Optional[str] = None
+    fetched_at: datetime
+
     class Config:
         from_attributes = True
 

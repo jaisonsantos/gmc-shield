@@ -1,12 +1,9 @@
-import os
-from redis import Redis
-from rq import Queue
 from ..db import SessionLocal
 from .. import models
 from ..routers import feeds
+from ..queue import get_rq_queue
 
-redis = Redis.from_url(os.getenv('REDIS_URL', 'redis://redis:6379/0'))
-queue = Queue('feed', connection=redis)
+queue = get_rq_queue('feed')
 
 def enqueue(store_id: int, feed_id: int, raw: bytes, fmt: str) -> str:
     job = queue.enqueue(process, store_id, feed_id, raw, fmt)

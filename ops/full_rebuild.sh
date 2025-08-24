@@ -64,6 +64,8 @@ done
 # Inicia API e Worker
 echo "==> Sobe API + Worker…"
 docker compose up -d api worker
+echo "==> Sobe workers RQ (feed + crawl)…"
+docker compose up -d rq-feed rq-crawl
 
 # Aguarda a API ficar pronta (loop até /healthz retornar OK, máx 60s)
 echo "==> Esperando API ficar pronta..."
@@ -102,6 +104,8 @@ cat <<EOF
 
 ℹ️ Log da API:  docker compose logs -f api
 ℹ️ Health worker: curl -s http://localhost:8000/api/ops/worker/health | jq .
+ℹ️ Logs RQ (feed):   docker compose logs -f rq-feed
+ℹ️ Logs RQ (crawl):  docker compose logs -f rq-crawl
 ℹ️ Para iniciar o ambiente WordPress (e o plugin local):
   docker compose -f docker-compose.wp.yml up -d
 

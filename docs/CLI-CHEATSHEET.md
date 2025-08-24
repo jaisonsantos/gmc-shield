@@ -201,3 +201,30 @@ payload = {
 }
 print(jwt.encode(payload, SECRET_KEY, algorithm="HS256"))
 ```
+
+## D2 Crawler
+
+Suba o worker de crawling:
+
+```bash
+docker compose up -d rq-crawl
+```
+
+Dispare um scan de até 20 itens:
+
+```bash
+TOKEN=...; API=http://localhost:8000; STORE_ID=1
+curl -X POST "$API/api/stores/$STORE_ID/scan" \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"limit_items":20}'
+```
+
+Artefatos ficam em `api/artifacts/store{STORE_ID}/runs/{RUN_ID}/items/{ITEM_ID}/{ua}/`.
+
+Listar snapshots do run:
+
+```bash
+curl "$API/api/stores/$STORE_ID/runs/$RUN_ID/snapshots" \
+     -H "Authorization: Bearer $TOKEN"
+```

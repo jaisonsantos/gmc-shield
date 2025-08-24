@@ -18,7 +18,8 @@ WORKDIR /app
 # Primeiro só as deps pra aproveitar cache
 COPY api/requirements.txt /app/requirements.txt
 RUN python -m pip install --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir -r /app/requirements.txt
+    && pip install --no-cache-dir -r /app/requirements.txt \
+    && python -m playwright install --with-deps chromium
 
 # (Se você quiser copiar código no build; em runtime você já monta volume ./api:/app)
 # COPY api/ /app

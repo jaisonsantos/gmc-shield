@@ -2,6 +2,8 @@
 
 import os, json, datetime as dt
 import redis
+from redis import Redis
+from rq import Queue
 
 QUEUE_SCAN = "queue:scan"
 
@@ -33,4 +35,10 @@ def publish_scan_job(
     r.lpush(QUEUE_SCAN, json.dumps(payload))
     r.hincrby("metrics:jobs", "published", 1)
     return payload
+
+
+def get_rq_queue(name: str) -> Queue:
+    """Return an RQ queue with shared Redis connection."""
+    conn: Redis = Redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
+    return Queue(name, connection=conn)
 

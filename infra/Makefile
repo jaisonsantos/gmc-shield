@@ -3,6 +3,15 @@
 # --- Containers base ---
 up:          ## Sobe api + db + redis + worker
 	docker compose up -d
+
+up-crawl:    ## Sobe somente o worker de crawl (RQ)
+	docker compose up -d rq-crawl
+
+feed-logs:   ## Logs do worker de feed (RQ)
+	docker compose logs -f --tail=200 rq-feed
+
+crawl-logs:  ## Logs do worker de crawl (RQ)
+	docker compose logs -f --tail=200 rq-crawl
 down:        ## Derruba tudo (com volumes)
 	docker compose down -v --remove-orphans
 ps:          ## Status dos serviços

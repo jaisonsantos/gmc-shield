@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from ..db import get_db
 from .. import models, schemas
 from ..auth import require_roles, Principal
-from ..queue import publish_scan_job, get_redis
 from ..models import Store, ScanRun
 
 router = APIRouter()
@@ -90,43 +89,6 @@ def list_stores(
         }
         for s in rows
     ]
-
-@router.post("/{store_id}/scan", summary="Queue scan")
-def queue_scan(
-    store_id: int,
-    req: schemas.ScanRequest = schemas.ScanRequest(),
-    principal: Principal = Depends(require_roles("owner", "manager")),
-    db: Session = Depends(get_db),
-) -> dict:
-    """Cria um run de scan e publica job na fila."""
-
-    # valida ownership da store
-    store = (
-        db.query(Store)
-        .filter(Store.id == store_id, Store.account_id == principal["account_id"])
-        .first()
-    )
-    if not store:
-        raise HTTPException(status_code=404, detail="Store not found")
-
-    # de-dup antes de criar run
-    r = get_redis()
-    if r.set(f"dedup:scan:{store_id}", "1", nx=True, ex=5) is None:
-        return {"queued": False, "skipped": True}
-
-    run = ScanRun(
-        store_id=store_id,
-        requested_by=principal["email"],
-        status="queued",
-    )
-    db.add(run)
-    db.commit()
-    db.refresh(run)
-
-    publish_scan_job(store_id=store_id, run_id=run.id, limit_items=req.limit_items)
-
-    return {"queued": True, "run_id": run.id}
-
 
 @router.get(
     "/{store_id}/scan/runs",

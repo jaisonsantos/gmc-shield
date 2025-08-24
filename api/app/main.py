@@ -3,7 +3,7 @@
 import time, os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops, wp
+from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops, wp, scans
 
 app          = FastAPI(title="GMC Shield API", version="0.1.0")
 raw          = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "http://localhost:5173")
@@ -41,6 +41,7 @@ app.include_router(policies.router,         prefix="/api/stores",   tags=["polic
 app.include_router(wp.router,               prefix="/api/stores",   tags=["wp"])
 app.include_router(appeals.router,          prefix="/api/stores",   tags=["appeals"])
 app.include_router(notifications.router,    prefix="/api/stores",   tags=["notifications"])
+app.include_router(scans.router,            prefix="/api/stores",   tags=["scans"])
 @app.get("/healthz")
 def healthz():
     return {"ok": True}

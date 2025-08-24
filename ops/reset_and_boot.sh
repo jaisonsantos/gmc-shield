@@ -1,3 +1,5 @@
+# ops/reset_and_boot.sh
+
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -54,7 +56,7 @@ main() {
 
   cat <<EOF
 
-✓ Ambiente pronto.
+✓ Ambiente pronto (api, worker e rq-feed em execução).
 
 - API:      $API_BASE/docs
 - UI (dev): http://localhost:5173   (rode 'make web' em outro terminal)

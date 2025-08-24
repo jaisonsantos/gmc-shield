@@ -15,19 +15,6 @@ services:
       retries: 20
     restart: unless-stopped
 
-  rq-crawl:
-    build:
-      context: .
-      dockerfile: infra/Dockerfile.api
-    env_file: [.env]
-    depends_on:
-      redis:
-        condition: service_healthy
-    volumes:
-      - ./api:/app
-    command: bash -lc "rq worker -u $REDIS_URL crawl"
-    restart: unless-stopped
-
   redis:
     image: redis:7-alpine
     command: ["redis-server", "--appendonly", "yes"]

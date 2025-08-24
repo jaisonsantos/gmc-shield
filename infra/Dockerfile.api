@@ -3,6 +3,9 @@
 # Base mais nova, geralmente com menos CVEs abertas
 FROM python:3.11-slim-bookworm
 
+# Atualiza todos os pacotes do sistema para reduzir CVEs
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 # Evita caches e arquivos pyc desnecessários
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \

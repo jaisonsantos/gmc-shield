@@ -1,4 +1,6 @@
-import asyncio
+# api/app/services/crawler.py
+
+import os
 import json
 import re
 from typing import Dict, List
@@ -75,6 +77,11 @@ def merge_extracted(visible: Dict, jsonld: Dict, ua_label: str) -> Dict:
     return data
 
 async def crawl_once(url: str, user_agent: str, timeout_ms: int = 20000) -> Dict:
+    # opcional: rewrite de base para ambientes locais
+    frm = os.getenv("CRAWLER_REWRITE_FROM")
+    to  = os.getenv("CRAWLER_REWRITE_TO")
+    if frm and to and url.startswith(frm):
+        url = url.replace(frm, to, 1)
     label = "googlebot" if user_agent == UA_GOOGLEBOT else "chrome"
     result = {
         "status": None,

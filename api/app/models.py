@@ -59,11 +59,11 @@ class Feed(Base):
 
 class FeedVersion(Base):
     __tablename__ = "feed_versions"
-    id           = Column(Integer, primary_key=True)
-    feed_id      = Column(Integer, ForeignKey("feeds.id", ondelete="CASCADE"), nullable=False)
-    hash         = Column(String(128), nullable=False)
-    items_count  = Column(Integer, nullable=False)
-    created_at   = Column(DateTime, server_default=func.now(), nullable=False)
+    id = Column(Integer, primary_key=True)
+    feed_id = Column(Integer, ForeignKey("feeds.id", ondelete="CASCADE"), nullable=False)
+    content_hash = Column(String(128), nullable=False)
+    items_count = Column(Integer, nullable=False)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
     __table_args__ = (
         Index("idx_feed_versions_feed_created", "feed_id", "created_at"),
     )

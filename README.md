@@ -266,7 +266,16 @@ TOKEN=$(python scripts/mint_token.py)
 API=http://localhost:8000
 curl -H "Authorization: Bearer $TOKEN" \
   -F format=csv -F file=@docs/seed/demo_feed.csv \
-  "$API/api/stores/1/feed/upload"
+  "$API/api/v1/stores/1/feeds/ingest"
+```
+
+Exemplo de ingestão apontando para uma URL:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/feed.csv","format":"csv"}' \
+  "$API/api/v1/stores/1/feeds/ingest"
 ```
 
 Após a ingestão, verifique `last_hash`, `last_item_count` e `created_at`:
@@ -281,7 +290,7 @@ Para enfileirar a ingestão de forma assíncrona (opcional), acrescente `?async=
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
   -F format=csv -F file=@docs/seed/demo_feed.csv \
-  "$API/api/stores/1/feed/upload?async=true"
+  "$API/api/v1/stores/1/feeds/ingest?async=true"
 
 docker compose up -d rq-feed
 ```

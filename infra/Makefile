@@ -12,6 +12,8 @@ feed-logs:   ## Logs do worker de feed (RQ)
 
 crawl-logs:  ## Logs do worker de crawl (RQ)
 	docker compose logs -f --tail=200 rq-crawl
+test:        ## Roda a suíte de testes rapidamente
+	pytest -q
 down:        ## Derruba tudo (com volumes)
 	docker compose down -v --remove-orphans
 ps:          ## Status dos serviços

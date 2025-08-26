@@ -1,7 +1,15 @@
-import os, json, time, csv, itertools, datetime as dt, socket, signal
+import os
+import json
+import time
+import csv
+import itertools
+import datetime as dt
+import socket
+import signal
 import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.observability import log_event, trace_id_ctx
 
 import sys
 sys.path.append("/app")
@@ -71,6 +79,7 @@ def process_job(job: dict):
     run_id = int(job["run_id"])
     limit = int(job.get("limit_items", 5))
 
+    log_event("job start", job_id=run_id, store_id=store_id, user_id=None, request_id=None)
     sess = SessionLocal()
     run = sess.query(models.ScanRun).filter(models.ScanRun.id == run_id).first()
     if not run:
@@ -188,11 +197,11 @@ def process_job(job: dict):
         raise
     else:
         sess.close()
-        print(f"[worker] processed run {run_id} store={store_id} items={items_total}")
+    log_event("job processed", job_id=run_id, store_id=store_id, user_id=None, request_id=None)
 
 
 def main():
-    print(f"[worker] started on {HOST} — Redis={REDIS_URL} DB={DATABASE_URL}")
+    log_event("worker started", job_id=None, store_id=None, user_id=None, request_id=None)
     processed = 0
     last_hb = 0.0
     while _running:
@@ -207,17 +216,18 @@ def main():
         try:
             job = json.loads(payload)
         except Exception as e:
-            print("[worker] invalid payload:", e, payload)
+            log_event("invalid payload", level="error", error=str(e), job_id=None, store_id=None, user_id=None, request_id=None)
             continue
         try:
+            trace_id_ctx.set(job.get("trace_id", ""))
             process_job(job)
             processed += 1
             r.hincrby("metrics:jobs", "processed", 1)
         except Exception as e:
             r.hincrby("metrics:jobs", "failed", 1)
-            print("[worker] error:", e)
+            log_event("job error", level="error", error=str(e), job_id=job.get("run_id"), store_id=job.get("store_id"), user_id=None, request_id=None)
     r.delete(HB_KEY)
-    print("[worker] stopped")
+    log_event("worker stopped", job_id=None, store_id=None, user_id=None, request_id=None)
 
 
 if __name__ == "__main__":

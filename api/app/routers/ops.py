@@ -1,9 +1,9 @@
 # api/app/routers/ops.py
 
 from fastapi import APIRouter, Depends
-import os, json
 from ..auth import require_roles
 from ..queue import get_redis, QUEUE_SCAN
+from ..observability import get_metrics
 
 router = APIRouter()
 
@@ -20,3 +20,8 @@ def worker_health():
         workers.append(h or {"host":k.split(":")[-1], "ts":None, "processed":"0", "queue_len":str(qlen)})
     metrics = r.hgetall("metrics:jobs")
     return {"ok": True, "queue_len": qlen, "workers": workers, "metrics": metrics}
+
+
+@router.get("/metrics")
+def metrics():
+    return get_metrics()

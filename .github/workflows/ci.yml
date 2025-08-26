@@ -1,51 +1,75 @@
 name: CI
 on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  api-syntax:
+  api:
     runs-on: ubuntu-latest
+    defaults: { run: { working-directory: api } }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pip install -r api/requirements.txt
-      - run: python -m compileall api
-  web-build:
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r requirements.txt ruff pytest httpx respx
+      - run: ruff check --fix --exit-non-zero-on-fix .
+      - run: pytest -q
+
+  web:
     runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: cd web && npm install && npm run build
-  docs-validate:
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run build
+
+  openapi:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check D0..D30 (skip missing files)
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r api/requirements.txt
+      - name: Generate OpenAPI.md
+        run: python scripts/gen_openapi_md.py > docs/OpenAPI.md.generated
+      - name: Upload OpenAPI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenAPI.md
+          path: docs/OpenAPI.md.generated
+      - name: Drift gate
         run: |
-          for i in $(seq -w 0 30); do
-            if [ ! -f "docs/issues/D${i}*.md" ]; then
-              echo "Warning: docs/issues/D${i}*.md is missing or deleted, skipping."
-              continue
-            fi
-          done
-      - name: Check existing T* files
-        run: |
-          # Lista todos os arquivos T*.md e verifica se existem
-          for file in docs/issues/T*.md; do
-            if [ ! -f "$file" ]; then
-              echo "Warning: $file is missing, skipping."
-              continue
-            fi
-          done
-      - name: Prepare .env for compose
-        run: |
-          {
-            echo "POSTGRES_USER=postgres"
-            echo "POSTGRES_PASSWORD=postgres"
-            echo "POSTGRES_DB=gmcshield"
-            echo "REDIS_URL=redis://localhost:6379/0"
-          } > .env
-      - name: Compose config
-        run: docker compose config -q
+          if ! diff -u docs/OpenAPI.md docs/OpenAPI.md.generated; then
+            echo "::error ::OpenAPI drift detected."
+            exit 1
+          fi
+    needs: [api]
+
+  oauth-offline:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r requirements.txt pytest httpx respx
+      - name: Run OAuth tests offline (mocked)
+        env: { DISABLE_NETWORK: "1" }
+        run: pytest -q -k oauth
+    needs: [api]
+
+  plugin:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: plugin-woo } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: "8.2" }
+      - run: find . -name '*.php' -print0 | xargs -0 -n1 php -l

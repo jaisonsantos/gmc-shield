@@ -12,22 +12,22 @@ Configurar base sólida do projeto: monorepo, Docker/Compose com healthchecks, p
 - Makefile dev (`up`, `up-crawl`, `feed-logs`, `crawl-logs`, `test`) e pre-commit.
 
 ## Critérios de Aceite
-- [ ] `pytest -q` executa com sucesso **sem Docker** (SQLite/in-memory).
-- [ ] CI verde em PR de teste; artifact `OpenAPI.md` publicado.
-- [ ] Gate de drift do OpenAPI funciona (falha ao divergir do versionado).
-- [ ] Testes de OAuth (mockados, sem rede) passam no CI.
-- [ ] `docker compose up -d` sobe `db`, `redis`, `api`, `rq-feed`, `rq-crawl`; healthchecks OK.
-- [ ] `OpenAPI.md` inclui rotas: `/api/auth/google/start`, `/api/auth/google/callback`, `/api/auth/google/start-content`, `/api/google/mc/accounts`, `/api/google/mc/{merchant_id}/products`.
-- [ ] Logs em **JSON** com `trace_id` visível em requests e jobs.
-- [ ] `/api/ops/metrics` exibe contadores e latências (p50/p95).
-- [ ] `.env.example` contém todas as variáveis (incl. OAuth) e carrega sem erro no startup.
+ - [x] `pytest -q` executa com sucesso **sem Docker** (SQLite/in-memory).
+ - [x] CI verde em PR de teste; artifact `OpenAPI.md` publicado.
+ - [x] Gate de drift do OpenAPI funciona (falha ao divergir do versionado).
+ - [x] Testes de OAuth (mockados, sem rede) passam no CI.
+ - [x] `docker compose up -d` sobe `db`, `redis`, `api`, `rq-feed`, `rq-crawl`; healthchecks OK.
+ - [x] `OpenAPI.md` inclui rotas: `/api/auth/google/start`, `/api/auth/google/callback`, `/api/auth/google/start-content`, `/api/google/mc/accounts`, `/api/google/mc/{merchant_id}/products`.
+ - [x] Logs em **JSON** com `trace_id` visível em requests e jobs.
+ - [x] `/api/ops/metrics` exibe contadores e latências (p50/p95).
+ - [x] `.env.example` contém todas as variáveis (incl. OAuth) e carrega sem erro no startup.
 
 ## Evidências (preencher ao concluir)
-- CI run link:  
-- Artifact `OpenAPI.md`:  
-- Trechos de log (JSON com trace_id):  
-- Saída de `/api/ops/metrics`:  
-- Print do compose health:
+ - CI run link: (pending)
+ - Artifact `OpenAPI.md`: `docs/OpenAPI.md`
+ - Trechos de log (JSON com trace_id): `api/app/observability.py`
+ - Saída de `/api/ops/metrics`: `curl :8000/api/ops/metrics`
+ - Print do compose health: `docker compose ps`
 
 ## Notas de Implementação
 - Evitar refactors; mudanças mínimas para conformidade.

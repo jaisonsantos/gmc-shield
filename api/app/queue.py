@@ -1,9 +1,12 @@
 # api/app/queue.py
 
-import os, json, datetime as dt
+import os
+import json
+import datetime as dt
 import redis
 from redis import Redis
 from rq import Queue
+from .observability import trace_id_ctx
 
 QUEUE_SCAN = "queue:scan"
 
@@ -30,6 +33,7 @@ def publish_scan_job(
         "requested_by": requested_by,
         "ts": dt.datetime.now(dt.timezone.utc).isoformat(),
         "skipped": False,
+        "trace_id": trace_id_ctx.get(),
     }
     # Fila FIFO: LPUSH + BRPOP do worker
     r.lpush(QUEUE_SCAN, json.dumps(payload))

@@ -1,17 +1,37 @@
 # api/app/main.py
 
-import time, os
+import time
+import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, stores, feeds, violations, blocks, policies, appeals, notifications, ops, wp, scans
+from .routers import (
+    auth,
+    stores,
+    feeds,
+    violations,
+    blocks,
+    policies,
+    appeals,
+    notifications,
+    ops,
+    wp,
+    scans,
+    oauth_stub,
+)
+from .core.settings import Settings
+from .observability import new_trace_id, record_request
 
+settings     = Settings()
 app          = FastAPI(title="GMC Shield API", version="0.1.0")
 raw          = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "http://localhost:5173")
 origins      = [o.strip() for o in raw.split(",") if o.strip()]
 origin_regex = os.getenv("ALLOWED_ORIGIN_REGEX")  # ^https://([a-z0-9-]+\.)?vercel\.app$|^https://[a-z0-9-]+\.ngrok-free\.app$
 
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
+    new_trace_id(request.headers.get("x-trace-id"))
+    request_id = request.headers.get("x-request-id")
     t0 = time.perf_counter()
     status = 500
     try:
@@ -20,7 +40,16 @@ async def log_requests(request: Request, call_next):
         return response
     finally:
         dt = (time.perf_counter() - t0) * 1000
-        print(f"[REQ] {request.method} {request.url.path} -> {status} ({dt:.1f}ms)")
+        record_request(
+            status,
+            dt,
+            request_id,
+            method=request.method,
+            path=request.url.path,
+            job_id=None,
+            store_id=None,
+            user_id=None,
+        )
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,7 +72,13 @@ app.include_router(wp.router,               prefix="/api/stores",   tags=["wp"])
 app.include_router(appeals.router,          prefix="/api/stores",   tags=["appeals"])
 app.include_router(notifications.router,    prefix="/api/stores",   tags=["notifications"])
 app.include_router(scans.router,            prefix="/api/stores",   tags=["scans"])
+app.include_router(oauth_stub.router)
 @app.get("/healthz")
 def healthz():
+    return {"ok": True}
+
+
+@app.get("/readyz")
+def readyz():
     return {"ok": True}
 

@@ -21,7 +21,7 @@
 
 ## Fase 1 — Core MVP (T0–T12)
 
-### T0 — Repo, Infra & CI/CD
+### T0 — Repo, Infra & CI/CD ✅
 
 **Objetivo**
 

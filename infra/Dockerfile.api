@@ -1,32 +1,22 @@
-# infra/Dockerfile.api
-
-# Base mais nova, geralmente com menos CVEs abertas
-FROM python:3.11-slim-bookworm
-
-# Atualiza todos os pacotes do sistema para reduzir CVEs
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
-
-# Evita caches e arquivos pyc desnecessários
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PYTHONUNBUFFERED=1
-
-# Instala somente o necessário, sem recommends
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential curl git libpq-dev \
+# === builder ===
+FROM python:3.11-slim-bookworm AS builder
+ENV PYTHONDONTWRITEBYTECODE=1 PIP_NO_CACHE_DIR=1 PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential git libpq-dev \
     && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
-
-# Primeiro só as deps pra aproveitar cache
 COPY api/requirements.txt /app/requirements.txt
 RUN python -m pip install --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && python -m playwright install --with-deps chromium
+    && pip install --prefix=/opt/pydeps -r /app/requirements.txt
 
-# (Se você quiser copiar código no build; em runtime você já monta volume ./api:/app)
-# COPY api/ /app
-
-# (Opcional) rodar como usuário não-root
-# RUN useradd -m app && chown -R app:app /app
-# USER app
+# === runtime ===
+FROM python:3.11-slim-bookworm
+ENV PYTHONDONTWRITEBYTECODE=1 PIP_NO_CACHE_DIR=1 PYTHONUNBUFFERED=1 PATH="/opt/pydeps/bin:${PATH}"
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir playwright && python -m playwright install --with-deps chromium
+COPY --from=builder /opt/pydeps /opt/pydeps
+WORKDIR /app
+COPY api/ /app
+RUN useradd -m app && chown -R app:app /app
+USER app
+CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","8000"]

@@ -25,7 +25,8 @@ class FeedConfig(BaseModel):
 
 
 class FeedVersionOut(BaseModel):
-    hash: str
+    id: int
+    content_hash: str
     items_count: int
     created_at: datetime
 

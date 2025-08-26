@@ -35,6 +35,7 @@ app.include_router(ops.router,              prefix="/api/ops",      tags=["ops"]
 app.include_router(auth.router,             prefix="/api/auth",     tags=["auth"])
 app.include_router(stores.router,           prefix="/api/stores",   tags=["stores"])
 app.include_router(feeds.router,            prefix="/api/stores",   tags=["feeds"])
+app.include_router(feeds.router_v1,         prefix="/api/v1",       tags=["feeds"])
 app.include_router(violations.router,       prefix="/api/stores",   tags=["violations"])
 app.include_router(blocks.router,           prefix="/api/stores",   tags=["blocks"])
 app.include_router(policies.router,         prefix="/api/stores",   tags=["policies"])

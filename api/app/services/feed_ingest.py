@@ -124,5 +124,9 @@ def normalize_row(r: dict) -> dict:
         "raw_json": json.dumps(r, ensure_ascii=False),
     }
 
-def compute_hash(raw: bytes) -> str:
-    return hashlib.sha256(raw).hexdigest()
+def compute_hash(raw: bytes, origin: str = "") -> str:
+    h = hashlib.sha256()
+    h.update(raw)
+    if origin:
+        h.update(origin.encode("utf-8"))
+    return h.hexdigest()

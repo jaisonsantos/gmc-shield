@@ -1,5 +1,6 @@
 # api/app/scripts/mint_token.py
-import os, datetime
+import datetime
+import os
 from jose import jwt
 
 EMAIL = os.getenv("EMAIL", "owner@gmcshield.dev")

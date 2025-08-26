@@ -63,9 +63,9 @@ def upgrade():
         sa.Column('deactivated_at', sa.DateTime),
     )
 def downgrade():
-    op.drop_table('blocks'); 
-    op.drop_table('violations'); 
-    op.drop_table('feeds'); 
-    op.drop_table('stores'); 
-    op.drop_table('users'); 
+    op.drop_table('blocks')
+    op.drop_table('violations')
+    op.drop_table('feeds')
+    op.drop_table('stores')
+    op.drop_table('users')
     op.drop_table('accounts')

@@ -1,5 +1,10 @@
 {
   "python.defaultInterpreterPath": "api/.venv/bin/python",
   "editor.formatOnSave": true,
-  "[python]": { "editor.defaultFormatter": "ms-python.autopep8" }
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  },
+  "python.analysis.extraPaths": [
+    "./api"
+  ]
 }

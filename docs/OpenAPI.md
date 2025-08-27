@@ -1,11 +1,8 @@
 # OpenAPI Paths
 - GET /api/auth/google/callback
 - GET /api/auth/google/start
-- GET /api/auth/google/start-content
 - POST /api/auth/login
 - GET /api/auth/whoami
-- GET /api/google/mc/accounts
-- GET /api/google/mc/{merchant_id}/products
 - GET /api/ops/metrics
 - GET /api/ops/worker/health
 - GET /api/stores

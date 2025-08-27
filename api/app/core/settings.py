@@ -1,7 +1,7 @@
 # api/app/core/settings.py
 from pydantic_settings import BaseSettings
 from pydantic import AnyHttpUrl
-from typing import Optional, List
+from typing import Optional
 
 class Settings(BaseSettings):
     API_HOST: str = "0.0.0.0"
@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     )
     GOOGLE_OAUTH_ISSUER: str = "https://accounts.google.com"
     GOOGLE_API_BASE: str = "https://www.googleapis.com"
+    GOOGLE_AUTH_ENDPOINT: Optional[AnyHttpUrl] = None
+    GOOGLE_TOKEN_ENDPOINT: Optional[AnyHttpUrl] = None
+    GOOGLE_USERINFO_ENDPOINT: Optional[AnyHttpUrl] = None
 
     # Integração S3 (MinIO)
     S3_BUCKET: Optional[str] = None

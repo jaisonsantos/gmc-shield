@@ -120,6 +120,9 @@ Veja `.env.example`. Principais:
 - `REDIS_URL` — Redis (RQ)
 - `SECRET_KEY` — sessão/autenticação web
 - `CORS_ORIGINS` — origens permitidas (ex.: `http://localhost:5173,http://localhost:4173`)
+- `FERNET_KEY` — criptografia de tokens sensíveis (Google refresh token)
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `GOOGLE_OAUTH_REDIRECT_URI`
+  — credenciais para login com Google (OIDC)
 - `VITE_API` (lado do `web/`) — URL da API (ex.: `http://localhost:8000`)
 - `FERNET_KEY` — **obrigatória** para criptografar segredos (ex.: App Password do WP)
 - `FERNET_KEYS` — **opcional** (rotação de chaves, ver abaixo)

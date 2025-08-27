@@ -155,6 +155,21 @@ class Block(Base):
     deactivated_at  = Column(DateTime)
 
 
+class GoogleAccount(Base):
+    __tablename__ = "google_accounts"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    sub = Column(String(255), unique=True, nullable=False, index=True)
+    email = Column(String(255))
+    name = Column(String(255))
+    picture = Column(Text)
+    access_token_enc = Column(Text)
+    refresh_token_enc = Column(Text)
+    token_expiry = Column(DateTime(timezone=True))
+    content_scope_granted = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
 class WpPolicyBinding(Base):
     __tablename__ = "wp_policy_bindings"
     id            = Column(Integer, primary_key=True)

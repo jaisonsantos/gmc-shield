@@ -3,11 +3,11 @@
 // 1. A constante API_BASE deve ser um caminho relativo para que o proxy do Vite funcione.
 const API_BASE = "";
 
-const TOKEN_KEY = "gmcshield_token";
+let TOKEN_MEM = "";
 
-export function getToken() { return localStorage.getItem(TOKEN_KEY) || ""; }
-export function setToken(t) { if (t) localStorage.setItem(TOKEN_KEY, t); }
-export function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+export function getToken() { return TOKEN_MEM; }
+export function setToken(t) { TOKEN_MEM = t || ""; }
+export function clearToken() { TOKEN_MEM = ""; }
 
 export async function apiFetch(path, { method = "GET", body, headers = {}, json = true } = {}) {
   // 2. O URL agora será relativo, ex: "/api/auth/login"

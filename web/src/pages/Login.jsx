@@ -1,19 +1,33 @@
 // web/src/pages/Login.jsx
-import React, { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../lib/auth";
 import Button from "../components/Button";
 import { Input } from "../components/Input";
 import { Shield } from 'lucide-react';
+import { apiFetch, setToken } from "../lib/api";
 
 export default function Login() {
   const nav = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, boot } = useAuth();
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("owner@gmcshield.dev");
   const [password, setPassword] = useState("demo");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    const t = searchParams.get("token");
+    if (t) {
+      setToken(t);
+      (async () => {
+        await boot();
+        const from = location.state?.from?.pathname || "/app/dashboard";
+        nav(from, { replace: true });
+      })();
+    }
+  }, [searchParams, boot, nav, location.state]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -26,6 +40,18 @@ export default function Login() {
     } catch (e) {
       setErr(e.message || "Falha no login");
     } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setErr("");
+    setBusy(true);
+    try {
+      const res = await apiFetch("/api/auth/google/start");
+      if (res.auth_url) window.location.href = res.auth_url;
+    } catch (e) {
+      setErr(e.message || "Falha no login");
       setBusy(false);
     }
   };
@@ -63,6 +89,14 @@ export default function Login() {
               {busy ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
+          <div style={{display:'flex',alignItems:'center',gap:'1rem',color:'#6b7280'}}>
+            <hr style={{flex:1,borderColor:'#e5e7eb'}}/>
+            <span>OU</span>
+            <hr style={{flex:1,borderColor:'#e5e7eb'}}/>
+          </div>
+          <Button variant="outline" onClick={handleGoogle} loading={busy} style={{ width: '100%' }}>
+            Continuar com Google
+          </Button>
         </div>
       </div>
     </div>

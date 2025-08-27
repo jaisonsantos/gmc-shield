@@ -30,13 +30,14 @@ def test_ingest_idempotent():
     db.add(feed)
     db.commit()
     raw = b"id,title,price\n1,Item,9.99 USD\n"
-    res1 = _ingest_raw(db, 1, feed, raw, "csv", "upload")
+    res1 = _ingest_raw(db, 1, feed, raw, "csv", "upload:feed.csv")
     assert res1["items_imported"] == 1
     assert res1["items_count"] == 1
     assert feed.last_item_count == 1
     hash1 = res1["content_hash"]
-    res2 = _ingest_raw(db, 1, feed, raw, "csv", "upload")
+    res2 = _ingest_raw(db, 1, feed, raw, "csv", "upload:feed.csv")
     assert res2["items_imported"] == 0
-    assert res2.get("skipped") == "same-hash"
+    assert res2.get("duplicate") is True
     assert res2["content_hash"] == hash1
+    assert db.query(models.FeedVersion).count() == 1
     db.close()

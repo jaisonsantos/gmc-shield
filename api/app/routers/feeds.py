@@ -6,7 +6,13 @@ import httpx
 from ..db import get_db
 from .. import models, schemas
 from ..auth import require_roles
-from ..services.feed_ingest import parse_csv, parse_xml, normalize_row, compute_hash
+from ..services.feed_ingest import (
+    parse_csv,
+    parse_xml,
+    normalize_row,
+    compute_hash,
+    canonicalize_link,
+)
 from ..jobs import feed as feed_jobs
 
 router = APIRouter()
@@ -28,27 +34,36 @@ def set_feed(store_id: int, cfg: schemas.FeedConfig, db: Session = Depends(get_d
 @router.get(
     "/{store_id}/feed/versions",
     summary="Feed versions",
-    dependencies=[Depends(require_roles("owner", "manager", "viewer"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst", "viewer"))],
 )
 @router_v1.get(
     "/stores/{store_id}/feeds/versions",
     summary="Feed versions",
-    dependencies=[Depends(require_roles("owner", "manager", "viewer"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst", "viewer"))],
 )
-def feed_versions(store_id: int, db: Session = Depends(get_db)):
+def feed_versions(
+    store_id: int,
+    offset: int = 0,
+    limit: int = 50,
+    page: int | None = None,
+    db: Session = Depends(get_db),
+):
+    if page is not None:
+        offset = (page - 1) * limit
     feed = (
         db.query(models.Feed)
         .filter(models.Feed.store_id == store_id)
         .first()
     )
     if not feed:
-        return {"items": []}
-    versions = (
+        return {"items": [], "total": 0, "offset": offset, "limit": limit}
+    q = (
         db.query(models.FeedVersion)
         .filter(models.FeedVersion.feed_id == feed.id)
         .order_by(models.FeedVersion.created_at.desc())
-        .all()
     )
+    total = q.count()
+    versions = q.offset(offset).limit(limit).all()
     return {
         "items": [
             {
@@ -59,14 +74,35 @@ def feed_versions(store_id: int, db: Session = Depends(get_db)):
                 "created_at": v.created_at,
             }
             for v in versions
-        ]
+        ],
+        "total": total,
+        "offset": offset,
+        "limit": limit,
     }
 
 
 def _ingest_raw(db: Session, store_id: int, feed: models.Feed, raw: bytes, format: str, origin: str = ""):
     h = compute_hash(raw, origin)
-    if feed.last_hash and feed.last_hash == h:
-        return {"feed_id": feed.id, "content_hash": h, "hash": h, "items_imported": 0, "items_updated": 0, "skipped": "same-hash"}
+    existing_version = (
+        db.query(models.FeedVersion)
+        .filter(models.FeedVersion.feed_id == feed.id, models.FeedVersion.content_hash == h)
+        .first()
+    )
+    if existing_version:
+        feed.last_hash = h
+        feed.last_parsed_at = func.now()
+        feed.last_item_count = existing_version.items_count
+        db.commit()
+        return {
+            "feed_id": feed.id,
+            "content_hash": h,
+            "hash": h,
+            "version_id": existing_version.id,
+            "items_count": existing_version.items_count,
+            "items_imported": 0,
+            "items_updated": 0,
+            "duplicate": True,
+        }
 
     if format == "csv":
         rows = parse_csv(raw, delimiter=",")
@@ -129,7 +165,7 @@ def _ingest_raw(db: Session, store_id: int, feed: models.Feed, raw: bytes, forma
 @router_v1.post(
     "/stores/{store_id}/feeds/ingest",
     summary="Ingest feed (URL or file)",
-    dependencies=[Depends(require_roles("owner", "manager"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst"))],
 )
 async def ingest_feed_v1(
     store_id: int,
@@ -171,11 +207,12 @@ async def ingest_feed_v1(
             if format_form or format_json:
                 feed.format = feed_format
             db.commit()
+        norm_url = canonicalize_link(url)
         async with httpx.AsyncClient(timeout=30) as client:
             res = await client.get(url)
             res.raise_for_status()
             raw = res.content
-        origin = url
+        origin = f"url:{norm_url}" if norm_url else f"url:{url}"
     else:
         raise HTTPException(400, "url or file required")
     if enqueue:
@@ -187,7 +224,7 @@ async def ingest_feed_v1(
 @router.post(
     "/{store_id}/feed/import",
     summary="Import feed (URL or file)",
-    dependencies=[Depends(require_roles("owner", "manager"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst"))],
 )
 async def import_feed(
     store_id: int,
@@ -205,11 +242,12 @@ async def import_feed(
     if source_type == "url":
         if not url:
             url = feed.url
+        norm_url = canonicalize_link(url)
         async with httpx.AsyncClient(timeout=30) as client:
             res = await client.get(url)
             res.raise_for_status()
             raw = res.content
-        origin = url or ""
+        origin = f"url:{norm_url}" if norm_url else f"url:{url}" if url else ""
     elif source_type == "file":
         if not file:
             raise HTTPException(400, "file is required")
@@ -229,7 +267,7 @@ async def import_feed(
 @router.post(
     "/{store_id}/feed/ingest",
     summary="Ingest feed from configured URL",
-    dependencies=[Depends(require_roles("owner", "manager"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst"))],
 )
 async def ingest_from_url(
     store_id: int,
@@ -239,11 +277,12 @@ async def ingest_from_url(
     feed = db.query(models.Feed).filter(models.Feed.store_id == store_id).first()
     if not feed or not feed.url:
         raise HTTPException(400, "Feed not configured")
+    norm_url = canonicalize_link(feed.url)
     async with httpx.AsyncClient(timeout=30) as client:
         res = await client.get(feed.url)
         res.raise_for_status()
         raw = res.content
-    origin = feed.url
+    origin = f"url:{norm_url}" if norm_url else f"url:{feed.url}"
     if enqueue:
         job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed.format)
         return JSONResponse(
@@ -256,7 +295,7 @@ async def ingest_from_url(
 @router.post(
     "/{store_id}/feed/upload",
     summary="Upload and ingest feed file",
-    dependencies=[Depends(require_roles("owner", "manager"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst"))],
 )
 async def upload_feed(
     store_id: int,
@@ -284,7 +323,7 @@ async def upload_feed(
 @router.get(
     "/{store_id}/items",
     summary="List feed items",
-    dependencies=[Depends(require_roles("owner", "manager", "viewer"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst", "viewer"))],
 )
 def list_items(
     store_id: int,
@@ -302,22 +341,25 @@ def list_items(
     )
     return {
         "items": [schemas.FeedItemOut.model_validate(i).model_dump() for i in items],
-        "page": page,
-        "total": total,
+    "page": page,
+    "total": total,
     }
 
 
 @router_v1.get(
     "/feeds/versions/{version_id}/items",
     summary="Items for feed version",
-    dependencies=[Depends(require_roles("owner", "manager", "viewer"))],
+    dependencies=[Depends(require_roles("owner", "manager", "admin", "analyst", "viewer"))],
 )
 def version_items(
     version_id: int,
-    page: int = 1,
+    offset: int = 0,
     limit: int = 50,
+    page: int | None = None,
     db: Session = Depends(get_db),
 ):
+    if page is not None:
+        offset = (page - 1) * limit
     version = db.get(models.FeedVersion, version_id)
     if not version:
         raise HTTPException(404, "version not found")
@@ -325,12 +367,13 @@ def version_items(
     total = q.count()
     items = (
         q.order_by(models.FeedItem.item_id)
-        .offset((page - 1) * limit)
+        .offset(offset)
         .limit(limit)
         .all()
     )
     return {
         "items": [schemas.FeedItemOut.model_validate(i).model_dump() for i in items],
-        "page": page,
         "total": total,
+        "offset": offset,
+        "limit": limit,
     }

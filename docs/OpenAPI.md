@@ -1,5 +1,4 @@
 # OpenAPI Paths
-
 - GET /api/auth/google/callback
 - GET /api/auth/google/start
 - GET /api/auth/google/start-content
@@ -41,4 +40,3 @@
 - GET /api/v1/stores/{store_id}/feeds/versions
 - GET /healthz
 - GET /readyz
-

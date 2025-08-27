@@ -109,11 +109,6 @@ cat <<EOF
 ℹ️ Para iniciar o ambiente WordPress (e o plugin local):
   docker compose -f docker-compose.wp.yml up -d
 
-Dica ngrok (UI):
-  ngrok http http://localhost:5173
-
-Como o backend já aceita:
-  ALLOWED_ORIGINS="$ALLOWED_ORIGINS"
-  ALLOWED_ORIGIN_REGEX="$ALLOWED_ORIGIN_REGEX"
-não precisa editar a API ao trocar o domínio do ngrok.
+# se precisar compartilhar o frontend, use um túnel manual (ex.: ngrok)
+#   ngrok http http://localhost:5173
 EOF

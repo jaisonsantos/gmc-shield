@@ -2,6 +2,8 @@
 
 Use este guia rápido para testar a API localmente, gerar tokens, rodar o smoke test e depurar problemas comuns.
 
+> Por padrão tudo roda em `localhost`. Se precisar acessar de fora, abra um túnel manual (ex.: `ngrok http http://localhost:8000`).
+
 > Convenções:
 >
 > - **api** = container FastAPI (`gmc-shield-api-1`)

@@ -25,8 +25,8 @@ web/dist/
 *.env
 api/.env
 web/.env
-web/.env.local
 .env.local
+!web/.env.local
 
 # Misc
 coverage/

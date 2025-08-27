@@ -1,5 +1,7 @@
 # Preview do Frontend
 
+Ambiente de desenvolvimento roda em `localhost`; para compartilhar externamente use um túnel (ex.: `ngrok`) ou um dos métodos abaixo.
+
 ## Opção 1 — GitHub Pages (automático pelo workflow)
 
 1. Faça push do repositório para o GitHub (branch `main` ou `master`).

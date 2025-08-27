@@ -323,3 +323,349 @@ header.app { display: flex; justify-content: space-between; align-items: center;
   .page-header { flex-wrap: wrap; row-gap: 8px; }
   .pill.meta { margin-left: 0; }
 }
+
+/* ===========================
+   AppShell Layout
+   =========================== */
+.app-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  background-color: #f9fafb; /* Um cinza muito claro para o fundo */
+}
+
+.app-sidebar {
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-line);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+}
+
+.sidebar-header .logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space-md) var(--space-sm);
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.sidebar-header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sidebar-nav {
+  margin-top: var(--space-xxl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex-grow: 1;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-md);
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: var(--state-hover);
+  color: var(--color-fg);
+}
+
+.nav-link.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.sidebar-footer {
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-line);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.user-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.logout-button:hover {
+  color: var(--color-accent);
+  background-color: var(--state-hover);
+}
+
+.app-main-content {
+  overflow-y: auto;
+  padding: var(--space-xxl);
+}
+
+/* ===========================
+   Stores Page (Cards)
+   =========================== */
+.store-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.store-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.store-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.store-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.store-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.platform-badge {
+  background-color: var(--state-muted);
+  border: 1px solid var(--color-line);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.store-card-body {
+  flex-grow: 1;
+  font-size: 14px;
+}
+.store-card-body p {
+  margin: 0;
+}
+
+.store-card-footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.status-pill {
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 600;
+}
+.status-pill.ok { background-color: #dcfce7; color: #166534; }
+.status-pill.off { background-color: #fee2e2; color: #991b1b; }
+
+/* ===========================
+   Store Card Actions
+   =========================== */
+.store-card-link-main {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  flex-grow: 1;
+}
+
+.store-card-actions {
+  border-top: 1px solid var(--color-line);
+  padding-top: var(--space-xl);
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===========================
+   Pills for Status & Severity
+   =========================== */
+.severity-pill, .status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  line-height: 1.5;
+}
+
+/* Severity */
+.severity-pill.critical { background-color: #fee2e2; color: #991b1b; }
+.severity-pill.major { background-color: #ffedd5; color: #9a3412; }
+.severity-pill.warning { background-color: #fef9c3; color: #854d0e; }
+.severity-pill.minor, .severity-pill.info { background-color: #e0e7ff; color: #4338ca; }
+
+/* Scan Status */
+.status-pill.done, .status-pill.ok { background-color: #dcfce7; color: #166534; }
+.status-pill.running { background-color: #dbeafe; color: #1e40af; }
+.status-pill.queued { background-color: #e0e7ff; color: #4338ca; }
+.status-pill.failed, .status-pill.error { background-color: #fee2e2; color: #991b1b; }
+
+/* Link de Ação dentro da tabela */
+.btn-link-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.btn-link-action:hover {
+  text-decoration: underline;
+}
+
+.status-pill.info, .status-pill.preorder { background-color: #e0e7ff; color: #4338ca; }
+.status-pill.default { background-color: #f3f4f6; color: #4b5563; } /* Para outros status */
+
+/* ===========================
+   Store Navigation & Layout
+   =========================== */
+.store-nav {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-line);
+  margin-bottom: var(--space-xxl);
+}
+
+.store-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--space-md) var(--space-xl);
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transform: translateY(1px);
+}
+
+.store-nav-link:hover {
+  background-color: var(--state-hover);
+  color: var(--color-fg);
+}
+
+.store-nav-link.active {
+  background-color: var(--color-bg);
+  border-color: var(--color-line);
+  color: var(--color-accent);
+}
+
+/* ===========================
+   Dashboard KPI Cards
+   =========================== */
+.kpi-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  background-color: var(--color-bg);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  border-left-width: 4px;
+}
+.kpi-card.critical { border-left-color: #ef4444; }
+.kpi-card.major { border-left-color: #f97316; }
+.kpi-card.info { border-left-color: #3b82f6; }
+.kpi-card.ok { border-left-color: #22c55e; }
+
+.kpi-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kpi-card.critical .kpi-icon { background-color: #fee2e2; color: #991b1b; }
+.kpi-card.major .kpi-icon { background-color: #ffedd5; color: #9a3412; }
+.kpi-card.info .kpi-icon { background-color: #dbeafe; color: #1e40af; }
+.kpi-card.ok .kpi-icon { background-color: #dcfce7; color: #166534; }
+
+
+.kpi-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.kpi-title {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+/* ===========================
+   Table Footer & Pagination
+   =========================== */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: var(--space-lg);
+  font-size: 14px;
+}
+.tf-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-muted);
+}
+.tf-left .input {
+  width: 80px; /* Largura menor para o seletor */
+  height: 36px;
+  padding: 4px 8px;
+}
+
+/* Ajuste para o status de disponibilidade */
+.status-pill.info, .status-pill.preorder { background-color: #e0e7ff; color: #4338ca; }
+.status-pill.default { background-color: #f3f4f6; color: #4b5563; }

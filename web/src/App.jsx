@@ -18,21 +18,30 @@ import Ops from "./pages/Ops";
 import Violations from "./pages/Violations";
 import Scans from "./pages/Scans";
 import WP from "./pages/WP";
+import StoreLayout from "./components/StoreLayout"; // 1. Importar o novo layout
 
 export default function App() {
   return (
     <Routes>
-      {/* Public landing page */}
       <Route path="/" element={<WebSite />} />
-
-      {/* Login page */}
       <Route path="/login" element={<Login />} />
 
-      {/* Protected application routes */}
       <Route path="/app" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="stores" element={<Stores />} />
+        
+        {/* 2. Criar um grupo de rotas para a loja */}
+        <Route path="stores/:id" element={<StoreLayout />}>
+          {/* A página inicial de uma loja será a de violações */}
+          <Route index element={<Navigate to="violations" replace />} />
+          <Route path="violations" element={<Violations />} />
+          <Route path="scans" element={<Scans />} />
+          <Route path="feeds" element={<Feeds />} />
+          <Route path="items" element={<Items />} />
+          <Route path="wp" element={<WP />} />
+        </Route>
+
         <Route path="policies" element={<Policies />} />
         <Route path="appeals" element={<Appeals />} />
         <Route path="notifications" element={<Notifications />} />
@@ -40,14 +49,8 @@ export default function App() {
         <Route path="billing" element={<Billing />} />
         <Route path="agency" element={<Agency />} />
         <Route path="ops" element={<Ops />} />
-        <Route path="stores/:id/violations" element={<Violations />} />
-        <Route path="stores/:id/scans" element={<Scans />} />
-        <Route path="stores/:id/wp" element={<WP />} />
-        <Route path="stores/:id/feeds" element={<Feeds />} />
-        <Route path="stores/:id/items" element={<Items />} />
       </Route>
 
-      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

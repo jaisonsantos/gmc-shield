@@ -1,30 +1,21 @@
 // web/src/lib/api.js
 
-const API_BASE = (import.meta.env.VITE_API || import.meta.env.VITE_API_BASE || "http://localhost:8000").replace(/\/+$/, "");
-export const api = (p, opts = {}) => fetch(`${API_BASE}${p}`, { ...opts, headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+// 1. A constante API_BASE deve ser um caminho relativo para que o proxy do Vite funcione.
+const API_BASE = "";
 
 const TOKEN_KEY = "gmcshield_token";
 
-export function getToken()       { return localStorage.getItem(TOKEN_KEY) || ""; }
-export function setToken(t)     { if (t) localStorage.setItem(TOKEN_KEY, t); }
-export function clearToken()    { localStorage.removeItem(TOKEN_KEY); }
-
-function maybeAddNgrokBypass(headers) {
-  try {
-    const u = new URL(API_BASE);
-    if (u.hostname.endsWith("ngrok-free.app")) {
-      headers["ngrok-skip-browser-warning"] = "true";
-    }
-  } catch {}
-  return headers;
-}
+export function getToken() { return localStorage.getItem(TOKEN_KEY) || ""; }
+export function setToken(t) { if (t) localStorage.setItem(TOKEN_KEY, t); }
+export function clearToken() { localStorage.removeItem(TOKEN_KEY); }
 
 export async function apiFetch(path, { method = "GET", body, headers = {}, json = true } = {}) {
+  // 2. O URL agora será relativo, ex: "/api/auth/login"
   const url = `${API_BASE}${path}`;
-  const h = maybeAddNgrokBypass({
+  const h = {
     ...(json && body ? { "Content-Type": "application/json" } : {}),
     ...headers,
-  });
+  };
 
   const token = getToken();
   if (token) h["Authorization"] = `Bearer ${token}`;
@@ -35,22 +26,26 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
     ...(body ? { body: json ? JSON.stringify(body) : body } : {}),
   });
 
-  // garanta que recebemos JSON; se vier HTML do ngrok, falhe com mensagem clara
   const ct = res.headers.get("content-type") || "";
-  if (!ct.includes("application/json")) {
-    const text = await res.text();
-    throw new Error(`Expected JSON from ${url}, got ${ct || "unknown"}: ${text.slice(0, 120)}…`);
-  }
 
   if (!res.ok) {
-    const j = await res.json().catch(() => ({}));
-    const msg = j.detail || `${res.status} ${res.statusText}`;
-    const err = new Error(msg);
-    err.status = res.status;
-    throw err;
+    if (ct.includes("application/json")) {
+      const j = await res.json().catch(() => ({}));
+      const msg = j.detail || `${res.status} ${res.statusText}`;
+      const err = new Error(msg);
+      err.status = res.status;
+      throw err;
+    }
+    const text = await res.text();
+    throw new Error(`Erro ${res.status}: ${text.slice(0, 150)}…`);
   }
-
-  return res.status === 204 ? null : res.json();
+  
+  // Apenas tenta fazer parse de JSON se o content-type for o correto
+  if (ct.includes("application/json")) {
+    return res.status === 204 ? null : res.json();
+  }
+  
+  return null; // Retorna nulo para respostas não-JSON (como redirects)
 }
 
 // auth
@@ -74,6 +69,7 @@ export const Stores = {
     },
   }),
   scan: (storeId, limit = 5) => apiFetch(`/api/stores/${storeId}/scan`, { method: "POST", body: { limit_items: limit } }),
+  dashboard: (storeId) => apiFetch(`/api/stores/${storeId}/dashboard`),
 };
 
 export const Feeds = {

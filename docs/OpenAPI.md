@@ -1,4 +1,5 @@
 # OpenAPI Paths
+
 - GET /api/auth/google/callback
 - GET /api/auth/google/start
 - GET /api/auth/google/start-content
@@ -16,6 +17,7 @@
 - POST /api/stores/{store_id}/blocks
 - DELETE /api/stores/{store_id}/blocks/by-feed-item/{feed_item_id}
 - DELETE /api/stores/{store_id}/blocks/{block_id}
+- GET /api/stores/{store_id}/dashboard
 - POST /api/stores/{store_id}/feed
 - POST /api/stores/{store_id}/feed/import
 - POST /api/stores/{store_id}/feed/ingest

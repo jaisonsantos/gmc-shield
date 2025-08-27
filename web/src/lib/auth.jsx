@@ -8,20 +8,22 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // { email, role, account_id }
   const [ready, setReady] = useState(false);
 
+  // bootstrap: se tem token salvo, tenta whoami
+  const boot = async () => {
+    setReady(false);
+    const t = getToken();
+    if (!t) return setReady(true);
+    try {
+      const me = await Api.whoami();
+      setUser(me);
+    } catch {
+      clearToken();
+    } finally {
+      setReady(true);
+    }
+  };
+
   useEffect(() => {
-    // bootstrap: se tem token salvo, tenta whoami
-    const boot = async () => {
-      const t = getToken();
-      if (!t) return setReady(true);
-      try {
-        const me = await Api.whoami();
-        setUser(me);
-      } catch {
-        clearToken();
-      } finally {
-        setReady(true);
-      }
-    };
     boot();
   }, []);
 
@@ -45,7 +47,7 @@ export function AuthProvider({ children }) {
     return true; // viewer pode listar
   };
 
-  const value = { user, ready, isAuthenticated: !!user, login, logout, can };
+  const value = { user, ready, isAuthenticated: !!user, login, logout, can, boot };
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 

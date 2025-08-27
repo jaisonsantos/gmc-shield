@@ -6,7 +6,6 @@ Create Date: 2024-10-??
 """
 
 from alembic import op
-import sqlalchemy as sa
 
 revision = '0008_feed_versions_content_hash'
 down_revision = '0007_feed_extra_cols'

@@ -216,7 +216,7 @@ async def ingest_feed_v1(
     else:
         raise HTTPException(400, "url or file required")
     if enqueue:
-        job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed_format)
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed_format, origin)
         return JSONResponse(status_code=202, content={"status": "queued", "job_id": job_id, "feed_id": feed.id})
     return _ingest_raw(db, store_id, feed, raw, feed_format, origin)
 
@@ -256,7 +256,7 @@ async def import_feed(
     else:
         raise HTTPException(400, "invalid source_type")
     if enqueue:
-        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format)
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format, origin)
         return JSONResponse(
             status_code=202,
             content={"status": "queued", "job_id": job_id, "feed_id": feed.id},
@@ -284,7 +284,7 @@ async def ingest_from_url(
         raw = res.content
     origin = f"url:{norm_url}" if norm_url else f"url:{feed.url}"
     if enqueue:
-        job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed.format)
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, feed.format, origin)
         return JSONResponse(
             status_code=202,
             content={"status": "queued", "job_id": job_id, "feed_id": feed.id},
@@ -312,7 +312,7 @@ async def upload_feed(
     raw = await file.read()
     origin = f"upload:{file.filename}" if getattr(file, "filename", None) else "upload"
     if enqueue:
-        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format)
+        job_id = feed_jobs.enqueue(store_id, feed.id, raw, format, origin)
         return JSONResponse(
             status_code=202,
             content={"status": "queued", "job_id": job_id, "feed_id": feed.id},

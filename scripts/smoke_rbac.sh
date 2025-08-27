@@ -116,4 +116,40 @@ OV=$(curl -s "$API/api/stores/$STORE_ID/overview" "${AUTH[@]}")
 [[ -n "$JQ" ]] && echo "$OV" | $JQ '.' || echo "$OV"
 ok "Overview ok"
 
+# --------- 8) RBAC ingest (v1) ----------
+log "Testando RBAC no ingest v1"
+TOK_VIEWER=$(ROLE=viewer python scripts/mint_token.py)
+CODE_VIEWER=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+  "$API/api/v1/stores/$STORE_ID/feeds/ingest" \
+  -H "Authorization: Bearer $TOK_VIEWER" \
+  -F format=xml -F file=@"$FEED" || true)
+if [[ "$CODE_VIEWER" == "403" || "$CODE_VIEWER" == "401" ]]; then
+  ok "viewer bloqueado (HTTP $CODE_VIEWER)"
+else
+  err "viewer deveria falhar no ingest (HTTP $CODE_VIEWER)"; exit 1
+fi
+
+TOK_ANALYST=$(ROLE=analyst python scripts/mint_token.py)
+CODE_ANALYST=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+  "$API/api/v1/stores/$STORE_ID/feeds/ingest" \
+  -H "Authorization: Bearer $TOK_ANALYST" \
+  -F format=xml -F file=@"$FEED" || true)
+if [[ "$CODE_ANALYST" == "200" ]]; then
+  ok "analyst permitido"
+else
+  err "analyst deveria conseguir (HTTP $CODE_ANALYST)"; exit 1
+fi
+
+for ROLE in owner manager admin; do
+  TOK=$(ROLE=$ROLE python scripts/mint_token.py)
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    "$API/api/v1/stores/$STORE_ID/feeds/ingest" \
+    -H "Authorization: Bearer $TOK" \
+    -F format=xml -F file=@"$FEED" || true)
+  if [[ "$CODE" != "200" ]]; then
+    err "$ROLE deveria conseguir (HTTP $CODE)"; exit 1
+  fi
+done
+ok "owner/manager/admin permitidos"
+
 echo -e "${C_BOLD}Fim.${C_RESET} Abra ${C_BOLD}$API/docs${C_RESET}."

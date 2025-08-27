@@ -29,7 +29,7 @@ def canonicalize_link(url: str | None) -> str | None:
     host = u.netloc.lower()
     path = u.path or "/"
     return urllib.parse.urlunsplit(
-        (scheme, host, path, urllib.parse.urlencode(qs), u.fragment)
+        (scheme, host, path, urllib.parse.urlencode(qs), "")
     )
 
 

@@ -14,6 +14,7 @@ from sqlalchemy.pool import StaticPool
 from app import models
 from app.models import Base
 from app.routers.feeds import _ingest_raw
+from app.services.feed_ingest import canonicalize_link
 
 
 def main():
@@ -53,7 +54,8 @@ def main():
         import httpx
         async with httpx.AsyncClient(timeout=30) as client:
             r = await client.get('http://127.0.0.1:8001/docs/seed/demo_feed.csv')
-            _ingest_raw(db, store.id, feed, r.content, 'csv', str(r.url))
+            origin = f"url:{canonicalize_link(str(r.url))}"
+            _ingest_raw(db, store.id, feed, r.content, 'csv', origin)
     try:
         asyncio.run(ingest_url())
     finally:

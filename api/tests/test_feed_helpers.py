@@ -3,6 +3,7 @@ from app.services.feed_ingest import (
     canonicalize_link,
     extract_currency,
     normalize_gtin,
+    normalize_row,
 )
 
 
@@ -16,6 +17,8 @@ def test_canonicalize_link():
     assert canonicalize_link(url) == "http://example.com/Product?id=1"
     # default path
     assert canonicalize_link("https://Example.com") == "https://example.com/"
+    # strip fragment
+    assert canonicalize_link("https://example.com/path#section") == "https://example.com/path"
 
 
 def test_extract_currency():
@@ -33,3 +36,10 @@ def test_normalize_gtin():
     assert normalize_gtin("12345671") is None
     # invalid length
     assert normalize_gtin("1234567") is None
+
+
+def test_normalize_row_price_and_currency():
+    row = {"id": "1", "price": "usd 19.99"}
+    norm = normalize_row(row)
+    assert norm["price_cents"] == 1999
+    assert norm["currency"] == "USD"

@@ -60,11 +60,14 @@ def test_ingest_and_list_versions_and_items():
     assert res.status_code == 200
     body = res.json()
     assert body["items_imported"] == 2
-    versions = client.get(f"/api/v1/stores/{store_id}/feeds/versions", headers=headers).json()["items"]
+    versions_res = client.get(f"/api/v1/stores/{store_id}/feeds/versions", headers=headers).json()
+    versions = versions_res["items"]
+    assert versions_res["total"] == 1
     assert versions and versions[0]["items_count"] == 2
     version_id = versions[0]["id"]
     items = client.get(f"/api/v1/feeds/versions/{version_id}/items", headers=headers).json()
     assert items["total"] == 2
+    assert items["offset"] == 0
 
 
 def test_ingest_via_url_json(monkeypatch):

@@ -66,6 +66,7 @@ class FeedVersion(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     __table_args__ = (
         Index("idx_feed_versions_feed_created", "feed_id", "created_at"),
+        UniqueConstraint("feed_id", "content_hash", name="uq_feed_versions_feed_content_hash"),
     )
 
 class FeedItem(Base):

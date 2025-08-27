@@ -35,3 +35,8 @@ make wp-up
 # 5) Web dev (em outro terminal)
 make web
 ```
+
+## Feeds v1 — Idempotência & Erros
+
+- Ingestões repetidas retornam `duplicate: true` e `items_imported=0` quando o `content_hash` já existe.
+- Se ocorrer violação de `UNIQUE(feed_id, content_hash)`, revise o arquivo ou remova a versão duplicada antes de reenfileirar.

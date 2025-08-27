@@ -16,7 +16,7 @@ export default function Login() {
     setErr("");
     try {
       await login(email, password);
-      const from = location.state?.from?.pathname || "/";
+      const from = location.state?.from?.pathname || "/app/dashboard";
       nav(from, { replace: true });
     } catch (e) {
       setErr(e.message || "Falha no login");

@@ -6,7 +6,6 @@ Create Date: 2024-09-20
 """
 
 from alembic import op
-import sqlalchemy as sa
 
 revision = '0009_feed_versions_unique_constraint'
 down_revision = '0008_feed_versions_content_hash'

@@ -396,6 +396,8 @@ scripts/wp_connect.sh <STORE_ID> http://host.docker.internal:8080/wp-json http:/
 
 React+Vite, páginas placeholder (Dashboard, Violations, Items, Policies, Appeals, etc.).
 
+O site público de marketing vive em `/` e usa estilos utilitários Tailwind carregados via CDN. O aplicativo protegido permanece em `/app/*`.
+
 ---
 
 ## Backlog D0–D30

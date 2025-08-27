@@ -397,12 +397,7 @@ function App() {
   };
 
   return (
-    <div className="font-inter antialiased text-gray-800 bg-gray-50">
-      {/* Tailwind CSS CDN */}
-      <script src="https://cdn.tailwindcss.com"></script>
-      {/* Google Fonts - Inter */}
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
+        <div className="antialiased text-gray-800 bg-gray-50">
       {/* Header */}
       <header className="relative bg-white shadow-sm py-4 px-6 md:px-12 z-50">
         <nav className="container mx-auto flex justify-between items-center">

@@ -1,5 +1,3 @@
-import json
-import datetime
 import httpx
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event

@@ -140,7 +140,7 @@ export default function Items() {
     <Page>
       <PageHeader>
         <div className="header-main">
-          <Link to="/stores" className="btn-link">
+          <Link to="/app/stores" className="btn-link">
             <ChevronLeft size={16} style={{ marginRight: 6 }} /> Voltar
           </Link>
           <h2>Itens do feed — Loja #{id}</h2>

@@ -4,13 +4,14 @@ import { Shield, BarChart, FileText, CheckCircle, BellRing, DollarSign, Users, A
 // Language content dictionary
 const translations = {
   'pt-BR': {
-    nav: {
-      home: 'Início',
-      howItWorks: 'Como Funciona',
-      features: 'Funcionalidades',
-      pricing: 'Preços',
-      contact: 'Contato',
-    },
+      nav: {
+        home: 'Início',
+        howItWorks: 'Como Funciona',
+        features: 'Funcionalidades',
+        pricing: 'Preços',
+        contact: 'Contato',
+        login: 'Entrar',
+      },
     hero: {
       headline: 'Nunca mais tenha seu produto bloqueado no Google Shopping.',
       subheadline: 'O GMC Shield é a sua proteção definitiva contra suspensões e reprovações no Google Merchant Center. Mantenha seus anúncios no ar e suas vendas crescendo.',
@@ -97,13 +98,14 @@ const translations = {
     },
   },
   'pt-PT': {
-    nav: {
-      home: 'Início',
-      howItWorks: 'Como Funciona',
-      features: 'Funcionalidades',
-      pricing: 'Preços',
-      contact: 'Contacto',
-    },
+      nav: {
+        home: 'Início',
+        howItWorks: 'Como Funciona',
+        features: 'Funcionalidades',
+        pricing: 'Preços',
+        contact: 'Contacto',
+        login: 'Entrar',
+      },
     hero: {
       headline: 'Nunca mais tenha o seu produto bloqueado no Google Shopping.',
       subheadline: 'O GMC Shield é a sua proteção definitiva contra suspensões e reprovações no Google Merchant Center. Mantenha os seus anúncios ativos e as suas vendas a crescer.',
@@ -190,13 +192,14 @@ const translations = {
     },
   },
   'es': {
-    nav: {
-      home: 'Inicio',
-      howItWorks: 'Cómo Funciona',
-      features: 'Características',
-      pricing: 'Precios',
-      contact: 'Contacto',
-    },
+      nav: {
+        home: 'Inicio',
+        howItWorks: 'Cómo Funciona',
+        features: 'Características',
+        pricing: 'Precios',
+        contact: 'Contacto',
+        login: 'Iniciar Sesión',
+      },
     hero: {
       headline: 'Nunca más tengas tu producto bloqueado en Google Shopping.',
       subheadline: 'GMC Shield es tu protección definitiva contra suspensiones y desaprobaciones en Google Merchant Center. Mantén tus anuncios en línea y tus ventas creciendo.',
@@ -283,13 +286,14 @@ const translations = {
     },
   },
   'en': {
-    nav: {
-      home: 'Home',
-      howItWorks: 'How It Works',
-      features: 'Features',
-      pricing: 'Pricing',
-      contact: 'Contact',
-    },
+      nav: {
+        home: 'Home',
+        howItWorks: 'How It Works',
+        features: 'Features',
+        pricing: 'Pricing',
+        contact: 'Contact',
+        login: 'Login',
+      },
     hero: {
       headline: 'Never get your product blocked on Google Shopping again.',
       subheadline: 'GMC Shield is your definitive protection against suspensions and disapprovals in Google Merchant Center. Keep your ads live and your sales growing.',
@@ -414,6 +418,7 @@ function App() {
             <li><a href="#features" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">{text.nav.features}</a></li>
             <li><a href="#pricing" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">{text.nav.pricing}</a></li>
             <li><a href="#contact" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">{text.nav.contact}</a></li>
+            <li><a href="/login" className="text-gray-600 hover:text-purple-600 font-medium transition-colors">{text.nav.login}</a></li>
             <li className="ml-4">
               <div className="relative inline-flex items-center group">
                 <Globe className="h-5 w-5 text-gray-600 mr-1" />
@@ -471,6 +476,7 @@ function App() {
               <li><a href="#features" className="text-gray-800 text-3xl font-semibold hover:text-purple-600 transition-colors" onClick={toggleMobileMenu}>{text.nav.features}</a></li>
               <li><a href="#pricing" className="text-gray-800 text-3xl font-semibold hover:text-purple-600 transition-colors" onClick={toggleMobileMenu}>{text.nav.pricing}</a></li>
               <li><a href="#contact" className="text-gray-800 text-3xl font-semibold hover:text-purple-600 transition-colors" onClick={toggleMobileMenu}>{text.nav.contact}</a></li>
+              <li><a href="/login" className="text-gray-800 text-3xl font-semibold hover:text-purple-600 transition-colors" onClick={toggleMobileMenu}>{text.nav.login}</a></li>
             </ul>
           </div>
         )}

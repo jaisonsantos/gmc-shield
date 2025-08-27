@@ -32,7 +32,7 @@ export default function Scans() {
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <h2>Scans — Store {id}</h2>
         <div>
-          <Link to={`/stores/${id}`}>← Voltar</Link>
+            <Link to={`/app/stores/${id}`}>← Voltar</Link>
         </div>
       </header>
       {err && <div style={{ color: "crimson", marginBottom: 8 }}>{err}</div>}
@@ -61,7 +61,7 @@ export default function Scans() {
                 <td>{r.finished_at || "-"}</td>
                 <td>{r.items_ok}/{r.items_violation}</td>
                 <td>
-                  <Link to={`/stores/${id}/violations?run=${r.id}`}>Ver violações</Link>
+                    <Link to={`/app/stores/${id}/violations?run=${r.id}`}>Ver violações</Link>
                 </td>
               </tr>
             ))}

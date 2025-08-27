@@ -112,11 +112,11 @@ export default function Stores() {
                 <td>{s.country || "-"}</td>
                 <td>{s.currency || "-"}</td>
                 <td style={{ display: "flex", gap: 8 }}>
-                  <Link to={`/stores/${s.id}/violations`}>Ver violações</Link>
-                  <Link to={`/stores/${s.id}/scans`}>Ver execuções</Link>
-                  <Link to={`/stores/${s.id}/feeds`}>Feed</Link>
-                  <Link to={`/stores/${s.id}/items`}>Itens</Link>
-                  <Link to={`/stores/${s.id}/wp`}>
+                    <Link to={`/app/stores/${s.id}/violations`}>Ver violações</Link>
+                    <Link to={`/app/stores/${s.id}/scans`}>Ver execuções</Link>
+                    <Link to={`/app/stores/${s.id}/feeds`}>Feed</Link>
+                    <Link to={`/app/stores/${s.id}/items`}>Itens</Link>
+                    <Link to={`/app/stores/${s.id}/wp`}>
                     WP{wpStatus[s.id] && (
                       <span style={{ marginLeft:4, fontSize:'0.8em' }}>
                         {wpStatus[s.id].connected ? "✅" : "❌"}

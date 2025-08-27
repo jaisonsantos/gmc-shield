@@ -1,13 +1,16 @@
+// web/src/pages/Violations.jsx
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Violations as Api, Blocks } from "../lib/api";
 import { useToast } from "../lib/toast";
 import { useAuth } from "../lib/auth";
+import Button from "../components/Button";
+import { RefreshCw, Clock, Ban, CheckCircle } from "lucide-react";
 
 export default function Violations() {
   const { id } = useParams();
-  const loc = useLocation();
-  const runId = new URLSearchParams(loc.search).get("run");
+  const location = useLocation();
+  const runId = new URLSearchParams(location.search).get("run_id");
   const { can } = useAuth();
   const toast = useToast();
 
@@ -15,7 +18,7 @@ export default function Violations() {
   const [blockedByItem, setBlockedByItem] = useState({});
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(""); // feed_item_id em ação
+  const [busy, setBusy] = useState("");
 
   const load = async () => {
     setErr("");
@@ -34,6 +37,7 @@ export default function Violations() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     load();
   }, [id, runId]);
@@ -62,76 +66,77 @@ export default function Violations() {
       await Blocks.removeByFeedItem(id, feedItemId);
       toast.success(`Item ${feedItemId} desbloqueado`);
       await load();
-    } catch (e) {
-      toast.error(e.message || "Falha ao desbloquear");
-      setErr(e.message);
     } finally {
       setBusy("");
     }
   };
 
   return (
-    <div>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h2>Violations — Store {id}</h2>
-        <div>
-            <Link to="/app/stores">← Voltar</Link>
-          <button onClick={load} style={{ marginLeft: 8 }}>
-            Recarregar
-          </button>
-        </div>
-      </header>
-      {runId && <div style={{ marginBottom: 8 }}>Filtrando por run #{runId}</div>}
+    <section className="card">
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+         <h3>Violações Encontradas</h3>
+         <Button variant="ghost" onClick={load} loading={loading}>
+            <RefreshCw size={16} /> Recarregar
+          </Button>
+      </div>
 
-      {err && <div style={{ color: "crimson", marginBottom: 8 }}>{err}</div>}
-      {loading ? (
-        <div>Carregando…</div>
-      ) : data.items.length === 0 ? (
-        <div>Sem violações.</div>
-      ) : (
-        <table width="100%" cellPadding="8" style={{ borderCollapse: "collapse" }}>
+      {runId && <div className="pill meta" style={{ marginBottom: 16 }}>Filtrando por execução #{runId}</div>}
+      
+      {err && <div className="error" style={{ marginBottom: 16 }}>{err}</div>}
+      <div className="table-wrap">
+        <table>
           <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #eee" }}>
-              <th>ID</th>
-              <th>Rule</th>
-              <th>Severity</th>
-              <th>Message</th>
-              <th>Feed Item</th>
-              <th>Status</th>
-              <th></th>
+            <tr>
+              <th>ID Violação</th>
+              <th>Regra</th>
+              <th>Severidade</th>
+              <th>Item do Feed</th>
+              <th>Mensagem</th>
+              <th style={{ textAlign: 'center' }}>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {data.items.map((v) => {
-              const isBlocked = !!blockedByItem[v.feed_item_id];
-              return (
-                <tr key={v.id} style={{ borderBottom: "1px solid #f3f3f3" }}>
-                  <td>{v.id}</td>
-                  <td>{v.rule_code}</td>
-                  <td>{v.severity}</td>
-                  <td>{v.message}</td>
-                  <td>{v.feed_item_id || "-"}</td>
-                  <td>{v.status}</td>
-                  <td>
-                    {can("block") && v.feed_item_id && (
-                      isBlocked ? (
-                        <button disabled={busy === v.feed_item_id} onClick={() => unblockItem(v.feed_item_id)}>
-                          {busy === v.feed_item_id ? "Desbloqueando…" : "Desbloquear"}
-                        </button>
-                      ) : (
-                        <button disabled={busy === v.feed_item_id} onClick={() => blockItem(v.feed_item_id)}>
-                          {busy === v.feed_item_id ? "Bloqueando…" : "Bloquear"}
-                        </button>
-                      )
-                    )}
-                    {!can("block") && <span style={{ color: "#888" }}>—</span>}
-                  </td>
-                </tr>
-              );
-            })}
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="td-center muted">
+                  <Clock size={16} style={{ marginRight: 6 }} />
+                  A carregar violações…
+                </td>
+              </tr>
+            ) : data.items.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="td-center muted">Nenhuma violação encontrada.</td>
+              </tr>
+            ) : (
+              data.items.map((v) => {
+                const isBlocked = !!blockedByItem[v.feed_item_id];
+                return (
+                  <tr key={v.id}>
+                    <td className="mono">{v.id}</td>
+                    <td className="mono">{v.rule_code}</td>
+                    <td><span className={`severity-pill ${v.severity}`}>{v.severity}</span></td>
+                    <td className="mono">{v.feed_item_id || "-"}</td>
+                    <td>{v.message}</td>
+                    <td style={{ textAlign: 'center' }}>
+                      {can("block") && v.feed_item_id && (
+                        isBlocked ? (
+                          <Button variant="outline" size="sm" disabled={busy === v.feed_item_id} onClick={() => unblockItem(v.feed_item_id)}>
+                            <CheckCircle size={14} /> {busy === v.feed_item_id ? "Aguarde..." : "Desbloquear"}
+                          </Button>
+                        ) : (
+                          <Button variant="solid" size="sm" disabled={busy === v.feed_item_id} onClick={() => blockItem(v.feed_item_id)}>
+                            <Ban size={14} /> {busy === v.feed_item_id ? "Aguarde..." : "Bloquear"}
+                          </Button>
+                        )
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }

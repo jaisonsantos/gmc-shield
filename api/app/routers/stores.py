@@ -118,3 +118,42 @@ def list_runs(
         .all()
     )
     return [schemas.ScanRunOut.model_validate(r) for r in rows]
+
+
+@router.get("/{store_id}/dashboard", summary="Get dashboard data for a store")
+def get_dashboard_data(
+    store_id: int,
+    principal: Principal = Depends(require_roles("owner", "manager", "viewer")),
+    db: Session = Depends(get_db),
+):
+    # Validação para garantir que o utilizador tem acesso à loja
+    store = db.query(models.Store).filter(models.Store.id == store_id, models.Store.account_id == principal["account_id"]).first()
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+
+    # Reutilizar a lógica do overview
+    overview_data = store_overview(store_id, db)
+
+    # Buscar os últimos 5 scans
+    latest_scans = (
+        db.query(models.ScanRun)
+        .filter(models.ScanRun.store_id == store_id)
+        .order_by(models.ScanRun.id.desc())
+        .limit(5)
+        .all()
+    )
+
+    # Buscar as 5 violações mais recentes
+    recent_violations = (
+        db.query(models.Violation)
+        .filter(models.Violation.store_id == store_id)
+        .order_by(models.Violation.id.desc())
+        .limit(5)
+        .all()
+    )
+
+    return {
+        "overview": overview_data,
+        "latest_scans": [schemas.ScanRunOut.model_validate(r) for r in latest_scans],
+        "recent_violations": [schemas.ViolationOut.model_validate(v) for v in recent_violations],
+    }

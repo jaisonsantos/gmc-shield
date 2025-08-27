@@ -1,3 +1,4 @@
+// web/src/lib/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Auth as Api, setToken, getToken, clearToken } from "./api";
 

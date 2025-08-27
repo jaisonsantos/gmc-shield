@@ -5,10 +5,9 @@ import { Feeds as Api } from "../lib/api";
 import { useToast } from "../lib/toast";
 import Button from "../components/Button";
 import { Input } from "../components/Input";
-import { Page, PageHeader, PageContent } from "../components/Page";
-import { FileUp, Link as LinkIcon, RefreshCw, ChevronLeft, CheckCircle2, Clock, UploadCloud } from "lucide-react";
+import { FileUp, Link as LinkIcon, RefreshCw, CheckCircle2, Clock, UploadCloud } from "lucide-react";
 
- 
+
 // ---- Formato: utilitários de detecção (ext/MIME/URL)
 const FORMAT_EXTS = { csv: ["csv"], tsv: ["tsv", "tab"], xml: ["xml"] };
 
@@ -107,7 +106,7 @@ export default function Feeds() {
       setFormatWarn("");
     }
   }, [file, cfg.format]); // eslint-disable-line react-hooks/exhaustive-deps
- 
+
   const saveCfg = async () => {
     setLoading(true);
     try {
@@ -131,7 +130,7 @@ export default function Feeds() {
         `A URL sugere ${g.toUpperCase()}, mas o formato selecionado é ${cfg.format.toUpperCase()}.\nDeseja prosseguir assim mesmo?`
       );
       if (!ok) return;
-    }    
+    }
     setLoading(true);
     try {
       if (cfg.url !== savedCfg.url || cfg.format !== savedCfg.format || cfg.source_type !== savedCfg.source_type) {
@@ -174,7 +173,6 @@ export default function Feeds() {
     } finally { setLoading(false); }
   };
 
-  const last = versions[0];
   const isDirty = cfg.url !== savedCfg.url || cfg.format !== savedCfg.format || cfg.source_type !== savedCfg.source_type;
 
   // Dropzone handlers
@@ -192,7 +190,7 @@ export default function Feeds() {
     } else {
       setFormatNote("");
     }
-  };  
+  };
   const onDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -204,189 +202,172 @@ export default function Feeds() {
   };
 
   return (
-   <Page>
-        <PageHeader>
-        <div className="ph-left">
-            <Link to="/app/stores" className="btn-link">
-            <ChevronLeft size={16} style={{ marginRight: 6 }} /> Voltar
-            </Link>
-            <h2>Feed — Loja #{id}</h2>
+    <div className="stack" style={{ gap: '24px' }}>
+      {showNorm && (
+        <div className="banner ok">
+          <CheckCircle2 size={18} /> Normalizado: preços em centavos, moeda detectada, links limpos.
         </div>
-        {last && (
-            <div className="ph-right">
-            <span className="pill">
-                Última: {timeAgo(last.created_at)} • {last.items_count} itens • {(last.format || cfg.format).toUpperCase()}
-            </span>
+      )}
+
+      {/* Configurações */}
+      <section className="card stack">
+        <div className="section-title">Configuração do Feed</div>
+
+        {/* Segmented control */}
+        <div className="segmented">
+          <button
+            type="button"
+            className={cfg.source_type === "upload" ? "active" : ""}
+            onClick={() => setCfg({ ...cfg, source_type: "upload", format: "csv" })}
+            disabled={loading}
+          >
+            <FileUp size={16} /> Upload
+          </button>
+          <button
+            type="button"
+            className={cfg.source_type === "url" ? "active" : ""}
+            onClick={() => setCfg({ ...cfg, source_type: "url", format: "xml" })}
+            disabled={loading}
+          >
+            <LinkIcon size={16} /> URL
+          </button>
+        </div>
+
+        {/* Linha: Formato + Campo/Dropzone */}
+        <div className="grid-2">
+          <div>
+            <label className="label">Formato do feed</label>
+            <select
+              className="input"
+              value={cfg.format}
+              disabled={loading}
+              onChange={(e) => setCfg({ ...cfg, format: e.target.value })}
+            >
+              {cfg.source_type === "url" ? (
+                <>
+                  <option value="xml">XML</option>
+                  <option value="csv">CSV</option>
+                  <option value="tsv">TSV</option>
+                </>
+              ) : (
+                <>
+                  <option value="csv">CSV</option>
+                  <option value="tsv">TSV</option>
+                  <option value="xml">XML</option>
+                </>
+              )}
+            </select>
+            <div className="helper">
+              {cfg.format === "tsv" ? "TSV usa Tab como delimitador." : "XML/CSV aceitos."}
             </div>
-        )}
-        </PageHeader>
-      <PageContent>
-        {showNorm && (
-          <div className="banner ok">
-            <CheckCircle2 size={18} /> Normalizado: preços em centavos, moeda detectada, links limpos.
-          </div>
-        )}
-
-        {/* Configurações */}
-        <section className="card stack">
-          <div className="section-title">Configuração do Feed</div>
-
-          {/* Segmented control */}
-          <div className="segmented">
-            <button
-              type="button"
-              className={cfg.source_type === "upload" ? "active" : ""}
-              onClick={() => setCfg({ ...cfg, source_type: "upload", format: "csv" })}
-              disabled={loading}
-            >
-              <FileUp size={16} /> Upload
-            </button>
-            <button
-              type="button"
-              className={cfg.source_type === "url" ? "active" : ""}
-              onClick={() => setCfg({ ...cfg, source_type: "url", format: "xml" })}
-              disabled={loading}
-            >
-              <LinkIcon size={16} /> URL
-            </button>
           </div>
 
-          {/* Linha: Formato + Campo/Dropzone */}
-          <div className="grid-2">
+          {cfg.source_type === "upload" ? (
             <div>
-              <label className="label">Formato do feed</label>
-              <select
-                className="input"
-                value={cfg.format}
-                disabled={loading}
-                onChange={(e) => setCfg({ ...cfg, format: e.target.value })}
+              <label className="label">Arquivo</label>
+              <div
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={onDrop}
+                className={`dropzone ${dragOver ? "drag" : ""}`}
               >
-                {cfg.source_type === "url" ? (
-                  <>
-                    <option value="xml">XML</option>
-                    <option value="csv">CSV</option>
-                    <option value="tsv">TSV</option>
-                  </>
-                ) : (
-                  <>
-                    <option value="csv">CSV</option>
-                    <option value="tsv">TSV</option>
-                    <option value="xml">XML</option>
-                  </>
-                )}
-              </select>
-              <div className="helper">
-                {cfg.format === "tsv" ? "TSV usa Tab como delimitador." : "XML/CSV aceitos."}
-              </div>
-            </div>
-
-            {cfg.source_type === "upload" ? (
-              <div>
-                <label className="label">Arquivo</label>
-                <div
-                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={onDrop}
-                  className={`dropzone ${dragOver ? "drag" : ""}`}
-                >
-                  <UploadCloud size={28} />
-                  <div>
-                    Arraste o arquivo aqui<br />
-                    <span className="muted">ou clique para selecionar (CSV/TSV, máx. 10 MB)</span>
-                  </div>
-                  <input
-                    type="file"
-                    accept={acceptFor(cfg.format)}
-                    onChange={(e) => onFilePicked(e.target.files?.[0] || null)}
-                    title=""
-                  />
+                <UploadCloud size={28} />
+                <div>
+                  Arraste o arquivo aqui<br />
+                  <span className="muted">ou clique para selecionar (CSV/TSV, máx. 10 MB)</span>
                 </div>
-                {file && <div className="muted" style={{ marginTop: 6 }}>Selecionado: <strong>{file.name}</strong></div>}
-                {/* Mensagens de detecção/aviso para upload */}
-                {formatNote && <div className="helper" style={{ marginTop: 6 }}>{formatNote}</div>}
-                {!formatNote && formatWarn && <div className="error" style={{ marginTop: 6 }}>{formatWarn}</div>}
+                <input
+                  type="file"
+                  accept={acceptFor(cfg.format)}
+                  onChange={(e) => onFilePicked(e.target.files?.[0] || null)}
+                  title=""
+                />
               </div>
-            ) : (
-              <Input
-                label="URL do Feed"
-                placeholder="https://exemplo.com/feed.xml"
-                value={cfg.url}
-                disabled={loading}
-                onChange={(e) => { setCfg({ ...cfg, url: e.target.value }); setUrlError(false); }}
-                onBlur={() => {
-                  const g = guessFormatFromUrl(cfg.url);
-                  if (g && g !== cfg.format) {
-                    setCfg((c) => ({ ...c, format: g }));
-                    setFormatNote(`Detectei ${g.toUpperCase()} pela URL e ajustei o formato.`);
-                  }
-                }}
-                error={urlError ? "Informe uma URL válida." : ""}
-                helper="Ex.: https://exemplo.com/feed.xml — UTM/gclid serão removidos."
-              />
-            )}
-          </div>
-
-          {/* Ações */}
-          <div className="actions">
-            {cfg.source_type === "upload" ? (
-              <Button onClick={uploadAndIngest} disabled={!file} loading={loading}>
-                Upload + Ingestão
-              </Button>
-            ) : (
-              <>
-                <Button variant="outline" onClick={saveCfg} disabled={!isDirty || loading}>
-                  Salvar Configuração
-                </Button>
-                <Button onClick={ingestUrl} disabled={!isValidUrl(cfg.url)} loading={loading}>
-                  Ingerir da URL
-                </Button>
-              </>
-            )}
-          </div>
-        </section>
-
-        {/* Histórico */}
-        <section className="card stack">
-          <div className="section-head">
-            <div className="section-title">Histórico de Versões</div>
-            <Button variant="ghost" size="sm" onClick={loadVersions}>
-              <RefreshCw size={16} style={{ marginRight: 6 }} /> Recarregar
-            </Button>
-          </div>
-
-          {versions.length === 0 ? (
-            <div className="empty">
-              <Clock size={18} />
-              Nenhuma versão ainda.
+              {file && <div className="muted" style={{ marginTop: 6 }}>Selecionado: <strong>{file.name}</strong></div>}
+              {/* Mensagens de detecção/aviso para upload */}
+              {formatNote && <div className="helper" style={{ marginTop: 6 }}>{formatNote}</div>}
+              {!formatNote && formatWarn && <div className="error" style={{ marginTop: 6 }}>{formatWarn}</div>}
             </div>
           ) : (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Quando</th>
-                    <th>Hash</th>
-                    <th>Itens</th>
-                    <th style={{ width: 120 }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {versions.map((v, i) => (
-                    <tr key={v.hash} ref={i === 0 ? firstRowRef : null} className={highlightNew && i === 0 ? "row-new" : ""}>
-                      <td><Clock size={14} style={{ opacity: .6, marginRight: 6, verticalAlign: "-2px" }} />{new Date(v.created_at).toLocaleString()}</td>
-                      <td className="mono">{v.hash.slice(0, 12)}…</td>
-                      <td>{v.items_count}</td>
-                      <td>
-                          <Link to={`/app/stores/${id}/items`} className="link">Ver itens</Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Input
+              label="URL do Feed"
+              placeholder="https://exemplo.com/feed.xml"
+              value={cfg.url}
+              disabled={loading}
+              onChange={(e) => { setCfg({ ...cfg, url: e.target.value }); setUrlError(false); }}
+              onBlur={() => {
+                const g = guessFormatFromUrl(cfg.url);
+                if (g && g !== cfg.format) {
+                  setCfg((c) => ({ ...c, format: g }));
+                  setFormatNote(`Detectei ${g.toUpperCase()} pela URL e ajustei o formato.`);
+                }
+              }}
+              error={urlError ? "Informe uma URL válida." : ""}
+              helper="Ex.: https://exemplo.com/feed.xml — UTM/gclid serão removidos."
+            />
           )}
-        </section>
-      </PageContent>
-    </Page>
+        </div>
+
+        {/* Ações */}
+        <div className="actions">
+          {cfg.source_type === "upload" ? (
+            <Button onClick={uploadAndIngest} disabled={!file} loading={loading}>
+              Upload + Ingestão
+            </Button>
+          ) : (
+            <>
+              <Button variant="outline" onClick={saveCfg} disabled={!isDirty || loading}>
+                Salvar Configuração
+              </Button>
+              <Button onClick={ingestUrl} disabled={!isValidUrl(cfg.url)} loading={loading}>
+                Ingerir da URL
+              </Button>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Histórico */}
+      <section className="card stack">
+        <div className="section-head">
+          <div className="section-title">Histórico de Versões</div>
+          <Button variant="ghost" size="sm" onClick={loadVersions}>
+            <RefreshCw size={16} style={{ marginRight: 6 }} /> Recarregar
+          </Button>
+        </div>
+
+        {versions.length === 0 ? (
+          <div className="empty">
+            <Clock size={18} />
+            Nenhuma versão ainda.
+          </div>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Quando</th>
+                  <th>Hash</th>
+                  <th>Itens</th>
+                  <th style={{ width: 120 }}>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {versions.map((v, i) => (
+                  <tr key={v.hash} ref={i === 0 ? firstRowRef : null} className={highlightNew && i === 0 ? "row-new" : ""}>
+                    <td><Clock size={14} style={{ opacity: .6, marginRight: 6, verticalAlign: "-2px" }} />{new Date(v.created_at).toLocaleString()}</td>
+                    <td className="mono">{v.hash.slice(0, 12)}…</td>
+                    <td>{v.items_count}</td>
+                    <td>
+                        <Link to={`/app/stores/${id}/items`} className="link">Ver itens</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

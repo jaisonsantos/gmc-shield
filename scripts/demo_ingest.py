@@ -1,20 +1,21 @@
 import asyncio
 import os
+import sys
 import threading
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
-import sys
-
-repo_root = Path(__file__).resolve().parents[1]
-sys.path.append(str(repo_root / "api"))
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from app import models
-from app.models import Base
-from app.routers.feeds import _ingest_raw
-from app.services.feed_ingest import canonicalize_link
+
+repo_root = Path(__file__).resolve().parents[1]
+sys.path.append(str(repo_root / "api"))
+
+from app import models  # noqa: E402
+from app.models import Base  # noqa: E402
+from app.routers.feeds import _ingest_raw  # noqa: E402
+from app.services.feed_ingest import canonicalize_link  # noqa: E402
 
 
 def main():

@@ -75,7 +75,7 @@ export default function Violations() {
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <h2>Violations — Store {id}</h2>
         <div>
-          <Link to="/stores">← Voltar</Link>
+            <Link to="/app/stores">← Voltar</Link>
           <button onClick={load} style={{ marginLeft: 8 }}>
             Recarregar
           </button>

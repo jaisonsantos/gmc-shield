@@ -93,7 +93,7 @@ export default function WPIntegration() {
     }
   };
 
-  const backTo = id ? `/stores/${id}` : "/stores";
+  const backTo = id ? `/app/stores/${id}` : "/app/stores";
 
   return (
     <div>

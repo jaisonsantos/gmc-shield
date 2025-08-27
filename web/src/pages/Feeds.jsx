@@ -207,7 +207,7 @@ export default function Feeds() {
    <Page>
         <PageHeader>
         <div className="ph-left">
-            <Link to="/stores" className="btn-link">
+            <Link to="/app/stores" className="btn-link">
             <ChevronLeft size={16} style={{ marginRight: 6 }} /> Voltar
             </Link>
             <h2>Feed — Loja #{id}</h2>
@@ -377,7 +377,7 @@ export default function Feeds() {
                       <td className="mono">{v.hash.slice(0, 12)}…</td>
                       <td>{v.items_count}</td>
                       <td>
-                        <Link to={`/stores/${id}/items`} className="link">Ver itens</Link>
+                          <Link to={`/app/stores/${id}/items`} className="link">Ver itens</Link>
                       </td>
                     </tr>
                   ))}

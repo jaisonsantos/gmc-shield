@@ -1,4 +1,9 @@
-import csv, hashlib, io, json, re, urllib.parse
+import csv
+import hashlib
+import io
+import json
+import re
+import urllib.parse
 import xml.etree.ElementTree as ET
 from typing import Iterable, Tuple
 
@@ -101,7 +106,6 @@ def normalize_row(r: dict) -> dict:
     p, _cur = parse_price(r.get("price"))
     sp, _ = parse_price(r.get("sale_price"))
     price_currency = extract_currency(r.get("price_currency") or r.get("price"))
-    sale_price_currency = extract_currency(r.get("sale_price_currency") or r.get("sale_price"))
     shipping = r.get("shipping")
     if isinstance(shipping, (dict, list)):
         shipping_json = json.dumps(shipping)

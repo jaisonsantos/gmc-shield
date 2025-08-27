@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppShell from "./pages/AppShell";
 import Login from "./pages/Login";
+import WebSite from "./WebSite";
 import Dashboard from "./pages/Dashboard";
 import Stores from "./pages/Stores";
 import Items from "./pages/Items";
@@ -21,11 +22,16 @@ import WP from "./pages/WP";
 export default function App() {
   return (
     <Routes>
+      {/* Public landing page */}
+      <Route path="/" element={<WebSite />} />
+
+      {/* Login page */}
       <Route path="/login" element={<Login />} />
 
-      {/* Rotas protegidas dentro do AppShell */}
-      <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
-        <Route index element={<Dashboard />} />
+      {/* Protected application routes */}
+      <Route path="/app" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="stores" element={<Stores />} />
         <Route path="policies" element={<Policies />} />
         <Route path="appeals" element={<Appeals />} />
@@ -41,7 +47,7 @@ export default function App() {
         <Route path="stores/:id/items" element={<Items />} />
       </Route>
 
-      {/* catch-all */}
+      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -1,9 +1,9 @@
 # api/alembic/env.py
 
-from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
-import os, sys
+import os
+import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from app.db import Base  # noqa
 from app import models  # noqa

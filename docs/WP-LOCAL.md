@@ -110,7 +110,8 @@ Se retornar 200 com seus dados, a autenticação está ok.
 
 ## 4) Conectar o WordPress à API local
 
-A partir do container do WP, seu host local é acessível por `http://host.docker.internal:8000`.
+A partir do container do WP, seu host local é acessível por `http://host.docker.internal:8000` (se o WP rodar em outro container;
+se rodar direto no host, use `http://localhost:8000`).
 
 Confirme de dentro do container:
 

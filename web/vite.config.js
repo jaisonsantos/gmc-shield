@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       // se não setar nada no .env, libera todos (evita 403 do Vite)
       allowedHosts: allowed.length ? allowed : true,
-      // HMR via ngrok HTTPS → usar wss
+      // HMR via túnel HTTPS (ex.: ngrok) → usar wss
       hmr: env.VITE_HMR_HOST
         ? { host: env.VITE_HMR_HOST, protocol: 'wss', clientPort: 443 }
         : undefined,

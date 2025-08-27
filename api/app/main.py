@@ -25,7 +25,7 @@ settings     = Settings()
 app          = FastAPI(title="GMC Shield API", version="0.1.0")
 raw          = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "http://localhost:5173")
 origins      = [o.strip() for o in raw.split(",") if o.strip()]
-origin_regex = os.getenv("ALLOWED_ORIGIN_REGEX")  # ^https://([a-z0-9-]+\.)?vercel\.app$|^https://[a-z0-9-]+\.ngrok-free\.app$
+origin_regex = os.getenv("ALLOWED_ORIGIN_REGEX")  # ex.: ^https://([a-z0-9-]+\.)?vercel\.app$
 
 
 @app.middleware("http")

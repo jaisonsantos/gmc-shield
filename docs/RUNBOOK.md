@@ -11,6 +11,8 @@
 - **Web (Vite/React)**: porta `5173` (dev).
 - **WP opcional**: `docker-compose.wp.yml` (WordPress 8080 + phpMyAdmin 8081) para testar o plugin.
 
+> Ambiente pensado para `localhost`. Para acesso externo, use um túnel (ex.: `ngrok`) e ajuste as variáveis manualmente.
+
 ## Pré-requisitos
 
 - Docker Desktop atualizado

@@ -6,6 +6,7 @@ Create Date: 2025-08-28
 """
 
 from alembic import op
+import sqlalchemy as sa
 
 
 revision = "0008a_widen_av"
@@ -17,10 +18,42 @@ depends_on = None
 def upgrade() -> None:
     # Some environments create alembic_version with VARCHAR(32) by default.
     # Our later revision IDs exceed 32 chars. Widen it proactively.
-    op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(128);")
+    bind = op.get_bind()
+    if bind.dialect.name == "sqlite":
+        with op.batch_alter_table("alembic_version") as batch_op:
+            batch_op.alter_column(
+                "version_num",
+                existing_type=sa.String(length=32),
+                type_=sa.String(length=128),
+                existing_nullable=False,
+            )
+    else:
+        op.alter_column(
+            "alembic_version",
+            "version_num",
+            existing_type=sa.String(length=32),
+            type_=sa.String(length=128),
+            existing_nullable=False,
+        )
 
 
 def downgrade() -> None:
     # Revert to the default width.
-    op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(32);")
+    bind = op.get_bind()
+    if bind.dialect.name == "sqlite":
+        with op.batch_alter_table("alembic_version") as batch_op:
+            batch_op.alter_column(
+                "version_num",
+                existing_type=sa.String(length=128),
+                type_=sa.String(length=32),
+                existing_nullable=False,
+            )
+    else:
+        op.alter_column(
+            "alembic_version",
+            "version_num",
+            existing_type=sa.String(length=128),
+            type_=sa.String(length=32),
+            existing_nullable=False,
+        )
 

@@ -8,7 +8,7 @@ Create Date: 2024-09-20
 from alembic import op
 
 revision = '0009_feed_versions_unique_constraint'
-down_revision = '0008_feed_versions_content_hash'
+down_revision = '0008a_widen_av'
 branch_labels = None
 depends_on = None
 

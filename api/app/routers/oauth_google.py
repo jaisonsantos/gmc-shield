@@ -5,6 +5,7 @@ import secrets
 import time
 import urllib.parse
 from datetime import datetime, timezone, timedelta
+import os
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, Query
@@ -27,10 +28,22 @@ settings = Settings()
 signer = TimestampSigner(settings.effective_jwt_secret)
 
 
+def _allowed_origins() -> list[str]:
+    raw = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ORIGINS", "")
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
+
 def _sanitize_return_to(path: str) -> str:
     try:
         parsed = urllib.parse.urlparse(path)
         if parsed.scheme or parsed.netloc:
+            # Permite URLs absolutas apenas se o host está nas origens permitidas
+            origins = _allowed_origins()
+            if not origins:
+                return "/"
+            allowed = {urllib.parse.urlparse(o).netloc for o in origins if o}
+            if parsed.netloc in allowed:
+                return path
             return "/"
         if not parsed.path.startswith("/"):
             return "/"
@@ -52,6 +65,14 @@ def _rate_limit(r, ip: str, key: str, limit: int = 10, window: int = 60) -> None
 def auth_google_start(request: Request, return_to: str = "/"):
     r = get_redis()
     _rate_limit(r, request.client.host or "", "oauth:start")
+    # Se não for fornecido, tenta deduzir a origem do frontend e usar /app/login
+    if not return_to or return_to == "/":
+        origin = request.headers.get("origin") or ""
+        if origin:
+            candidate = f"{origin}/login"
+            rt = _sanitize_return_to(candidate)
+            if rt != "/":
+                return_to = rt
     return_to = _sanitize_return_to(return_to)
 
     state_id = secrets.token_urlsafe(16)
@@ -80,7 +101,7 @@ def auth_google_start(request: Request, return_to: str = "/"):
         "access_type": "offline",
         "prompt": "consent",
     }
-    auth_endpoint = settings.GOOGLE_AUTH_ENDPOINT or f"{settings.GOOGLE_OAUTH_ISSUER}/o/oauth2/v2/auth"
+    auth_endpoint = str(settings.GOOGLE_AUTH_ENDPOINT) if settings.GOOGLE_AUTH_ENDPOINT else f"{settings.GOOGLE_OAUTH_ISSUER}/o/oauth2/v2/auth"
     auth_url = f"{auth_endpoint}?{urllib.parse.urlencode(params)}"
     log_event("oauth.start", return_to=return_to)
     return {"auth_url": auth_url}
@@ -114,7 +135,7 @@ async def auth_google_callback(
     payload = json.loads(payload_raw)
     return_to = _sanitize_return_to(payload.get("return_to", "/"))
 
-    token_endpoint = settings.GOOGLE_TOKEN_ENDPOINT or "https://oauth2.googleapis.com/token"
+    token_endpoint = str(settings.GOOGLE_TOKEN_ENDPOINT) if settings.GOOGLE_TOKEN_ENDPOINT else "https://oauth2.googleapis.com/token"
     async with httpx.AsyncClient() as client:
         token_res = await client.post(
             token_endpoint,
@@ -146,7 +167,7 @@ async def auth_google_callback(
                 raise HTTPException(status_code=400, detail="invalid id_token")
 
         access_token = token_data["access_token"]
-        userinfo_endpoint = settings.GOOGLE_USERINFO_ENDPOINT or f"{settings.GOOGLE_API_BASE}/oauth2/v3/userinfo"
+        userinfo_endpoint = str(settings.GOOGLE_USERINFO_ENDPOINT) if settings.GOOGLE_USERINFO_ENDPOINT else f"{settings.GOOGLE_API_BASE}/oauth2/v3/userinfo"
         userinfo_res = await client.get(
             userinfo_endpoint,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -191,4 +212,3 @@ async def auth_google_callback(
     resp.set_cookie("token", app_token, httponly=True, samesite="lax")
     log_event("oauth.callback.ok", user_id=user.id)
     return resp
-

@@ -129,6 +129,17 @@ Veja `.env.example`. Principais:
 - `WP_VERIFY_TLS` — `true|false` (default `true`)
 - `WP_TIMEOUT_SEC` — timeout de chamadas ao WP (default `10`)
 
+### Notas rápidas (OAuth + CORS)
+
+- Para desenvolvimento, inclua a origem do Vite em `CORS_ORIGINS`/`ALLOWED_ORIGINS` (ex.: `http://localhost:5173`).
+- Valores das URLs Google em `.env` devem ser sem aspas:
+  - `GOOGLE_OAUTH_ISSUER=https://accounts.google.com`
+  - `GOOGLE_API_BASE=https://www.googleapis.com`
+  - `GOOGLE_AUTH_ENDPOINT=https://accounts.google.com/o/oauth2/auth` (opcional)
+  - `GOOGLE_TOKEN_ENDPOINT=https://oauth2.googleapis.com/token` (opcional)
+  - `GOOGLE_USERINFO_ENDPOINT=https://openidconnect.googleapis.com/v1/userinfo` (opcional)
+- O backend infere o `return_to` quando ausente com base no header `Origin`, redirecionando para `/<login>` no frontend (ex.: `http://localhost:5173/login`). A UI já envia `return_to=/login` automaticamente no botão “Continuar com Google”.
+
 ### 🔐 Fernet (segredos) + Rotação de Chaves
 
 Gere uma chave (32 bytes base64) e coloque no `.env`:
@@ -142,6 +153,8 @@ Uso básico:
 ```env
 FERNET_KEY=AAA_BASE64
 ```
+
+> Dica: mantenha apenas UMA linha de `FERNET_KEY`. Use `FERNET_KEYS` somente quando estiver rotacionando (nova primeiro, antigas depois).
 
 Rotação sem downtime:
 
@@ -167,6 +180,12 @@ Alembic em `api/alembic/`.
 ```bash
 docker compose run --rm api alembic revision --autogenerate -m "nova tabela"
 ```
+
+### Observação sobre `alembic_version`
+
+- Foi adicionada a revisão `0008a_widen_av` que amplia a coluna `alembic_version.version_num` para `VARCHAR(128)`.
+- Isso evita falhas em bancos iniciais que foram criados com o tamanho padrão (32), já que algumas revisões têm IDs mais longos.
+- Em bancos zerados basta `alembic upgrade head` — a cadeia agora é linear: `0008` → `0008a` → `0009` → `0010`…
 
 ---
 
@@ -351,6 +370,9 @@ O site público de marketing vive em `/` e usa estilos utilitários Tailwind car
 
 - **500 Internal Server Error: `FERNET_KEY not set`**
   → Falta `FERNET_KEY` no `.env`. Gere e `docker compose restart api`.
+
+- **404 após login Google voltando para “/”**
+  → Use o endpoint de start com `return_to` apontando para o login da UI (ex.: `?return_to=http://localhost:5173/login`). A UI já faz isso automaticamente; verifique se o Vite está rodando e a origem está em `CORS_ORIGINS`.
 
 - **CORS bloqueando o frontend**
   → Ajuste `CORS_ORIGINS` no `.env` para incluir `http://localhost:5173` (e demais portas).

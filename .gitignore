@@ -33,3 +33,4 @@ coverage/
 EOF
 
 venv/
+api/dev.db

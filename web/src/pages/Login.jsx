@@ -48,7 +48,8 @@ export default function Login() {
     setErr("");
     setBusy(true);
     try {
-      const res = await apiFetch("/api/auth/google/start");
+      const rt = `${window.location.origin}/login`;
+      const res = await apiFetch(`/api/auth/google/start?return_to=${encodeURIComponent(rt)}`);
       if (res.auth_url) window.location.href = res.auth_url;
     } catch (e) {
       setErr(e.message || "Falha no login");

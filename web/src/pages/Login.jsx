@@ -22,7 +22,9 @@ export default function Login() {
     if (t) {
       setToken(t);
       (async () => {
-        await boot();
+        if (boot) {
+          await boot();
+        }
         const from = location.state?.from?.pathname || "/app/dashboard";
         nav(from, { replace: true });
       })();

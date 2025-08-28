@@ -24,7 +24,7 @@ def create_token(email: str, role: str, account_id: int) -> str:
         "role": role,
         "account_id": account_id,
         "iat": now,
-        "exp": now + datetime.timedelta(hours=12),
+        "exp": now + datetime.timedelta(minutes=30),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 

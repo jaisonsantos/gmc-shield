@@ -236,3 +236,27 @@ Listar snapshots do run:
 curl "$API/api/v1/stores/$STORE_ID/runs/$RUN_ID/snapshots" \
      -H "Authorization: Bearer $TOKEN"
 ```
+
+---
+
+## 8) Login com Google (OIDC)
+
+Para testar o fluxo de login com Google em desenvolvimento, configure as variáveis no `.env`:
+
+```
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_OAUTH_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
+# Endpoints customizados para testes offline
+GOOGLE_AUTH_ENDPOINT=http://localhost:9999/auth
+GOOGLE_TOKEN_ENDPOINT=http://localhost:9999/token
+GOOGLE_USERINFO_ENDPOINT=http://localhost:9999/userinfo
+```
+
+Inicie o fluxo:
+
+```
+curl "http://localhost:8000/api/auth/google/start" | jq
+```
+
+Nos testes, use `respx` para mockar os endpoints configurados acima.

@@ -16,7 +16,7 @@ from .routers import (
     ops,
     wp,
     scans,
-    oauth_stub,
+    oauth_google,
 )
 from .core.settings import Settings
 from .observability import new_trace_id, record_request
@@ -72,7 +72,7 @@ app.include_router(wp.router,               prefix="/api/stores",   tags=["wp"])
 app.include_router(appeals.router,          prefix="/api/stores",   tags=["appeals"])
 app.include_router(notifications.router,    prefix="/api/stores",   tags=["notifications"])
 app.include_router(scans.router,            prefix="/api/stores",   tags=["scans"])
-app.include_router(oauth_stub.router)
+app.include_router(oauth_google.router)
 @app.get("/healthz")
 def healthz():
     return {"ok": True}

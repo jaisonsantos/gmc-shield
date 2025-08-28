@@ -18,8 +18,8 @@ depends_on = None
 def upgrade() -> None:
     # Some environments create alembic_version with VARCHAR(32) by default.
     # Our later revision IDs exceed 32 chars. Widen it proactively.
-    bind = op.get_bind()
-    if bind.dialect.name == "sqlite":
+    dialect = op.get_context().dialect.name
+    if dialect == "sqlite":
         with op.batch_alter_table("alembic_version") as batch_op:
             batch_op.alter_column(
                 "version_num",
@@ -39,8 +39,8 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     # Revert to the default width.
-    bind = op.get_bind()
-    if bind.dialect.name == "sqlite":
+    dialect = op.get_context().dialect.name
+    if dialect == "sqlite":
         with op.batch_alter_table("alembic_version") as batch_op:
             batch_op.alter_column(
                 "version_num",

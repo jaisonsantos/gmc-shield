@@ -18,6 +18,10 @@ class StoreCreate(BaseModel):
     currency: Optional[str] = None
     contact_email: Optional[EmailStr] = None
 
+
+class StoreUpdate(BaseModel):
+    google_merchant_id: Optional[str] = None
+
 class FeedConfig(BaseModel):
     source_type: str
     url: Optional[str] = None

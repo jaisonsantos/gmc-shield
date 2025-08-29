@@ -1,6 +1,7 @@
 # OpenAPI Paths
 - GET /api/auth/google/callback
 - GET /api/auth/google/start
+- GET /api/auth/google/start-content
 - POST /api/auth/login
 - GET /api/auth/whoami
 - GET /api/ops/metrics
@@ -32,6 +33,8 @@
 - POST /api/stores/{store_id}/wp/policies/publish
 - POST /api/stores/{store_id}/wp/policies/render
 - GET /api/stores/{store_id}/wp/status
+- GET /api/google/mc/accounts
+- GET /api/google/mc/{merchant_id}/products
 - GET /api/v1/feeds/versions/{version_id}/items
 - POST /api/v1/stores/{store_id}/feeds/ingest
 - GET /api/v1/stores/{store_id}/feeds/versions

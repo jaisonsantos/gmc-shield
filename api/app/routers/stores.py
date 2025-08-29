@@ -86,9 +86,30 @@ def list_stores(
             "country": s.country,
             "currency": s.currency,
             "contact_email": s.contact_email,
+            "google_merchant_id": s.google_merchant_id,
         }
         for s in rows
     ]
+
+
+@router.patch("/{store_id}")
+def update_store(
+    store_id: int,
+    payload: schemas.StoreUpdate,
+    principal: Principal = Depends(require_roles("owner", "manager")),
+    db: Session = Depends(get_db),
+):
+    store = (
+        db.query(models.Store)
+        .filter(models.Store.id == store_id, models.Store.account_id == principal["account_id"])
+        .first()
+    )
+    if not store:
+        raise HTTPException(status_code=404, detail="Store not found")
+    if payload.google_merchant_id is not None:
+        store.google_merchant_id = payload.google_merchant_id
+    db.commit()
+    return {"ok": True}
 
 @router.get(
     "/{store_id}/scan/runs",

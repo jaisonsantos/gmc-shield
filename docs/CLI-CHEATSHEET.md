@@ -260,3 +260,17 @@ curl "http://localhost:8000/api/auth/google/start" | jq
 ```
 
 Nos testes, use `respx` para mockar os endpoints configurados acima.
+
+---
+
+## 9) Google Merchant Center (escopo `content`)
+
+Após concluir o login base, é possível conceder o escopo de conteúdo para acessar o Merchant Center.
+
+```bash
+curl "http://localhost:8000/api/auth/google/start-content?return_to=/settings" | jq
+# após consentir, use o token de aplicação:
+TOKEN=...
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/google/mc/accounts
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:8000/api/google/mc/MERCHANT_ID/products?maxResults=50"
+```

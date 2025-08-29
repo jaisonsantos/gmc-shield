@@ -29,6 +29,7 @@ class Store(Base):
     country         = Column(String(32))
     currency        = Column(String(16))
     contact_email   = Column(String(255))
+    google_merchant_id = Column(String(64))
     whitelist_ip    = Column(String(255))
     created_at      = Column(DateTime, server_default=func.now(), nullable=False)
 

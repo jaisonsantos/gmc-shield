@@ -107,6 +107,44 @@ def auth_google_start(request: Request, return_to: str = "/"):
     return {"auth_url": auth_url}
 
 
+@router.get("/api/auth/google/start-content")
+def auth_google_start_content(request: Request, return_to: str = "/"):
+    r = get_redis()
+    _rate_limit(r, request.client.host or "", "oauth:content:start")
+    return_to = _sanitize_return_to(return_to)
+
+    state_id = secrets.token_urlsafe(16)
+    payload = json.dumps({"return_to": return_to, "ts": int(time.time()), "content": True})
+    r.setex(f"oauth:state:{state_id}", 300, payload)
+
+    code_verifier = secrets.token_urlsafe(64)
+    r.setex(f"oauth:pkce:{state_id}", 300, code_verifier)
+    nonce = secrets.token_urlsafe(16)
+    r.setex(f"oauth:nonce:{state_id}", 300, nonce)
+    signed_state = signer.sign(state_id).decode()
+
+    code_challenge = base64.urlsafe_b64encode(
+        hashlib.sha256(code_verifier.encode()).digest()
+    ).rstrip(b"=").decode()
+
+    params = {
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "redirect_uri": str(settings.GOOGLE_OAUTH_REDIRECT_URI),
+        "response_type": "code",
+        "scope": settings.GOOGLE_OAUTH_SCOPES_CONTENT,
+        "state": signed_state,
+        "code_challenge": code_challenge,
+        "code_challenge_method": "S256",
+        "nonce": nonce,
+        "access_type": "offline",
+        "prompt": "consent",
+    }
+    auth_endpoint = str(settings.GOOGLE_AUTH_ENDPOINT) if settings.GOOGLE_AUTH_ENDPOINT else f"{settings.GOOGLE_OAUTH_ISSUER}/oauth2/v2/auth"
+    auth_url = f"{auth_endpoint}?{urllib.parse.urlencode(params)}"
+    log_event("oauth.content.start", return_to=return_to)
+    return {"auth_url": auth_url}
+
+
 @router.get("/api/auth/google/callback")
 async def auth_google_callback(
     request: Request,
@@ -134,6 +172,7 @@ async def auth_google_callback(
 
     payload = json.loads(payload_raw)
     return_to = _sanitize_return_to(payload.get("return_to", "/"))
+    content_flow = payload.get("content")
 
     token_endpoint = str(settings.GOOGLE_TOKEN_ENDPOINT) if settings.GOOGLE_TOKEN_ENDPOINT else "https://oauth2.googleapis.com/token"
     async with httpx.AsyncClient() as client:
@@ -202,7 +241,10 @@ async def auth_google_callback(
     if token_data.get("refresh_token"):
         g_account.refresh_token_enc = encrypt_str(token_data["refresh_token"])
     g_account.token_expiry = datetime.now(timezone.utc) + timedelta(seconds=token_data.get("expires_in", 0))
-    if g_account.content_scope_granted is None:
+    if content_flow:
+        g_account.content_scope_granted = True
+        log_event("oauth.content.granted", user_id=user.id)
+    elif g_account.content_scope_granted is None:
         g_account.content_scope_granted = False
     db.commit()
 

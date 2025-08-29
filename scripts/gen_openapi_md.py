@@ -12,7 +12,7 @@ def main() -> None:
     for path, methods in sorted(spec.get("paths", {}).items()):
         for method in sorted(methods.keys()):
             lines.append(f"- {method.upper()} {path}")
-    sys.stdout.write("\n".join(lines))
+    sys.stdout.write("\n".join(lines) + "\n")
 
 
 if __name__ == "__main__":

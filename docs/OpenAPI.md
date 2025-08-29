@@ -4,11 +4,14 @@
 - GET /api/auth/google/start-content
 - POST /api/auth/login
 - GET /api/auth/whoami
+- GET /api/google/mc/accounts
+- GET /api/google/mc/{merchant_id}/products
 - GET /api/ops/metrics
 - GET /api/ops/worker/health
 - GET /api/stores
 - POST /api/stores
 - GET /api/stores/
+- PATCH /api/stores/{store_id}
 - POST /api/stores/{store_id}/appeals
 - GET /api/stores/{store_id}/blocks
 - POST /api/stores/{store_id}/blocks
@@ -33,8 +36,6 @@
 - POST /api/stores/{store_id}/wp/policies/publish
 - POST /api/stores/{store_id}/wp/policies/render
 - GET /api/stores/{store_id}/wp/status
-- GET /api/google/mc/accounts
-- GET /api/google/mc/{merchant_id}/products
 - GET /api/v1/feeds/versions/{version_id}/items
 - POST /api/v1/stores/{store_id}/feeds/ingest
 - GET /api/v1/stores/{store_id}/feeds/versions

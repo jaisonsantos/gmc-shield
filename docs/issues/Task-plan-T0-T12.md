@@ -457,9 +457,280 @@ Autorizar o acesso à **Google Content API (Merchant Center)** via consent **inc
 
 - Mantenha o **fallback** de login por e-mail/senha intacto (compatibilidade).
 
+
 ---
 
-### T4 — Crawler (Snapshots) + UA Variants
+# T4.1 — Rules Engine & Policy Mapping
+
+**Tipo:** feature • **Labels:** rules, violations, policy, crawler, extraction • **Prioridade:** P0
+
+## Objetivo
+
+Construir o **motor de regras** que compara **sinais do feed** (itens normalizados) com **sinais da página** (snapshots/extracts) e gera **violações** mapeadas às políticas do **Google Merchant Center (GMC)**. A meta é **detectar e priorizar** problemas (ex.: *price/availability mismatch, currency mismatch, link quebrado*) **antes** de bloqueios/desaprovações do Merchant.
+
+> Esta task substitui a simulação atual (violations “demo” no `worker/run_worker.py`) por detecções **reais** e idempotentes, usando dados já coletados.
+
+---
+
+## Contexto & entradas
+
+* **Feed**: `feed_items` normalizados (T1), com `price_cents`, `currency`, `availability`, `brand`, `gtin`, `mpn`, `link_canonical`.
+* **Snapshots**: `page_snapshots` (T2/T4.2) com:
+
+  * `url`, `http_status`, `html_path`, `screenshot_path`, `extracted_json`, `ua`, `fetched_at`, etc.
+  * `extracted_json` deve conter resumo mínimo: `{title, price_cents, currency, availability, canonical_url, redirects, sd? ...}`.
+* **Execução**: `scan_runs` agrupam jobs; o rules engine roda **por snapshot** mais recente de cada item (ou pela dupla `chrome`/`googlebot`).
+
+---
+
+## Escopo (fase 1 — paridade essencial)
+
+### A) Modelo/Dados (migrar se faltar)
+
+* Tabela **`violations`** (se já existe, **rever campos**; senão, criar):
+
+  * `id` (PK), `store_id` (FK), `run_id` (FK), `feed_item_id` (SKU), `rule_code` (STRING),
+    `severity` (`critical|major|minor|info`), `evidence_json` (TEXT/JSON),
+    `created_at` (TZ), `dedupe_key` (STRING, UNIQUE por run)
+  * Índices: `(store_id, run_id)`, `(store_id, rule_code, created_at)`, `(store_id, feed_item_id, created_at)`.
+* Tabela **`rule_configs`** (por **store**; overrides de thresholds/whitelists):
+
+  * `store_id` (PK), `thresholds_json` (ex.: `{ "R1.price.major": 0.10, "R1.price.critical": 0.20 }`),
+    `whitelists_json` (ex.: domínios permitidos de redirect), `updated_at`.
+* **Sem quebrar**: manter compatibilidade com as rotas existentes de violações (`routers/violations.py`).
+
+### B) Engine (serviço dedicado)
+
+Criar módulo `api/app/services/rules_engine.py`:
+
+* **Interface**:
+
+  * `evaluate_item(store_id, run_id, feed_item: FeedItem, snapshot: PageSnapshot) -> list[Violation]`
+  * `evaluate_run(store_id, run_id) -> counts/latências` (agrega todos os itens do run)
+* **Idempotência por run**:
+
+  * `dedupe_key = f"{run_id}:{feed_item_id}:{rule_code}"`
+    → `INSERT ... ON CONFLICT (dedupe_key) DO NOTHING`
+* **Severidade**:
+
+  * padrão global (ex.: `R1.major=10%`, `R1.critical=20%`)
+  * overrides por loja via `rule_configs.thresholds_json`.
+* **Evidence padrão**:
+
+  * **Sempre** registrar no `evidence_json` os sinais usados:
+
+    * do feed (`price_cents`, `currency`, `availability`, `link_canonical`…),
+    * do snapshot (`extracted.price_cents`, `currency`, `availability`, `canonical`, `http_status`, `redirects`, `ua`, `fetched_at`),
+    * `diffs`/cálculos (ex.: `rel_diff_price`).
+
+### C) Regras iniciais (mapeadas às políticas GMC)
+
+> Códigos estáveis (não mudar depois): `R1_PRICE_MISMATCH`, `R2_CURRENCY_MISMATCH`, `R3_AVAILABILITY_MISMATCH`, `R4_REDIRECT_SUSPECT`, `R5_GTIN_INVALID_OR_MISSING`, `R6_LINK_BROKEN`.
+
+1. **R1\_PRICE\_MISMATCH**
+
+   * Quando: `abs(feed.price - page.price) / max(feed.price, 1) ≥ threshold`
+   * Thresholds default: `major=0.10 (10%)`, `critical=0.20 (20%)`
+   * Evidence: `{feed_price_cents, page_price_cents, rel_diff, ua, fetched_at}`
+
+2. **R2\_CURRENCY\_MISMATCH**
+
+   * Quando: `feed.currency != page.currency` (ISO)
+   * Evidence: `{feed_currency, page_currency}`
+
+3. **R3\_AVAILABILITY\_MISMATCH**
+
+   * Mapear para enum: `in_stock|out_of_stock|preorder` (helpers já existentes)
+   * Quando: `feed.availability != page.availability`
+   * Evidence: `{feed_availability, page_availability}`
+
+4. **R4\_REDIRECT\_SUSPECT**
+
+   * Usar cadeia de redirects do snapshot (se disponível) ou do Playwright.
+   * Quando: `redirects_count > N` (default: 3) **ou** domínio final **não** em whitelist da loja
+   * Evidence: `{redirects, final_url, whitelist_match, count}`
+
+5. **R5\_GTIN\_INVALID\_OR\_MISSING**
+
+   * Quando: `feed.gtin` inválido (mod-10/len) **ou** ausente em categoria/país que exige (guardas minimamente configuráveis)
+   * Evidence: `{gtin, reason}`
+
+6. **R6\_LINK\_BROKEN**
+
+   * Quando: `http_status` no snapshot for `4xx|5xx` recorrente (pelo menos 1 snapshot `chrome` **e** `googlebot` com erro, se ambos existirem)
+   * Evidence: `{http_statuses, urls, uas}`
+
+> Fase 1 **não** inclui heurísticas avançadas de *misrepresentation* — isso fica para T25 (*Rule Pack v2*).
+
+### D) Configuração por loja
+
+* `rule_configs.thresholds_json`: exemplo
+
+  ```json
+  {
+    "R1_PRICE_MISMATCH.major": 0.1,
+    "R1_PRICE_MISMATCH.critical": 0.2,
+    "R4_REDIRECT_SUSPECT.max_redirects": 3,
+    "R4_REDIRECT_SUSPECT.whitelist": ["minhaloja.com", "cdn.minhaloja.com"]
+  }
+  ```
+* Rota opcional (posterior): `PATCH /api/stores/{id}/rules/config` (admin/owner).
+
+### E) API
+
+* Reutilizar `GET /api/stores/{id}/violations` (filtros por `run_id`, `rule_code`, `severity`, `sku`).
+* Adicionar **stats** (se não existir):
+  `GET /api/stores/{id}/violations/stats?since=...&until=...` → agregados por `rule_code`/`severity`/`7d`.
+* **Execução**: Ao finalizar `scan` (ou em um job dedicado), rodar `rules_engine.evaluate_run`.
+
+### F) Observabilidade
+
+* Log **estruturado** por avaliação:
+  `{store_id, run_id, feed_item_id, rule_code, severity, duration_ms, decision: "triggered|ok", thresholds, trace_id}`.
+* Métricas simples (contadores por `rule_code` e duração média).
+
+---
+
+## Escopo (fase 2 — políticas GMC avançadas)
+
+* **Misrepresentation (sinais de risco)**: branding divergente, claims agressivos, abuso de microdata.
+* **Conteúdo regulado**: checagem de disclaimers e gates por categoria/país.
+* **URL hygiene**: `utm_*`, popups bloqueantes, interstitials.
+
+*(planejar em T25/T28)*
+
+---
+
+## Integração com Blocks (ponte para T6)
+
+* Ao **Bloquear** na UI, criar/ativar `blocks` (já existe) e, quando T6 estiver pronto, refletir no **suplemental feed**.
+* A violação pode sugerir “Ação rápida: Bloquear SKU” no Evidence Viewer (T10).
+
+---
+
+## Critérios de Aceite (DoD)
+
+* [ ] O **scan** produz violações **reais** (não simuladas) para itens da loja, com **idempotência por run**.
+* [ ] Regras **R1–R6** implementadas com severidades padrão + overrides por loja (se `rule_configs` estiver setado).
+* [ ] `evidence_json` contém os **sinais usados** (feed + página + diffs).
+* [ ] `GET /api/stores/{id}/violations` e (se criado) `.../violations/stats` funcionam e respondem rápido (indexados).
+* [ ] Logs estruturados mostram decisões por regra; métricas básicas expostas no `/api/ops/metrics` (contadores).
+
+---
+
+## Testes
+
+### Unitários
+
+* Funções por regra (inputs de feed & snapshot → decisão + evidence).
+* Mapeamentos/normalizações (availability enum, moeda, GTIN).
+* Resolução de thresholds/whitelist por loja (merge de defaults com overrides).
+
+### Integração
+
+* Simular `scan_run` com 4–6 itens cobrindo:
+
+  * ok, `R1` preço, `R2` moeda, `R3` disponibilidade, `R4` redirect, `R6` link.
+* Verificar:
+
+  * Persistência em `violations` com `dedupe_key`.
+  * Severidades corretas.
+  * `GET /violations` e `.../stats` retornam esperado.
+
+> **Sem Docker** (SQLite) nos testes; carga de fixtures da própria suíte.
+
+---
+
+## Documentação
+
+* `docs/issues/T04.1-Rules-Engine-Policy-Mapping.md` com:
+
+  * Regras (R1–R6), thresholds default, severidades, exemplos de evidence.
+  * Como ajustar `rule_configs` por loja.
+  * Rotas de leitura (`/violations`, `/violations/stats`).
+* `OpenAPI.md` atualizado, se `.../stats` for adicionado.
+
+---
+
+## Notas de implementação
+
+* **Onde rodar**: no **worker** ao finalizar ou durante o scan (após salvar snapshot). Pode ser um **job** por item (`evaluate_item`) ou um agregador por run.
+* **UA combinada**: quando existir `chrome` e `googlebot`, prefira **chrome** para preço/título e use **googlebot** como *sanity* para `R6` (link quebrado) — documentar heurística.
+* **Evolução de schema**: `extracted_json` do snapshot deve sempre conter `price_cents`, `currency`, `availability`, `final_url`, `redirects`. Se faltar, engine marca `evidence.missing_fields` e reduz severidade para evitar FP.
+* **Performance**: indexar consultas por `run_id` e `feed_item_id`; processar em lotes (chunked) no worker.
+
+---
+
+## Esqueleto de migração (Alembic) — exemplo curto
+
+> Ajuste nomes e paths conforme seu projeto.
+
+```py
+def upgrade():
+    op.create_table(
+        "violations",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("store_id", sa.Integer, sa.ForeignKey("stores.id", ondelete="CASCADE"), nullable=False),
+        sa.Column("run_id", sa.Integer, sa.ForeignKey("scan_runs.id", ondelete="CASCADE"), nullable=False),
+        sa.Column("feed_item_id", sa.String(128), nullable=False),
+        sa.Column("rule_code", sa.String(64), nullable=False),
+        sa.Column("severity", sa.String(16), nullable=False),
+        sa.Column("evidence_json", sa.Text, nullable=True),
+        sa.Column("dedupe_key", sa.String(256), nullable=False, unique=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+    )
+    op.create_index("ix_violations_store_run", "violations", ["store_id", "run_id"])
+    op.create_index("ix_violations_store_rule", "violations", ["store_id", "rule_code", "created_at"])
+
+    op.create_table(
+        "rule_configs",
+        sa.Column("store_id", sa.Integer, sa.ForeignKey("stores.id", ondelete="CASCADE"), primary_key=True),
+        sa.Column("thresholds_json", sa.Text, nullable=True),
+        sa.Column("whitelists_json", sa.Text, nullable=True),
+        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+    )
+```
+
+---
+
+## Template da issue (arquivo)
+
+Crie: `docs/issues/T04.1-Rules-Engine-Policy-Mapping.md`
+
+```md
+# T4.1 — Rules Engine & Policy Mapping
+**Tipo:** feature • **Labels:** rules, violations, policy, crawler, extraction • **Prioridade:** P0
+
+## Descrição
+Construir o motor de regras real (não simulado) que compara feed normalizado e snapshots para gerar violações mapeadas às políticas do GMC. Substitui o stub atual no worker por um serviço `rules_engine.py` idempotente e configurável por loja.
+
+## Escopo
+- Modelo: `violations` (idempotência por run com `dedupe_key`), `rule_configs` por loja.
+- Engine: regras **R1–R6**, severidades, evidences detalhadas, logs estruturados.
+- API: manter `GET /api/stores/{id}/violations`; opcional `.../violations/stats`.
+- Integração: rodar após cada snapshot ou ao final do run (worker).
+- Não quebrar rotas/UI existentes.
+
+## Critérios de Aceite
+- [ ] Regras R1–R6 implementadas com defaults + overrides.
+- [ ] Idempotência por run (sem duplicar violações).
+- [ ] Evidence inclui sinais de feed e página usados na decisão.
+- [ ] Listagem por filtros (`rule_code`, `severity`, `run_id`) performática (índices ok).
+- [ ] Testes unitários e integração (SQLite, sem Docker) **verdes**.
+
+## Testes
+- Unit: funções das regras, normalizações, merge de configs.
+- Integração: run sintético com 4–6 itens cobrindo casos; valida persistência, severidades e filtros.
+
+## Observações
+- Planejar T25 para regras avançadas (misrepresentation, SD conflict, robots, etc).
+- Documentar heurísticas UA (chrome vs googlebot) para R6.
+```
+
+
+---
+
+### T4.2 — Crawler (Snapshots) + UA Variants
 
 **Objetivo**
 
@@ -2129,8 +2400,3 @@ SESSION_COOKIE_SAMESITE=Lax
 ---
 
 > Próximo arquivo: **T13–T20** (Fase 2 — Confiabilidade & Produto).
-
-### T4 — Rules Engine & Policy Mapping
-
-Consumo e avaliação de regras de conformidade (parcialmente simuladas hoje). Detalhes e critérios em `docs/issues/T04-Rules-Engine-Policy-Mapping.md`.
-

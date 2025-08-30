@@ -17,6 +17,9 @@ class Principal(TypedDict):
     role: str
     account_id: int
 
+SESSION_TTL_MINUTES = int(os.getenv("SESSION_TTL_MINUTES", "480"))  # default 8h
+
+
 def create_token(email: str, role: str, account_id: int) -> str:
     now = datetime.datetime.now(datetime.timezone.utc)
     payload = {
@@ -24,7 +27,8 @@ def create_token(email: str, role: str, account_id: int) -> str:
         "role": role,
         "account_id": account_id,
         "iat": now,
-        "exp": now + datetime.timedelta(minutes=30),
+        # longer default session to avoid frequent expirations during demos/dev
+        "exp": now + datetime.timedelta(minutes=SESSION_TTL_MINUTES),
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -56,4 +60,3 @@ def require_roles(*roles: str):
             raise HTTPException(status_code=403, detail="Forbidden")
         return principal
     return _inner
-

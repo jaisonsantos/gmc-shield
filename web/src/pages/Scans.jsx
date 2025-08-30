@@ -1,7 +1,8 @@
 // web/src/pages/Scans.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Runs } from "../lib/api";
+import { Runs, Stores as StoresApi } from "../lib/api";
+import { useToast } from "../lib/toast";
 import Button from "../components/Button";
 import { RefreshCw, Clock, ArrowRight } from "lucide-react";
 
@@ -10,6 +11,8 @@ export default function Scans() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [scanning, setScanning] = useState(false);
+  const toast = useToast();
 
   const load = async () => {
     setErr("");
@@ -39,9 +42,25 @@ export default function Scans() {
     <section className="card">
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
          <h3>Histórico de Execuções (Scans)</h3>
-         <Button variant="ghost" onClick={load} loading={loading}>
-            <RefreshCw size={16} /> Recarregar
-          </Button>
+         <div style={{ display: 'flex', gap: 8 }}>
+           <Button variant="ghost" onClick={load} loading={loading}>
+              <RefreshCw size={16} /> Recarregar
+            </Button>
+            <Button onClick={async () => {
+              try {
+                setScanning(true);
+                const res = await StoresApi.scan(id);
+                toast.success(`Scan iniciado (Run #${res.run_id})`);
+                setTimeout(load, 1200);
+              } catch (e) {
+                toast.error(e.message || "Falha ao iniciar scan");
+              } finally {
+                setScanning(false);
+              }
+            }} disabled={scanning}>
+              {scanning ? 'A processar…' : 'Iniciar Scan'}
+            </Button>
+         </div>
       </div>
       {err && <div className="error" style={{ marginBottom: 16 }}>{err}</div>}
       <div className="table-wrap">

@@ -24,6 +24,23 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    // Captura token via query param em qualquer rota (ex.: retorno do OAuth)
+    try {
+      let t = getToken();
+      if (!t && typeof window !== "undefined") {
+        const sp = new URLSearchParams(window.location.search);
+        const qtok = sp.get("token");
+        if (qtok) {
+          setToken(qtok);
+          t = qtok;
+          // Limpa o token da URL para evitar reaproveitar em refresh
+          sp.delete("token");
+          const newQs = sp.toString();
+          const newUrl = `${window.location.pathname}${newQs ? `?${newQs}` : ""}${window.location.hash || ""}`;
+          window.history.replaceState({}, "", newUrl);
+        }
+      }
+    } catch { /* noop */ }
     boot();
   }, []);
 

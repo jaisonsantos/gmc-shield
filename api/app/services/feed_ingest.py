@@ -83,23 +83,48 @@ def parse_csv(buf: bytes, delimiter=",") -> Iterable[dict]:
         yield r
 
 def parse_xml(buf: bytes) -> Iterable[dict]:
+    """
+    Parseia XML de feed do Google (RSS/Atom) lidando com namespace "g:".
+    Muitos feeds usam o namespace "http://base.google.com/ns/1.0"; o ElementTree
+    exige a forma expandida "{ns}tag". Para robustez, fazemos um fallback
+    procurando por elementos cujo sufixo do tag seja o nome local (ex.: "id").
+    """
     root = ET.fromstring(buf)
-    for it in root.iterfind(".//item"):
-        def g(tag):
-            n = it.find(tag)
-            return n.text if n is not None else None
-        yield {
-            "id": g("g:id") or g("id"),
-            "title": g("title"),
-            "link": g("link"),
-            "price": g("g:price") or g("price"),
-            "sale_price": g("g:sale_price") or g("sale_price"),
-            "availability": g("g:availability") or g("availability"),
-            "brand": g("g:brand") or g("brand"),
-            "gtin": g("g:gtin") or g("gtin"),
-            "mpn": g("g:mpn") or g("mpn"),
-            "shipping": g("g:shipping") or None,
-        }
+
+    def get_text(el: ET.Element, names: list[str]) -> str | None:
+        ns = {"g": "http://base.google.com/ns/1.0"}
+        for name in names:
+            # 1) tentativa direta (com/sem namespace declarado)
+            try:
+                n = el.find(name, ns)
+                if n is not None and n.text:
+                    return n.text
+            except Exception:
+                pass
+            # 2) fallback: varrer filhos e casar pelo nome local
+            local = name.split(":", 1)[1] if ":" in name else name
+            for child in list(el):
+                tag = child.tag
+                if tag == local or tag.endswith("}" + local):
+                    if child.text:
+                        return child.text
+        return None
+
+    # procura itens em qualquer profundidade
+    for it in root.iter():
+        if it.tag.endswith("item") or it.tag.endswith("entry"):
+            yield {
+                "id": get_text(it, ["g:id", "id", "g:offer_id", "offer_id"]),
+                "title": get_text(it, ["title", "g:title"]),
+                "link": get_text(it, ["link", "g:link"]),
+                "price": get_text(it, ["g:price", "price"]),
+                "sale_price": get_text(it, ["g:sale_price", "sale_price"]),
+                "availability": get_text(it, ["g:availability", "availability"]),
+                "brand": get_text(it, ["g:brand", "brand"]),
+                "gtin": get_text(it, ["g:gtin", "gtin"]),
+                "mpn": get_text(it, ["g:mpn", "mpn"]),
+                "shipping": get_text(it, ["g:shipping", "shipping"]),
+            }
 
 def normalize_row(r: dict) -> dict:
     item_id = r.get("id") or r.get("item_id") or r.get("sku")
@@ -114,7 +139,7 @@ def normalize_row(r: dict) -> dict:
     else:
         shipping_json = None
     return {
-        "item_id": str(item_id),
+        "item_id": (str(item_id) if item_id is not None else None),
         "title": clean_text(r.get("title")),
         "link_canonical": canonicalize_link(r.get("link")),
         "price_cents": p,

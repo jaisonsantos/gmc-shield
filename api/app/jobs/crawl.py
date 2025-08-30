@@ -4,7 +4,7 @@ from sqlalchemy import func
 from ..db import SessionLocal
 from .. import models
 from ..services import crawler, artifacts
-from ..queue import get_rq_queue
+from ..queue import get_rq_queue, get_redis
 
 queue = get_rq_queue("crawl")
 
@@ -22,6 +22,11 @@ def enqueue(store_id: int, run_id: int, feed_item_id: str, url: str) -> str:
         try:
             from ..observability import log_event
             log_event("rq.enqueue.error", level="error", error=str(e), job_id=run_id, store_id=store_id)
+            try:
+                r = get_redis()
+                r.hincrby("metrics:jobs", "enqueue_noop", 1)
+            except Exception:
+                pass
         except Exception:
             pass
         return "noop"

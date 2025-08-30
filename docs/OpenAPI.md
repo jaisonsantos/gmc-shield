@@ -5,6 +5,7 @@
 - POST /api/auth/login
 - GET /api/auth/whoami
 - GET /api/google/mc/accounts
+- POST /api/google/mc/{merchant_id}/import
 - GET /api/google/mc/{merchant_id}/products
 - GET /api/ops/metrics
 - GET /api/ops/worker/health

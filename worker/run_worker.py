@@ -126,12 +126,20 @@ def process_job(job: dict):
             items_list = fetch_feed_items_csv(limit)
         for idx, item in enumerate(items_list, start=1):
             items_total += 1
-            feed_price = float(item["price"].split()[0])
-            feed_currency = item["price"].split()[1]
+            # Be robust with missing/invalid price/currency
+            tokens = (item.get("price") or "").split()
+            try:
+                feed_price = float(tokens[0]) if tokens else 0.0
+            except Exception:
+                feed_price = 0.0
+            feed_currency = tokens[1] if len(tokens) > 1 else (item.get("currency") or "")
             feed_avail = item.get("availability", "")
 
-            page_price = feed_price * (1.3 if idx % 2 == 0 else 1.0)
-            page_currency = feed_currency if idx % 2 == 0 else "USD"
+            page_price = (feed_price or 0.0) * (1.3 if idx % 2 == 0 else 1.0)
+            if feed_currency:
+                page_currency = feed_currency if idx % 2 == 0 else "USD"
+            else:
+                page_currency = ""
             availability = feed_avail if idx % 3 != 0 else "out of stock"
 
             html = f"<html><body><h1>{item['title']}</h1><span class='price'>{page_price}</span></body></html>"
@@ -160,7 +168,7 @@ def process_job(job: dict):
             sess.add(snapshot)
 
             violations = []
-            if abs(page_price - feed_price) / feed_price > 0.2:
+            if feed_price > 0 and abs(page_price - feed_price) / feed_price > 0.2:
                 violations.append(
                     models.Violation(
                         store_id=store_id,

@@ -2129,3 +2129,8 @@ SESSION_COOKIE_SAMESITE=Lax
 ---
 
 > Próximo arquivo: **T13–T20** (Fase 2 — Confiabilidade & Produto).
+
+### T4 — Rules Engine & Policy Mapping
+
+Consumo e avaliação de regras de conformidade (parcialmente simuladas hoje). Detalhes e critérios em `docs/issues/T04-Rules-Engine-Policy-Mapping.md`.
+

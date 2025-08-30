@@ -5,6 +5,7 @@ from ..auth import Principal, require_roles
 from ..db import get_db
 from .. import models, schemas
 from ..jobs import crawl
+from ..queue import publish_scan_job
 
 router = APIRouter()
 
@@ -60,6 +61,23 @@ def enqueue_scan(
             continue
         crawl.enqueue(store_id, run.id, item.item_id, item.link_canonical)
         queued += 1
+
+    # Além do crawl por item (RQ), publica um job agregado na fila FIFO
+    # para o worker simplificado gerar snapshots/violações demo.
+    try:
+        recrawl_flag = False  # campo opcional não existe no schema atual
+        publish_scan_job(
+            store_id=store_id,
+            run_id=run.id,
+            limit_items=req.limit_items or 20,
+            requested_by=principal["email"],
+            recrawl=recrawl_flag,
+        )
+    except Exception as _e:
+        # não bloqueia a resposta se a fila auxiliar estiver indisponível
+        # mas evita que um AttributeError impeça a publicação
+        from ..observability import log_event
+        log_event("scan.job.publish.error", reason=str(_e), store_id=store_id, job_id=run.id)
 
     return {"run_id": run.id, "queued": queued, "items_total": len(items)}
 

@@ -119,6 +119,11 @@ export default function Stores() {
                   <span className={`status-pill ${wpStatus[s.id]?.connected ? 'ok' : 'off'}`}>
                     WP {wpStatus[s.id]?.connected ? "Conectado" : "Offline"}
                   </span>
+                  {s.google_merchant_id && (
+                    <span className="status-pill ok" title={`Merchant ${s.google_merchant_id}`}>
+                      GMC Conectado
+                    </span>
+                  )}
                   <span>{s.country} • {s.currency}</span>
                 </div>
               </Link>

@@ -5,9 +5,20 @@ const API_BASE = "";
 
 let TOKEN_MEM = "";
 
-export function getToken() { return TOKEN_MEM; }
-export function setToken(t) { TOKEN_MEM = t || ""; }
-export function clearToken() { TOKEN_MEM = ""; }
+function readPersisted() {
+  try { return localStorage.getItem("gmc_token") || ""; } catch { return ""; }
+}
+function writePersisted(t) {
+  try { if (t) localStorage.setItem("gmc_token", t); else localStorage.removeItem("gmc_token"); } catch {}
+}
+
+export function getToken() {
+  if (TOKEN_MEM) return TOKEN_MEM;
+  TOKEN_MEM = readPersisted();
+  return TOKEN_MEM;
+}
+export function setToken(t) { TOKEN_MEM = t || ""; writePersisted(TOKEN_MEM); }
+export function clearToken() { TOKEN_MEM = ""; writePersisted(""); }
 
 export async function apiFetch(path, { method = "GET", body, headers = {}, json = true } = {}) {
   // 2. O URL agora será relativo, ex: "/api/auth/login"
@@ -29,6 +40,21 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
   const ct = res.headers.get("content-type") || "";
 
   if (!res.ok) {
+    // graceful 401 handling: clean session and redirect to login
+    if (res.status === 401) {
+      try { clearToken(); } catch {}
+      const next = typeof window !== 'undefined' ? encodeURIComponent(window.location.href) : '';
+      const loginUrl = `/login${next ? `?next=${next}&reason=session_expired` : ''}`;
+      if (typeof window !== 'undefined') {
+        // Avoid redirect loops by only redirecting from app pages
+        if (!window.location.pathname.startsWith('/login')) {
+          window.location.href = loginUrl;
+        }
+      }
+      const err = new Error("Sessão expirada. Faça login novamente.");
+      err.status = 401;
+      throw err;
+    }
     if (ct.includes("application/json")) {
       const j = await res.json().catch(() => ({}));
       const msg = j.detail || `${res.status} ${res.statusText}`;
@@ -37,7 +63,9 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
       throw err;
     }
     const text = await res.text();
-    throw new Error(`Erro ${res.status}: ${text.slice(0, 150)}…`);
+    const err = new Error(`Erro ${res.status}: ${text.slice(0, 150)}…`);
+    err.status = res.status;
+    throw err;
   }
   
   // Apenas tenta fazer parse de JSON se o content-type for o correto

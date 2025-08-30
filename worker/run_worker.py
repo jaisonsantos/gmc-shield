@@ -50,26 +50,53 @@ def heartbeat(processed: int = 0):
     return payload
 
 # Resolve demo feed CSV path from a few candidates
-CANDIDATES = [
+CSV_CANDIDATES = [
     os.getenv("DEMO_FEED_CSV"),
     "/app/docs/seed/demo_feed.csv",
     os.path.join(os.getcwd(), "docs", "seed", "demo_feed.csv"),
-    os.path.normpath(
-        os.path.join(os.path.dirname(__file__), "..", "docs", "seed", "demo_feed.csv")
-    ),
+    os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "docs", "seed", "demo_feed.csv")),
 ]
-FEED_CSV = next((p for p in CANDIDATES if p and os.path.exists(p)), None)
-if not FEED_CSV:
-    raise RuntimeError(
-        "Demo feed CSV not found. Set DEMO_FEED_CSV or mount docs/seed."
-    )
+FEED_CSV = next((p for p in CSV_CANDIDATES if p and os.path.exists(p)), None)
 
 
-def fetch_feed_items(limit: int):
+def fetch_feed_items_csv(limit: int):
+    if not FEED_CSV:
+        return []
+    out = []
     with open(FEED_CSV) as f:
         reader = csv.DictReader(f)
         for row in itertools.islice(reader, limit):
-            yield row
+            out.append(row)
+    return out
+
+
+def fetch_feed_items_db(sess, store_id: int, limit: int):
+    """Yield minimal item dicts from DB for the store."""
+    rows = (
+        sess.query(models.FeedItem)
+        .filter(models.FeedItem.store_id == store_id)
+        .order_by(models.FeedItem.item_id)
+        .limit(limit)
+        .all()
+    )
+    out = []
+    for r in rows:
+        # Convert cents to float price to keep old heuristic logic
+        def _from_cents(v):
+            try:
+                return (v or 0) / 100.0
+            except Exception:
+                return 0.0
+        out.append(
+            {
+                "id": r.item_id,
+                "title": r.title or r.item_id,
+                "link": r.link_canonical or "",
+                "price": f"{_from_cents(r.price_cents)} {r.currency or ''}".strip(),
+                "availability": r.availability or "",
+            }
+        )
+    return out
 
 
 def process_job(job: dict):
@@ -93,14 +120,26 @@ def process_job(job: dict):
     items_total = items_ok = items_violation = 0
 
     try:
-        for idx, item in enumerate(fetch_feed_items(limit), start=1):
+        items_list = fetch_feed_items_db(sess, store_id, limit)
+        if not items_list:
+            # fallback to demo CSV for first-run experience
+            items_list = fetch_feed_items_csv(limit)
+        for idx, item in enumerate(items_list, start=1):
             items_total += 1
-            feed_price = float(item["price"].split()[0])
-            feed_currency = item["price"].split()[1]
+            # Be robust with missing/invalid price/currency
+            tokens = (item.get("price") or "").split()
+            try:
+                feed_price = float(tokens[0]) if tokens else 0.0
+            except Exception:
+                feed_price = 0.0
+            feed_currency = tokens[1] if len(tokens) > 1 else (item.get("currency") or "")
             feed_avail = item.get("availability", "")
 
-            page_price = feed_price * (1.3 if idx % 2 == 0 else 1.0)
-            page_currency = feed_currency if idx % 2 == 0 else "USD"
+            page_price = (feed_price or 0.0) * (1.3 if idx % 2 == 0 else 1.0)
+            if feed_currency:
+                page_currency = feed_currency if idx % 2 == 0 else "USD"
+            else:
+                page_currency = ""
             availability = feed_avail if idx % 3 != 0 else "out of stock"
 
             html = f"<html><body><h1>{item['title']}</h1><span class='price'>{page_price}</span></body></html>"
@@ -129,7 +168,7 @@ def process_job(job: dict):
             sess.add(snapshot)
 
             violations = []
-            if abs(page_price - feed_price) / feed_price > 0.2:
+            if feed_price > 0 and abs(page_price - feed_price) / feed_price > 0.2:
                 violations.append(
                     models.Violation(
                         store_id=store_id,

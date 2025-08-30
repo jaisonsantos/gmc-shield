@@ -4,6 +4,8 @@
 ## Descrição
 Implementar ingestão de feeds (arquivo/URL) com normalização de itens e versionamento idempotente. Fornecer endpoints v1 sem quebrar rotas legadas, armazenar `content_hash` e manter `feeds.last_item_count/created_at`. Cobrir com testes (helpers, idempotência e smoke de API) e dataset ≥60 itens.
 
+Nota: a ingestão/scan é totalmente independente de integrações externas (WordPress, GMC). WP é opcional e não é pré‑requisito para executar scans. Opcionalmente, agora também é possível popular itens a partir do Google Merchant Center via `POST /api/google/mc/{merchant_id}/import?store_id=...` (ver T3).
+
 ## Escopo
 - Endpoints v1:
   - `POST /api/v1/stores/{store_id}/feeds/ingest` (upload **ou** `{url, format}`)
@@ -60,4 +62,3 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 curl -s -H "Authorization: Bearer $TOKEN" \
   -F format=csv -F file=@docs/seed/demo_feed.csv \
   "$API/api/v1/stores/$STORE_ID/feeds/ingest" | jq .
-

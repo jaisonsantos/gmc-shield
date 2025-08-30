@@ -53,6 +53,7 @@ Implementar login “Continuar com Google” usando OIDC Authorization Code + PK
 - URLs & endpoints Google sem aspas no `.env`.
 - `FERNET_KEY` obrigatória; use `FERNET_KEYS` apenas para rotação (nova primeiro, antigas depois).
 - Cookie `token` `httponly` + `samesite=lax` no callback; token também retornado via querystring para a UI consumi‑lo e armazenar apenas em memória.
+- Sessão da app: tempo configurável por `SESSION_TTL_MINUTES` (default 480 = 8h). A UI agora trata 401 com redirecionamento gentil para `/login` em vez de exibir "Invalid token".
 
 ## Como testar (dev)
 

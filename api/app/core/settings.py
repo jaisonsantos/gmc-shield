@@ -1,7 +1,7 @@
 # api/app/core/settings.py
-from typing import Optional, List
-from pydantic import AnyHttpUrl, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
+from pydantic import AnyHttpUrl
+from typing import Optional
 
 class Settings(BaseSettings):
     API_HOST: str = "0.0.0.0"
@@ -52,24 +52,9 @@ class Settings(BaseSettings):
     STRIPE_WEBHOOK_SECRET: Optional[str] = None
 
 
-    # i18n
-    DEFAULT_LOCALE: str = "en_US"
-    SUPPORTED_LOCALES: List[str] = ["en_US", "pt_BR", "es_ES"]
-
-    # pydantic-settings v2
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        case_sensitive=True,
-        extra="ignore",
-    )
-
-    # permite SUPPORTED_LOCALES como "en_US,pt_BR,es_ES" no .env
-    @field_validator("SUPPORTED_LOCALES", mode="before")
-    @classmethod
-    def _coerce_supported_locales(cls, v):
-        if isinstance(v, str):
-            return [s.strip() for s in v.split(",") if s.strip()]
-        return v
+    class Config:
+        env_file = ".env"
+        case_sensitive = True
 
     @property
     def effective_jwt_secret(self) -> str:

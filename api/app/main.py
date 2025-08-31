@@ -18,6 +18,7 @@ from .routers import (
     scans,
     oauth_google,
     google_mc,
+    me,
 )
 from .core.settings import Settings
 from .observability import new_trace_id, record_request
@@ -66,6 +67,7 @@ app.include_router(auth.router,             prefix="/api/auth",     tags=["auth"
 app.include_router(stores.router,           prefix="/api/stores",   tags=["stores"])
 app.include_router(feeds.router,            prefix="/api/stores",   tags=["feeds"])
 app.include_router(feeds.router_v1,         prefix="/api/v1",       tags=["feeds"])
+app.include_router(me.router,               prefix="/api/v1",       tags=["me"])
 app.include_router(violations.router,       prefix="/api/stores",   tags=["violations"])
 app.include_router(blocks.router,           prefix="/api/stores",   tags=["blocks"])
 app.include_router(policies.router,         prefix="/api/stores",   tags=["policies"])
@@ -83,4 +85,3 @@ def healthz():
 @app.get("/readyz")
 def readyz():
     return {"ok": True}
-

@@ -5,6 +5,8 @@ import { Runs, Stores as StoresApi } from "../lib/api";
 import { useToast } from "../lib/toast";
 import Button from "../components/Button";
 import { RefreshCw, Clock, ArrowRight } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { Table, THead, Th, TBody, Tr, Td } from "../components/ui/Table";
 
 export default function Scans() {
   const { id } = useParams();
@@ -13,6 +15,7 @@ export default function Scans() {
   const [err, setErr] = useState("");
   const [scanning, setScanning] = useState(false);
   const toast = useToast();
+  const { t } = useTranslation();
 
   const load = async () => {
     setErr("");
@@ -41,71 +44,56 @@ export default function Scans() {
   return (
     <section className="card">
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-         <h3>Histórico de Execuções (Scans)</h3>
+         <h3>{t('store.tabs.scans')}</h3>
          <div style={{ display: 'flex', gap: 8 }}>
            <Button variant="ghost" onClick={load} loading={loading}>
-              <RefreshCw size={16} /> Recarregar
+              <RefreshCw size={16} /> {t('common.refresh')}
             </Button>
             <Button onClick={async () => {
               try {
                 setScanning(true);
                 const res = await StoresApi.scan(id);
-                toast.success(`Scan iniciado (Run #${res.run_id})`);
+                toast.success(t('common.success'));
                 setTimeout(load, 1200);
               } catch (e) {
-                toast.error(e.message || "Falha ao iniciar scan");
+                toast.error(e.message || 'Scan failed');
               } finally {
                 setScanning(false);
               }
             }} disabled={scanning}>
-              {scanning ? 'A processar…' : 'Iniciar Scan'}
+              {scanning ? t('common.loading') : t('scans.start')}
             </Button>
          </div>
       </div>
       {err && <div className="error" style={{ marginBottom: 16 }}>{err}</div>}
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ID Execução</th>
-              <th>Status</th>
-              <th>Início</th>
-              <th>Fim</th>
-              <th>Resultados</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Table>
+        <THead>
+          <Th>ID</Th>
+          <Th>Status</Th>
+          <Th>{t('scans.startAt')}</Th>
+          <Th>{t('scans.endAt')}</Th>
+          <Th>{t('scans.results')}</Th>
+          <Th>{t('scans.actions')}</Th>
+        </THead>
+        <TBody>
             {loading ? (
-              <tr>
-                <td colSpan={6} className="td-center muted">
-                  <Clock size={16} style={{ marginRight: 6 }} />
-                  A carregar execuções…
-                </td>
-              </tr>
+              <Tr><Td align="center" colSpan={6}><Clock size={16} className="inline mr-2" />{t('common.loading')}</Td></Tr>
             ) : items.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="td-center muted">Nenhuma execução encontrada.</td>
-              </tr>
+              <Tr><Td align="center" colSpan={6}>—</Td></Tr>
             ) : (
               items.map((r) => (
-                <tr key={r.id}>
-                  <td className="mono">{r.id}</td>
-                  <td><span className={`status-pill ${r.status}`}>{r.status}</span></td>
-                  <td>{formatDate(r.started_at)}</td>
-                  <td>{formatDate(r.finished_at)}</td>
-                  <td>{r.items_ok} OK / {r.items_violation} Violações</td>
-                  <td>
-                    <Link to={`/app/stores/${id}/violations?run_id=${r.id}`} className="btn-link-action">
-                      Ver Violações <ArrowRight size={14} />
-                    </Link>
-                  </td>
-                </tr>
+                <Tr key={r.id}>
+                  <Td mono>{r.id}</Td>
+                  <Td><span className={`inline-flex px-2 py-0.5 rounded text-xs ${r.status === 'done' ? 'bg-green-100 text-green-800' : r.status === 'running' ? 'bg-blue-100 text-blue-800' : r.status === 'queued' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>{r.status}</span></Td>
+                  <Td>{formatDate(r.started_at)}</Td>
+                  <Td>{formatDate(r.finished_at)}</Td>
+                  <Td>{r.items_ok} OK / {r.items_violation} {t('store.tabs.violations')}</Td>
+                  <Td><Link to={`/app/stores/${id}/violations?run_id=${r.id}`} className="text-accent dark:text-purple-300 inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">{t('store.tabs.violations')} <ArrowRight size={14} /></Link></Td>
+                </Tr>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+        </TBody>
+      </Table>
     </section>
   );
 }

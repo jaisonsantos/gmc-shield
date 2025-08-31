@@ -1,1 +1,5 @@
-export default function Notifications(){return <h1>Notifications</h1>}
+import { useTranslation } from 'react-i18next';
+export default function Notifications(){
+  const { t } = useTranslation();
+  return <h1>{t('nav.notifications')}</h1>;
+}

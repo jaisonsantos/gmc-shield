@@ -32,15 +32,36 @@ main() {
     docker system prune -a --volumes -f
   fi
 
-  echo "▶ Subindo base…"
-  docker compose up -d --build
+  echo "▶ Subindo db + redis…"
+  docker compose up -d --build db redis
 
-  echo "▶ Aguardando serviços…"
-  docker compose ps
-  sleep 2
+  echo "▶ Aguardando saúde do DB e Redis…"
+  # wait DB
+  db_id=$(docker compose ps -q db)
+  if [ -z "$db_id" ]; then echo "Erro: container do DB não encontrado"; docker compose ps; exit 1; fi
+  max_wait=60; count=0
+  while [ "$(docker inspect -f '{{.State.Health.Status}}' "$db_id" 2>/dev/null)" != "healthy" ]; do
+    if [ $count -gt $max_wait ]; then
+      echo "Erro: DB não ficou saudável em $max_wait s"; docker compose logs db; exit 1
+    fi
+    sleep 1; count=$((count+1))
+  done
+  # wait Redis
+  redis_id=$(docker compose ps -q redis)
+  if [ -z "$redis_id" ]; then echo "Erro: container do Redis não encontrado"; docker compose ps; exit 1; fi
+  max_wait_r=30; count_r=0
+  while [ "$(docker inspect -f '{{.State.Health.Status}}' "$redis_id" 2>/dev/null)" != "healthy" ]; do
+    if [ $count_r -gt $max_wait_r ]; then
+      echo "Erro: Redis não ficou saudável em $max_wait_r s"; docker compose logs redis; exit 1
+    fi
+    sleep 1; count_r=$((count_r+1))
+  done
 
-  echo "▶ Rodando migrações Alembic…"
-  docker compose exec -T api alembic upgrade head
+  echo "▶ Rodando migrações Alembic (run --rm)…"
+  docker compose run --rm api alembic upgrade head
+
+  echo "▶ Subindo API + Workers…"
+  docker compose up -d api worker rq-feed
 
   echo "▶ Seed de usuários…"
   docker compose exec -T api python -m app.scripts.seed_users

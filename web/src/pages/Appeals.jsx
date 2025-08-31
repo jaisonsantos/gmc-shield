@@ -1,1 +1,15 @@
-export default function Appeals(){return <h1>Appeals</h1>}
+import { useTranslation } from 'react-i18next';
+import { Page, PageHeader, PageContent } from '../components/Page';
+export default function Appeals(){
+  const { t } = useTranslation();
+  return (
+    <Page>
+      <PageHeader>
+        <h2 className="m-0 text-xl font-semibold">{t('appeals.title') || 'Appeals'}</h2>
+      </PageHeader>
+      <PageContent>
+        <div className="text-gray-500">—</div>
+      </PageContent>
+    </Page>
+  );
+}

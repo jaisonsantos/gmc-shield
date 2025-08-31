@@ -1,54 +1,30 @@
-import React from "react";
-
-/**
- * Button com variantes e tamanhos, mantendo compat.
- * Mantém os nomes de variante do master: solid | outline | ghost
- * Usa CSS var(--accent) com fallback via CSS global.
- */
-const BASE = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 8,
-  borderRadius: 10,
-  border: "1px solid transparent",
-  cursor: "pointer",
-  fontWeight: 600,
-};
-
-const SIZES = {
-  sm: { fontSize: 12, padding: "4px 8px" },
-  md: { fontSize: 14, padding: "6px 12px" },
-  lg: { fontSize: 16, padding: "10px 16px" },
-};
+import React from 'react';
 
 export default function Button({
-  variant = "solid", // solid | outline | ghost
-  size = "md",       // sm | md | lg
+  variant = 'solid', // solid | outline | ghost | danger
+  size = 'md', // sm | md | lg
   loading = false,
   disabled = false,
-  style,
+  className = '',
   children,
   ...props
 }) {
-  const accent = "var(--accent)";
-
-  const VARIANTS = {
-    solid:   { background: accent, color: "#fff", border: `1px solid ${accent}` },
-    outline: { background: "transparent", color: accent, border: `1px solid ${accent}` },
-    ghost:   { background: "transparent", color: accent, border: "1px solid transparent" },
+  const base = 'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40';
+  const sizes = {
+    sm: 'text-sm px-2.5 py-1.5',
+    md: 'text-sm px-3 py-2',
+    lg: 'text-base px-4 py-2.5',
   };
-
-  const variantStyle = VARIANTS[variant] || VARIANTS.solid;
-  const sizeStyle = SIZES[size] || SIZES.md;
+  const variants = {
+    solid: 'bg-accent text-white hover:bg-accent/90 border border-accent',
+    outline: 'bg-transparent text-accent border border-accent hover:bg-accent/5',
+    ghost: 'bg-transparent text-accent hover:bg-accent/5 border border-transparent',
+    danger: 'bg-red-600 text-white hover:bg-red-500 border border-red-600',
+  };
   const isDisabled = disabled || loading;
-
+  const cls = [base, sizes[size] || sizes.md, variants[variant] || variants.solid, isDisabled ? 'opacity-60 cursor-not-allowed' : '', className].join(' ');
   return (
-    <button
-      {...props}
-      disabled={isDisabled}
-      style={{ ...BASE, ...variantStyle, ...sizeStyle, ...(style || {}), opacity: isDisabled ? 0.7 : 1 }}
-    >
+    <button {...props} disabled={isDisabled} className={cls}>
       {loading && <span aria-hidden>⏳</span>}
       {children}
     </button>

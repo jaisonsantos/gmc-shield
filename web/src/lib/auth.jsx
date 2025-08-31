@@ -1,6 +1,7 @@
 // web/src/lib/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Auth as Api, setToken, getToken, clearToken } from "./api";
+import { Auth as Api, Me, setToken, getToken, clearToken } from "./api";
+import i18n from '../i18n';
 
 const AuthCtx = createContext(null);
 
@@ -16,6 +17,11 @@ export function AuthProvider({ children }) {
     try {
       const me = await Api.whoami();
       setUser(me);
+      try {
+        const prefs = await Me.getPreferences();
+        const map = { 'en_US': 'en', 'pt_BR': 'pt', 'es_ES': 'es' };
+        if (prefs?.locale && map[prefs.locale]) await i18n.changeLanguage(map[prefs.locale]);
+      } catch {}
     } catch {
       clearToken();
     } finally {
@@ -49,6 +55,11 @@ export function AuthProvider({ children }) {
     setToken(access_token);
     const me = await Api.whoami();
     setUser(me);
+    try {
+      const prefs = await Me.getPreferences();
+      const map = { 'en_US': 'en', 'pt_BR': 'pt', 'es_ES': 'es' };
+      if (prefs?.locale && map[prefs.locale]) await i18n.changeLanguage(map[prefs.locale]);
+    } catch {}
   };
 
   const logout = () => {

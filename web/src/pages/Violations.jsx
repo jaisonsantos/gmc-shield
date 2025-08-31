@@ -6,6 +6,8 @@ import { useToast } from "../lib/toast";
 import { useAuth } from "../lib/auth";
 import Button from "../components/Button";
 import { RefreshCw, Clock, Ban, CheckCircle } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { Table, THead, Th, TBody, Tr, Td } from "../components/ui/Table";
 
 export default function Violations() {
   const { id } = useParams();
@@ -19,6 +21,7 @@ export default function Violations() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState("");
+  const { t } = useTranslation();
 
   const load = async () => {
     setErr("");
@@ -48,10 +51,10 @@ export default function Violations() {
       setErr("");
       setBusy(feedItemId);
       await Blocks.create(id, feedItemId);
-      toast.success(`Item ${feedItemId} bloqueado`);
+      toast.success(t('common.success'));
       await load();
     } catch (e) {
-      toast.error(e.message || "Falha ao bloquear");
+      toast.error(e.message || 'Block failed');
       setErr(e.message);
     } finally {
       setBusy("");
@@ -64,7 +67,7 @@ export default function Violations() {
       setErr("");
       setBusy(feedItemId);
       await Blocks.removeByFeedItem(id, feedItemId);
-      toast.success(`Item ${feedItemId} desbloqueado`);
+      toast.success(t('violations.unblocked', { id: feedItemId }));
       await load();
     } finally {
       setBusy("");
@@ -72,71 +75,60 @@ export default function Violations() {
   };
 
   return (
-    <section className="card">
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-         <h3>Violações Encontradas</h3>
+    <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+      <div className="flex items-center justify-between mb-4">
+         <h3 className="text-lg font-semibold text-gray-800">{t('store.tabs.violations')}</h3>
          <Button variant="ghost" onClick={load} loading={loading}>
-            <RefreshCw size={16} /> Recarregar
+            <RefreshCw size={16} /> {t('common.refresh')}
           </Button>
       </div>
 
-      {runId && <div className="pill meta" style={{ marginBottom: 16 }}>Filtrando por execução #{runId}</div>}
+      {runId && <div className="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">{t('violations.filterRun', { id: runId })}</div>}
       
-      {err && <div className="error" style={{ marginBottom: 16 }}>{err}</div>}
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ID Violação</th>
-              <th>Regra</th>
-              <th>Severidade</th>
-              <th>Item do Feed</th>
-              <th>Mensagem</th>
-              <th style={{ textAlign: 'center' }}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
+      {err && <div className="text-red-600 mb-4">{err}</div>}
+      <Table>
+        <THead>
+          <Th>ID</Th>
+          <Th>{t('violations.rule')}</Th>
+          <Th>{t('violations.severity')}</Th>
+          <Th>{t('violations.feedItem')}</Th>
+          <Th>{t('violations.message')}</Th>
+          <Th>{t('violations.actions')}</Th>
+        </THead>
+        <TBody>
             {loading ? (
-              <tr>
-                <td colSpan={6} className="td-center muted">
-                  <Clock size={16} style={{ marginRight: 6 }} />
-                  A carregar violações…
-                </td>
-              </tr>
+              <Tr><Td align="center" colSpan={6}><span className="text-gray-500"><Clock size={16} className="inline mr-2" />{t('common.loading')}</span></Td></Tr>
             ) : data.items.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="td-center muted">Nenhuma violação encontrada.</td>
-              </tr>
+              <Tr><Td align="center" colSpan={6}>—</Td></Tr>
             ) : (
               data.items.map((v) => {
                 const isBlocked = !!blockedByItem[v.feed_item_id];
                 return (
-                  <tr key={v.id}>
-                    <td className="mono">{v.id}</td>
-                    <td className="mono">{v.rule_code}</td>
-                    <td><span className={`severity-pill ${v.severity}`}>{v.severity}</span></td>
-                    <td className="mono">{v.feed_item_id || "-"}</td>
-                    <td>{v.message}</td>
-                    <td style={{ textAlign: 'center' }}>
+                  <Tr key={v.id}>
+                    <Td mono>{v.id}</Td>
+                    <Td mono>{v.rule_code}</Td>
+                    <Td><span className={`inline-flex px-2 py-0.5 rounded text-xs ${v.severity === 'critical' ? 'bg-red-100 text-red-800' : v.severity === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}>{v.severity}</span></Td>
+                    <Td mono>{v.feed_item_id || "-"}</Td>
+                    <Td>{v.message}</Td>
+                    <Td align="center">
                       {can("block") && v.feed_item_id && (
                         isBlocked ? (
                           <Button variant="outline" size="sm" disabled={busy === v.feed_item_id} onClick={() => unblockItem(v.feed_item_id)}>
-                            <CheckCircle size={14} /> {busy === v.feed_item_id ? "Aguarde..." : "Desbloquear"}
+                            <CheckCircle size={14} /> {busy === v.feed_item_id ? t('common.loading') : t('violations.unblock')}
                           </Button>
                         ) : (
                           <Button variant="solid" size="sm" disabled={busy === v.feed_item_id} onClick={() => blockItem(v.feed_item_id)}>
-                            <Ban size={14} /> {busy === v.feed_item_id ? "Aguarde..." : "Bloquear"}
+                            <Ban size={14} /> {busy === v.feed_item_id ? t('common.loading') : t('violations.block')}
                           </Button>
                         )
                       )}
-                    </td>
-                  </tr>
+                    </Td>
+                  </Tr>
                 );
               })
             )}
-          </tbody>
-        </table>
-      </div>
+        </TBody>
+      </Table>
     </section>
   );
 }

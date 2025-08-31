@@ -35,9 +35,11 @@ sleep 5  # Dá tempo para os containers iniciarem antes do check
 
 # Aguarda o banco de dados ficar saudável (usando healthcheck nativo, máx 60s)
 echo "==> Esperando DB ficar saudável..."
+db_id=$(docker compose ps -q db)
+if [ -z "$db_id" ]; then echo "Erro: container do DB não encontrado"; docker compose ps; exit 1; fi
 max_wait=60
 count=0
-while [ "$(docker inspect -f '{{.State.Health.Status}}' gmc-shield-db-1 2>/dev/null)" != "healthy" ]; do
+while [ "$(docker inspect -f '{{.State.Health.Status}}' "$db_id" 2>/dev/null)" != "healthy" ]; do
   if [ $count -gt $max_wait ]; then
     echo "Erro: Banco de dados não ficou saudável em $max_wait segundos!"
     docker compose logs db
@@ -49,9 +51,11 @@ done
 
 # Aguarda o Redis ficar saudável (alinhado com healthcheck, máx 30s)
 echo "==> Esperando Redis ficar saudável..."
+redis_id=$(docker compose ps -q redis)
+if [ -z "$redis_id" ]; then echo "Erro: container do Redis não encontrado"; docker compose ps; exit 1; fi
 max_wait_redis=30
 count_redis=0
-while [ "$(docker inspect -f '{{.State.Health.Status}}' gmc-shield-redis-1 2>/dev/null)" != "healthy" ]; do
+while [ "$(docker inspect -f '{{.State.Health.Status}}' "$redis_id" 2>/dev/null)" != "healthy" ]; do
   if [ $count_redis -gt $max_wait_redis ]; then
     echo "Erro: Redis não ficou saudável em $max_wait_redis segundos!"
     docker compose logs redis
@@ -60,6 +64,10 @@ while [ "$(docker inspect -f '{{.State.Health.Status}}' gmc-shield-redis-1 2>/de
   sleep 1
   count_redis=$((count_redis+1))
 done
+
+# Executa migrações do Alembic de forma idempotente (fora do container em execução)
+echo "==> Migrações Alembic (run --rm)…"
+docker compose run --rm api alembic upgrade head
 
 # Inicia API, Worker e RQ workers
 echo "==> Sobe API + Worker…"
@@ -80,10 +88,6 @@ while ! curl -sf http://localhost:8000/healthz | grep -q '"ok":'; do
   sleep 1
   count_api=$((count_api+1))
 done
-
-# Executa migrações do Alembic (depois do wait, para garantir conexão)
-echo "==> Migrações Alembic…"
-docker compose exec -T api alembic upgrade head
 
 # Faz seed de usuários
 echo "==> Seed de usuários (owner/manager/viewer @ demo)…"

@@ -169,3 +169,7 @@ class BlockSyncOut(BaseModel):
     total: int
     synced: int
     mode: Literal["pull", "push"]
+
+
+class Preferences(BaseModel):
+    locale: Optional[Literal['en_US','pt_BR','es_ES']] = None

@@ -30,6 +30,11 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
 
   const token = getToken();
   if (token) h["Authorization"] = `Bearer ${token}`;
+  // Attach Accept-Language based on selected locale (i18next)
+  try {
+    const l = localStorage.getItem('i18nextLng');
+    if (l) h['Accept-Language'] = l;
+  } catch {}
 
   const res = await fetch(url, {
     method,
@@ -51,7 +56,7 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
           window.location.href = loginUrl;
         }
       }
-      const err = new Error("Sessão expirada. Faça login novamente.");
+      const err = new Error("auth.sessionExpired");
       err.status = 401;
       throw err;
     }
@@ -80,6 +85,11 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, json 
 export const Auth = {
   login: (email, password) => apiFetch("/api/auth/login", { method: "POST", body: { email, password } }),
   whoami: () => apiFetch("/api/auth/whoami"),
+};
+
+export const Me = {
+  getPreferences: () => apiFetch('/api/v1/me/preferences'),
+  savePreferences: (prefs) => apiFetch('/api/v1/me/preferences', { method: 'PUT', body: prefs }),
 };
 
 // stores

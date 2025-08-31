@@ -18,6 +18,7 @@ class User(Base):
     email           = Column(String(255), unique=True, nullable=False)
     password_hash   = Column(String(255), nullable=False)
     role            = Column(String(32), nullable=False)
+    locale          = Column(String(10))
     created_at      = Column(DateTime, server_default=func.now(), nullable=False)
 
 class Store(Base):

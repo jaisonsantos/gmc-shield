@@ -16,16 +16,27 @@ from ..wp_client import wp_client
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape, TemplateNotFound
 import markdown2
+from fastapi import Request
+from ..i18n import inject_user_locale, render_template
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "templates")
 _env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=select_autoescape())
 
-def render_policy_html(policy_type: str, content_md: str) -> str:
+def _policy_title(policy_type: str, locale: str) -> str:
+    lang = (locale or 'en_US').split('_')[0]
+    titles = {
+        'en': { 'refund': 'Refund Policy', 'shipping': 'Shipping Policy', 'privacy': 'Privacy Policy' },
+        'pt': { 'refund': 'Política de Devolução', 'shipping': 'Política de Envio', 'privacy': 'Política de Privacidade' },
+        'es': { 'refund': 'Política de Devolución', 'shipping': 'Política de Envío', 'privacy': 'Política de Privacidad' },
+    }
+    return titles.get(lang, titles['en']).get(policy_type, policy_type)
+
+def render_policy_html(request: Request, policy_type: str, content_md: str, locale: str) -> str:
+    name = f"policies/{policy_type}.md.j2"
     try:
-        tmpl = _env.get_template(f"policies/{policy_type}.md.j2")
+        md = render_template(name, locale, { 'content_md': content_md })
     except TemplateNotFound:
-        raise HTTPException(status_code=400, detail=f"Template não encontrado para '{policy_type}'")
-    md = tmpl.render(content_md=content_md)
+        raise HTTPException(status_code=400, detail=f"Template not found for '{policy_type}'")
     return markdown2.markdown(md)
 
 router = APIRouter()
@@ -106,6 +117,8 @@ def wp_status(
 def render_policy(
     store_id: int,
     body: schemas.PolicyRenderIn,
+    request: Request,
+    locale: str = Depends(inject_user_locale),
     principal: Principal = Depends(require_roles("owner", "manager")),
     db: Session = Depends(get_db),
 ):
@@ -119,7 +132,7 @@ def render_policy(
     )
     if not ok:
         raise HTTPException(status_code=404, detail="Store not found")
-    html = render_policy_html(body.type, body.content_md)
+    html = render_policy_html(request, body.type, body.content_md, locale)
     return {"html": html}
 
 
@@ -127,6 +140,8 @@ def render_policy(
 def publish_policy(
     store_id: int,
     body: schemas.PolicyPublishIn,
+    request: Request,
+    locale: str = Depends(inject_user_locale),
     principal: Principal = Depends(require_roles("owner", "manager")),
     db: Session = Depends(get_db),
 ):
@@ -138,18 +153,14 @@ def publish_policy(
         app_pass = decrypt_str(store.wp_app_password_enc)
     except ValueError:
         raise HTTPException(status_code=400, detail="Credencial inválida ou rotacionada")
-    html = render_policy_html(body.type, body.content_md)
-    title_map = {
-        "refund": "Política de Devolução",
-        "shipping": "Política de Envio",
-        "privacy": "Política de Privacidade",
-    }
+    html = render_policy_html(request, body.type, body.content_md, locale)
+    title = _policy_title(body.type, locale)
     verify = os.getenv("WP_VERIFY_TLS", "true").lower() != "false"
     timeout = float(os.getenv("WP_TIMEOUT_SEC", "10"))
     try:
         with wp_client(store.wp_api_base, store.wp_user, app_pass, verify=verify, timeout=timeout) as c:
             binding = db.query(models.WpPolicyBinding).filter(models.WpPolicyBinding.store_id==store.id, models.WpPolicyBinding.policy_type==body.type).first()
-            payload = {"title": title_map[body.type], "content": html, "status": body.status}
+            payload = {"title": title, "content": html, "status": body.status}
             if binding:
                 r = c.put(f"wp/v2/pages/{binding.page_id}", json=payload)
             else:

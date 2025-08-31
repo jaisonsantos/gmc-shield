@@ -4,22 +4,24 @@ import { Outlet, useParams, NavLink, useNavigate } from 'react-router-dom';
 import { Page, PageHeader, PageContent } from './Page';
 import Button from './Button';
 import { ChevronLeft, BarChart, History, Rss, List, HardDrive } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-const storeNavLinks = [
-  { to: 'violations', text: 'Violações', icon: <BarChart size={16} /> },
-  { to: 'scans', text: 'Scans', icon: <History size={16} /> },
-  { to: 'feeds', text: 'Feeds', icon: <Rss size={16} /> },
-  { to: 'items', text: 'Itens', icon: <List size={16} /> },
-  { to: 'wp', text: 'WordPress', icon: <HardDrive size={16} /> },
-];
+const storeNavLinks = (t) => ([
+  { to: 'violations', text: t('store.tabs.violations'), icon: <BarChart size={16} /> },
+  { to: 'scans', text: t('store.tabs.scans'), icon: <History size={16} /> },
+  { to: 'feeds', text: t('store.tabs.feeds'), icon: <Rss size={16} /> },
+  { to: 'items', text: t('store.tabs.items'), icon: <List size={16} /> },
+  { to: 'wp', text: t('store.tabs.wp'), icon: <HardDrive size={16} /> },
+]);
 
 const StoreNav = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
-  const getNavLinkClass = ({ isActive }) => `store-nav-link ${isActive ? 'active' : ''}`;
+  const getNavLinkClass = ({ isActive }) => `flex items-center gap-2 px-4 py-2 border rounded-t-md -mb-px ${isActive ? 'bg-white border-gray-200 text-accent border-b-white' : 'text-gray-500 hover:bg-gray-50 border-transparent'}`;
 
   return (
-    <nav className="store-nav">
-      {storeNavLinks.map(link => (
+    <nav className="flex gap-1 border-b mb-6">
+      {storeNavLinks(t).map(link => (
         <NavLink to={`/app/stores/${id}/${link.to}`} key={link.to} className={getNavLinkClass}>
           {link.icon}
           <span>{link.text}</span>
@@ -32,22 +34,23 @@ const StoreNav = () => {
 export default function StoreLayout() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Page>
       <PageHeader>
-        <div className="ph-left">
+        <div className="flex items-center gap-3 min-w-0">
           <Button variant="outline" onClick={() => navigate('/app/stores')}>
-            <ChevronLeft size={16} /> Voltar para Lojas
+            <ChevronLeft size={16} /> {t('store.back')}
           </Button>
-          <div className="title-group">
-            <h2 style={{ margin: 0 }}>Loja #{id}</h2>
+          <div className="flex items-baseline gap-3 min-w-0">
+            <h2 style={{ margin: 0 }}>{t('store.title', { id })}</h2>
           </div>
         </div>
       </PageHeader>
       <PageContent>
         <StoreNav />
-        <div className="store-content">
+        <div>
           <Outlet />
         </div>
       </PageContent>

@@ -5,8 +5,10 @@ import { Stores as Api, WP } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { useToast } from "../lib/toast";
 import { PageHeader } from "../components/Page";
+import Card from "../components/ui/Card";
 import Button from "../components/Button";
 import { PlusCircle, RefreshCw, PlayCircle, Eye, History } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export default function Stores() {
   const { can } = useAuth();
@@ -17,6 +19,7 @@ export default function Stores() {
   const [err, setErr] = useState("");
   const [scanning, setScanning] = useState({});
   const [wpStatus, setWpStatus] = useState({});
+  const { t } = useTranslation();
 
   const load = async () => {
     setErr("");
@@ -45,7 +48,7 @@ export default function Stores() {
   const createDemo = async () => {
     try {
       await Api.createDemo();
-      toast.success("Loja demo criada. A recarregar a lista...");
+      toast.success(t('common.success'));
       await load();
     } catch (e) {
       setErr(e.message);
@@ -71,23 +74,23 @@ export default function Stores() {
       }, 3500);
     } catch (e) {
       setScanning((m) => ({ ...m, [storeId]: false }));
-      toast.error(e.message || "Falha ao iniciar scan");
+      toast.error(e.message || 'Scan failed');
     }
   };
 
   return (
     <div>
       <PageHeader>
-        <div className="ph-left">
-          <h2 style={{ margin: 0 }}>Minhas Lojas</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="m-0">{t('stores.title')}</h2>
         </div>
-        <div className="ph-right" style={{ display: 'flex', gap: '8px' }}>
+        <div className="ml-auto flex gap-2">
           <Button variant="ghost" onClick={load} loading={loading}>
-            <RefreshCw size={16} /> Recarregar
+            <RefreshCw size={16} /> {t('common.refresh')}
           </Button>
           {can("scan") && (
             <Button onClick={createDemo}>
-              <PlusCircle size={16} /> Criar Loja Demo
+              <PlusCircle size={16} /> {t('stores.createDemo')}
             </Button>
           )}
         </div>
@@ -96,62 +99,54 @@ export default function Stores() {
       {err && <div className="error" style={{ marginBottom: 16 }}>{err}</div>}
 
       {loading ? (
-        <div>A carregar lojas...</div>
+        <div>{t('common.loading')}</div>
       ) : items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '48px' }}>
-          <h3>Nenhuma loja encontrada</h3>
-          <p className="muted">Comece por criar uma nova loja para monitorizar.</p>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-12 text-center space-y-2">
+          <h3 className="text-lg font-semibold">{t('stores.emptyTitle')}</h3>
+          <p className="text-gray-500">{t('stores.emptyDesc')}</p>
+          {can("scan") && (
+            <Button onClick={createDemo}><PlusCircle size={16} /> {t('stores.createDemo')}</Button>
+          )}
         </div>
       ) : (
-        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
           {items.map((s) => (
-            <div className="store-card" key={s.id}>
-              {/* ===== MUDANÇA PRINCIPAL AQUI ===== */}
-              <Link to={`/app/stores/${s.id}`} className="store-card-link-main">
-                <div className="store-card-header">
-                  <h3>{s.name || `Loja #${s.id}`}</h3>
-                  <span className="platform-badge">{s.platform}</span>
+            <Card key={s.id} className="p-4 flex flex-col gap-3">
+              <Link to={`/app/stores/${s.id}`} className="no-underline">
+                <div className="flex items-center justify-between">
+                  <h3 className="m-0 text-base font-semibold">{s.name || `Loja #${s.id}`}</h3>
+                  <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-700">{s.platform}</span>
                 </div>
-                <div className="store-card-body">
-                  <p className="muted">{s.base_url}</p>
-                </div>
-                <div className="store-card-footer">
-                  <span className={`status-pill ${wpStatus[s.id]?.connected ? 'ok' : 'off'}`}>
-                    WP {wpStatus[s.id]?.connected ? "Conectado" : "Offline"}
+                <div className="text-gray-500 text-sm">{s.base_url}</div>
+                <div className="flex items-center gap-2 text-sm text-gray-700 mt-2">
+                  <span className={`px-2 py-0.5 rounded ${wpStatus[s.id]?.connected ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'}`}>
+                    WP {wpStatus[s.id]?.connected ? 'OK' : 'Offline'}
                   </span>
                   {s.google_merchant_id && (
-                    <span className="status-pill ok" title={`Merchant ${s.google_merchant_id}`}>
-                      GMC Conectado
+                    <span className="px-2 py-0.5 rounded bg-green-100 text-green-800" title={`Merchant ${s.google_merchant_id}`}>
+                      GMC OK
                     </span>
                   )}
-                  <span>{s.country} • {s.currency}</span>
+                  <span className="ml-auto text-gray-500">{s.country} • {s.currency}</span>
                 </div>
               </Link>
-              {/* =================================== */}
-              
-              <div className="store-card-actions">
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <Link to={`/app/stores/${s.id}/violations`} className="btn-link-action" title="Ver Violações">
-                    <Eye size={14}/> <span>Violações</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Link to={`/app/stores/${s.id}/violations`} className="inline-flex items-center gap-1 text-accent dark:text-purple-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded" title="Violations">
+                    <Eye size={14}/> <span>{t('store.tabs.violations')}</span>
                   </Link>
-                  <Link to={`/app/stores/${s.id}/scans`} className="btn-link-action" title="Ver Execuções de Scan">
-                    <History size={14}/> <span>Scans</span>
+                  <Link to={`/app/stores/${s.id}/scans`} className="inline-flex items-center gap-1 text-accent dark:text-purple-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded" title="Scans">
+                    <History size={14}/> <span>{t('store.tabs.scans')}</span>
                   </Link>
                 </div>
                 {can("scan") && (
-                  <Button 
-                    size="sm" 
-                    variant="solid" 
-                    disabled={!!scanning[s.id]} 
-                    onClick={() => doScan(s.id)}
-                    title="Iniciar uma nova execução de scan"
-                  >
+                  <Button size="sm" variant="solid" disabled={!!scanning[s.id]} onClick={() => doScan(s.id)} title="Start a new scan">
                     <PlayCircle size={14}/>
-                    {scanning[s.id] ? "A processar…" : "Scan"}
+                    {scanning[s.id] ? t('common.loading') : 'Scan'}
                   </Button>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

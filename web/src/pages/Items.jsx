@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { ItemsApi } from "../lib/api";
 import { useToast } from "../lib/toast";
 import Button from "../components/Button";
+import { useTranslation } from 'react-i18next';
+import { formatCurrency, getNavigatorLocale } from "../lib/format";
+import Toolbar from "../components/ui/Toolbar";
+import { Table, THead, Th, TBody, Tr, Td } from "../components/ui/Table";
 import {
   RefreshCw,
   Search,
@@ -36,8 +40,7 @@ const AvailabilityPill = ({ availability }) => {
   return <span className={`status-pill ${className}`}>{availability.replace('_', ' ')}</span>;
 };
 
-const fmtMoney = (currency, cents) =>
-  new Intl.NumberFormat("pt-PT", { style: "currency", currency: currency || "EUR" }).format((cents || 0) / 100);
+const fmtMoney = (currency, cents) => formatCurrency(cents || 0, currency || 'EUR', getNavigatorLocale());
 
 const columns = [
   { key: "item_id", label: "ID", width: 120 },
@@ -52,6 +55,7 @@ const columns = [
 export default function Items() {
   const { id } = useParams();
   const toast = useToast();
+  const { t } = useTranslation();
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,101 +121,88 @@ export default function Items() {
   }, [page]);
 
   return (
-    <section className="card stack" style={{ gap: 24 }}>
-      <h3>Itens do Feed</h3>
+    <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-4">
+      <h3 className="text-lg font-semibold text-gray-800">{t('items.title')}</h3>
       
-      <div className="table-toolbar">
-        <div className="tt-left">
-          <div className="search-wrap">
-            <Search size={16} />
+      <Toolbar
+        left={
+          <div className="relative">
+            <Search size={16} className="absolute left-2 top-2.5 text-gray-500" />
             <input
-              className="input"
-              placeholder="Buscar por título, ID, marca…"
+              className="pl-8 pr-3 py-2 border border-gray-300 rounded-md min-w-[300px] focus:outline-none focus:ring-2 focus:ring-accent/50"
+              placeholder={t('items.searchPlaceholder')}
               value={typedQ}
               onChange={(e) => setTypedQ(e.target.value)}
-              style={{ minWidth: '300px' }}
             />
           </div>
-        </div>
-        <div className="tt-right">
+        }
+        right={
           <Button variant="ghost" size="sm" onClick={() => fetchItems()}>
-            <RefreshCw size={16} /> Recarregar
+            <RefreshCw size={16} /> {t('common.refresh')}
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              {columns.map((c) => {
-                const isActive = sort.field === c.key;
-                const canSort = !c.noSort;
-                return (
-                  <th key={c.key} style={{ width: c.width }} className={canSort ? "th-sort" : ""} onClick={() => canSort && onHeaderClick(c.key)}>
-                    <div className="th-cell">
-                      <span>{c.label}</span>
-                      {canSort && (isActive ? (sort.dir === "asc" ? <ArrowUpWideNarrow size={14} /> : <ArrowDownNarrowWide size={14} />) : <span className="sort-placeholder" />)}
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
+      <Table>
+        <THead>
+          {columns.map((c) => {
+            const isActive = sort.field === c.key;
+            const canSort = !c.noSort;
+            return (
+              <Th key={c.key} align="left">
+                <div className={`flex items-center gap-1 ${canSort ? 'cursor-pointer select-none' : ''}`} onClick={() => canSort && onHeaderClick(c.key)}>
+                  <span>{c.label}</span>
+                  {canSort && (isActive ? (sort.dir === "asc" ? <ArrowUpWideNarrow size={14} /> : <ArrowDownNarrowWide size={14} />) : <span className="inline-block w-3 h-3 opacity-0" />)}
+                </div>
+              </Th>
+            );
+          })}
+        </THead>
+        <TBody>
             {loading ? (
-              <tr><td colSpan={columns.length} className="td-center muted"><Clock size={16} style={{ marginRight: 6 }} />A carregar...</td></tr>
+              <Tr><Td align="center" colSpan={columns.length}><span className="text-gray-500"><Clock size={16} className="inline mr-2" />{t('common.loading')}</span></Td></Tr>
             ) : items.length === 0 ? (
-              <tr><td colSpan={columns.length} className="td-center muted">Nenhum item encontrado.</td></tr>
+              <Tr><Td align="center" colSpan={columns.length}><span className="text-gray-500">{t('items.empty')}</span></Td></Tr>
             ) : (
               viewRows.map((it) => (
-                <tr key={it.item_id}>
-                  <td className="mono">{it.item_id}</td>
-                  <td>{it.title}</td>
-                  <td>
+                <Tr key={it.item_id}>
+                  <Td mono>{it.item_id}</Td>
+                  <Td>{it.title}</Td>
+                  <Td>
                     {/^(https?:)?\/\//.test(it.link_canonical || "") ? (
-                      <a href={it.link_canonical} target="_blank" rel="noreferrer" className="link">
-                        abrir <ExternalLink size={12} style={{ marginLeft: 4, verticalAlign: "-2px" }} />
+                      <a href={it.link_canonical} target="_blank" rel="noreferrer" className="text-accent dark:text-purple-300 hover:underline inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">
+                        {t('items.open')} <ExternalLink size={12} className="ml-1 -translate-y-[1px]" />
                       </a>
                     ) : "—"}
-                  </td>
-                  <td>{it.price}</td>
-                  <td><AvailabilityPill availability={it.availability} /></td>
-                  <td>{it.brand || "-"}</td>
-                  <td className="mono">{it.gtin_mpn}</td>
-                </tr>
+                  </Td>
+                  <Td>{it.price}</Td>
+                  <Td><AvailabilityPill availability={it.availability} /></Td>
+                  <Td>{it.brand || "-"}</Td>
+                  <Td mono>{it.gtin_mpn}</Td>
+                </Tr>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+        </TBody>
+      </Table>
 
-      <div className="table-footer">
-        <div className="tf-left">
-          <label className="label" htmlFor="per-page" style={{marginBottom: 0}}>Itens por página</label>
-            <select
-              id="per-page"
-              className="input"
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-            >
-              {[20, 50, 100, 200].map((n) => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-            {total && <span className="muted">| {total} itens no total</span>}
+      <div className="flex flex-wrap justify-between items-center gap-3 pt-4 text-sm text-gray-600">
+        <div className="flex items-center gap-2">
+          <label htmlFor="per-page" className="text-xs">{t('items.perPage')}</label>
+          <select id="per-page" className="px-2 py-1 border border-gray-300 rounded-md" value={limit} onChange={(e) => setLimit(Number(e.target.value))}>
+            {[20, 50, 100, 200].map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+          {total && <span className="text-gray-500">| {t('items.total', { count: total })}</span>}
         </div>
-
-        <div className="pager">
-            <button className="icon-btn" onClick={goFirst} disabled={!canPrev || loading} title="Primeira"><ChevronsLeft size={16} /></button>
-            <button className="icon-btn" onClick={goPrev} disabled={!canPrev || loading} title="Anterior"><PgPrev size={16} /></button>
-            <div className="page-jump">
-              <span>Página</span>
-              <input type="number" className="input" value={page} min={1} max={pages || undefined} onChange={(e) => setPage(Math.max(1, Math.min(Number(e.target.value) || 1, pages || Infinity)))} onKeyDown={(e) => { if (e.key === "Enter") fetchItems(); }} style={{ width: 80 }} />
-              {pages ? <span>de {pages}</span> : null}
-            </div>
-            <button className="icon-btn" onClick={goNext} disabled={!canNext || loading} title="Próxima"><PgNext size={16} /></button>
-            <button className="icon-btn" onClick={goLast} disabled={!pages || loading || page === pages} title="Última"><ChevronsRight size={16} /></button>
+        <div className="flex items-center gap-2">
+          <button className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center disabled:opacity-60" onClick={goFirst} disabled={!canPrev || loading} title={t('pager.first')}><ChevronsLeft size={16} /></button>
+          <button className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center disabled:opacity-60" onClick={goPrev} disabled={!canPrev || loading} title={t('pager.prev')}><PgPrev size={16} /></button>
+          <div className="flex items-center gap-2">
+            <span>{t('pager.page')}</span>
+            <input type="number" className="w-20 px-2 py-1 border border-gray-300 rounded-md" value={page} min={1} max={pages || undefined} onChange={(e) => setPage(Math.max(1, Math.min(Number(e.target.value) || 1, pages || Infinity)))} onKeyDown={(e) => { if (e.key === "Enter") fetchItems(); }} />
+            {pages ? <span>{t('pager.of', { total: pages })}</span> : null}
+          </div>
+          <button className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center disabled:opacity-60" onClick={goNext} disabled={!canNext || loading} title={t('pager.next')}><PgNext size={16} /></button>
+          <button className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center disabled:opacity-60" onClick={goLast} disabled={!pages || loading || page === pages} title={t('pager.last')}><ChevronsRight size={16} /></button>
         </div>
       </div>
     </section>

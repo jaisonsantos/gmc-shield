@@ -4,6 +4,9 @@ import { WP as Api } from "../lib/api";
 import { useToast } from "../lib/toast";
 import Button from "../components/Button";
 import Input, { Textarea } from "../components/Input";
+import Card from "../components/ui/Card";
+import SectionHeader from "../components/ui/SectionHeader";
+import { useTranslation } from 'react-i18next';
 
 export default function WPIntegration() {
   const { id } = useParams();
@@ -14,6 +17,7 @@ export default function WPIntegration() {
   const [policy, setPolicy] = useState({ type: "refund", content_md: "" });
   const [previewHtml, setPreviewHtml] = useState("");
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   const loadStatus = async () => {
     try {
@@ -37,13 +41,13 @@ export default function WPIntegration() {
 
   const saveCreds = async () => {
     if (!creds.wp_api_base || !creds.wp_user || !creds.wp_app_password) {
-      toast.error("Preencha API base, usuário e App Password.");
+      toast.error(t('wp.missingCreds'));
       return;
     }
     try {
       setBusy(true);
       await Api.saveCreds(id, creds);
-      toast.success("Credenciais salvas.");
+      toast.success(t('common.success'));
       await loadStatus();
     } catch (e) {
       toast.error(e.message);
@@ -63,13 +67,13 @@ export default function WPIntegration() {
 
   const publish = async () => {
     if (!policy.content_md.trim()) {
-      toast.error("Conteúdo da política está vazio.");
+      toast.error(t('wp.contentEmpty'));
       return;
     }
     try {
       setBusy(true);
       await Api.publishPolicy(id, policy);
-      toast.success("Publicado.");
+      toast.success(t('wp.published'));
       setPreviewHtml("");
       await loadStatus();
     } catch (e) {
@@ -93,87 +97,57 @@ export default function WPIntegration() {
   };
 
   return (
-    <div className="grid stack" style={{ gap: '24px' }}>
+    <div className="grid gap-6">
       {/* Credenciais */}
-      <section className="card stack">
-        <h3>Credenciais</h3>
-        <div className="grid grid-2">
-          <Input
-            label="API base (REST do WP)"
-            placeholder="http://localhost:8080/wp-json"
-            value={creds.wp_api_base}
-            onChange={(e) => setCreds({ ...creds, wp_api_base: e.target.value })}
-          />
-          <Input
-            label="Site público (base_url)"
-            placeholder="http://localhost:8080"
-            value={creds.wp_base_url}
-            onChange={(e) => setCreds({ ...creds, wp_base_url: e.target.value })}
-          />
-          <Input
-            label="Usuário (WP)"
-            placeholder="admin"
-            value={creds.wp_user}
-            onChange={(e) => setCreds({ ...creds, wp_user: e.target.value })}
-          />
-          <Input
-            label="App Password (WP)"
-            type="password"
-            placeholder="xxxx xxxx xxxx ..."
-            value={creds.wp_app_password}
-            onChange={(e) => setCreds({ ...creds, wp_app_password: e.target.value })}
-          />
+      <Card>
+        <SectionHeader title={t('wp.credentials')} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input label={t('wp.apiBase')} placeholder="http://localhost:8080/wp-json" value={creds.wp_api_base} onChange={(e) => setCreds({ ...creds, wp_api_base: e.target.value })} />
+          <Input label={t('wp.publicSite')} placeholder="http://localhost:8080" value={creds.wp_base_url} onChange={(e) => setCreds({ ...creds, wp_base_url: e.target.value })} />
+          <Input label={t('wp.user')} placeholder="admin" value={creds.wp_user} onChange={(e) => setCreds({ ...creds, wp_user: e.target.value })} />
+          <Input label={t('wp.appPassword')} type="password" placeholder="xxxx xxxx xxxx ..." value={creds.wp_app_password} onChange={(e) => setCreds({ ...creds, wp_app_password: e.target.value })} />
         </div>
-        <div className="actions">
-          <Button onClick={saveCreds} loading={busy}>Salvar & Testar</Button>
+        <div className="mt-3">
+          <Button onClick={saveCreds} loading={busy}>{t('wp.saveAndTest')}</Button>
         </div>
-      </section>
+      </Card>
 
       {/* Policies */}
-      <section className="card stack">
-        <h3>Policies</h3>
-        <div className="grid grid-2">
+      <Card>
+        <SectionHeader title={t('wp.policies')} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="label">Tipo</label>
-            <select
-              className="input"
-              value={policy.type}
-              onChange={(e) => setPolicy({ ...policy, type: e.target.value })}
-            >
-              <option value="refund">Refund</option>
-              <option value="shipping">Shipping</option>
-              <option value="privacy">Privacy</option>
+            <label className="block text-xs text-gray-500 mb-1">{t('wp.type')}</label>
+            <select className="px-2 py-1 border border-gray-300 rounded-md" value={policy.type} onChange={(e) => setPolicy({ ...policy, type: e.target.value })}>
+              <option value="refund">{t('policies.refund')}</option>
+              <option value="shipping">{t('policies.shipping')}</option>
+              <option value="privacy">{t('policies.privacy')}</option>
             </select>
           </div>
           <div />
-          <Textarea
-            label="Conteúdo (Markdown)"
-            rows={10}
-            value={policy.content_md}
-            onChange={(e) => setPolicy({ ...policy, content_md: e.target.value })}
-          />
+          <Textarea label={t('wp.contentMd')} rows={10} value={policy.content_md} onChange={(e) => setPolicy({ ...policy, content_md: e.target.value })} />
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Button variant="outline" onClick={renderPreview}>Preview</Button>
-          <Button onClick={publish} loading={busy}>Publicar</Button>
+        <div className="flex gap-2 flex-wrap mt-3">
+          <Button variant="outline" onClick={renderPreview}>{t('common.preview')}</Button>
+          <Button onClick={publish} loading={busy}>{t('common.publish')}</Button>
         </div>
         {previewHtml && (
-          <div className="card" style={{ padding: 12 }} dangerouslySetInnerHTML={{ __html: previewHtml }} />
+          <div className="mt-3 p-3 border rounded-md" dangerouslySetInnerHTML={{ __html: previewHtml }} />
         )}
-      </section>
+      </Card>
 
       {/* Bloqueios */}
-      <section className="card stack">
-        <h3>Bloqueios</h3>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <Button variant="outline" onClick={syncBlocks} loading={busy}>Sync agora</Button>
+      <Card>
+        <SectionHeader title="Blocks" />
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button variant="outline" onClick={syncBlocks} loading={busy}>{t('common.sync')}</Button>
           {status?.last_block_sync_at && (
-            <span className="helper">
-              Último sync: {new Date(status.last_block_sync_at).toLocaleString()} ({status.last_block_synced})
+            <span className="text-sm text-gray-500">
+              {t('wp.lastSync')} {new Date(status.last_block_sync_at).toLocaleString()} ({status.last_block_synced})
             </span>
           )}
         </div>
-      </section>
+      </Card>
     </div>
   );
 }

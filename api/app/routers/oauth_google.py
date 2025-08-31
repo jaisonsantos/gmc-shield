@@ -237,10 +237,14 @@ async def auth_google_callback(
     g_account.email = email
     g_account.name = userinfo.get("name")
     g_account.picture = userinfo.get("picture")
-    g_account.access_token_enc = encrypt_str(access_token)
-    if token_data.get("refresh_token"):
-        g_account.refresh_token_enc = encrypt_str(token_data["refresh_token"])
-    g_account.token_expiry = datetime.now(timezone.utc) + timedelta(seconds=token_data.get("expires_in", 0))
+    # Evita "downgrade" do token quando o usuário faz login só com escopo base.
+    # Se já temos content_scope_granted, preservamos access/refresh/expiry existentes
+    # a menos que este fluxo seja especificamente de content (content_flow=True).
+    if content_flow or not g_account.content_scope_granted:
+        g_account.access_token_enc = encrypt_str(access_token)
+        if token_data.get("refresh_token"):
+            g_account.refresh_token_enc = encrypt_str(token_data["refresh_token"])
+        g_account.token_expiry = datetime.now(timezone.utc) + timedelta(seconds=token_data.get("expires_in", 0))
     if content_flow:
         g_account.content_scope_granted = True
         log_event("oauth.content.granted", user_id=user.id)

@@ -6,6 +6,9 @@ import { useToast } from "../lib/toast";
 import Button from "../components/Button";
 import { Input } from "../components/Input";
 import { FileUp, Link as LinkIcon, RefreshCw, CheckCircle2, Clock, UploadCloud } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import Toolbar from "../components/ui/Toolbar";
+import { Table, THead, Th, TBody, Tr, Td } from "../components/ui/Table";
 
 
 // ---- Formato: utilitários de detecção (ext/MIME/URL)
@@ -64,6 +67,7 @@ function timeAgo(d) {
 export default function Feeds() {
   const { id } = useParams();
   const toast = useToast();
+  const { t } = useTranslation();
 
   const [cfg, setCfg] = useState({ source_type: "upload", url: "", format: "csv" });
   const [savedCfg, setSavedCfg] = useState({ source_type: "upload", url: "", format: "csv" });
@@ -101,7 +105,7 @@ export default function Feeds() {
     if (!file) { setFormatWarn(""); return; }
     const detected = guessFormatFromFile(file);
     if (detected && detected !== cfg.format) {
-      setFormatWarn(`O arquivo parece ${detected.toUpperCase()} mas o formato selecionado é ${cfg.format.toUpperCase()}.`);
+      setFormatWarn(t('feeds.fileFormatMismatch', { detected: detected.toUpperCase(), selected: cfg.format.toUpperCase() }));
     } else {
       setFormatWarn("");
     }
@@ -112,7 +116,7 @@ export default function Feeds() {
     try {
       await Api.configure(id, cfg);
       setSavedCfg(cfg);
-      toast.success("Configuração salva.");
+      toast.success(t('feeds.configSaved'));
     } catch (e) {
       toast.error(e.message);
     } finally { setLoading(false); }
@@ -121,7 +125,7 @@ export default function Feeds() {
   const ingestUrl = async () => {
     if (!isValidUrl(cfg.url)) {
       setUrlError(true);
-      return toast.error("Informe uma URL válida do feed.");
+      return toast.error(t('feeds.invalidUrl'));
     }
     // Confirma se a URL indica um formato diferente do select
     const g = guessFormatFromUrl(cfg.url);
@@ -138,7 +142,7 @@ export default function Feeds() {
         setSavedCfg(cfg);
       }
       const res = await Api.ingestFromUrl(id);
-      toast.success(`Ingestão OK: ${res.items_imported || 0} itens importados.`);
+      toast.success(t('feeds.ingestOk', { count: res.items_imported || 0 }));
       await loadVersions();
       setHighlightNew(true);
       setShowNorm(true);
@@ -149,27 +153,25 @@ export default function Feeds() {
   };
 
   const uploadAndIngest = async () => {
-    if (!file) return toast.error("Selecione um arquivo.");
-    if (file.size > 10 * 1024 * 1024) return toast.error("Arquivo acima de 10 MB (limite do MVP).");
+    if (!file) return toast.error(t('feeds.selectFile'));
+    if (file.size > 10 * 1024 * 1024) return toast.error(t('feeds.fileTooLarge'));
     // Confirma se o arquivo indica formato diferente do select
     const detected = guessFormatFromFile(file);
     if (detected && detected !== cfg.format) {
-      const ok = window.confirm(
-        `O arquivo parece ${detected.toUpperCase()}, mas o formato selecionado é ${cfg.format.toUpperCase()}.\nDeseja prosseguir assim mesmo?`
-      );
+      const ok = window.confirm(t('feeds.confirmMismatch', { detected: detected.toUpperCase(), selected: cfg.format.toUpperCase() }));
       if (!ok) return;
     }
     setLoading(true);
     try {
       const res = await Api.upload(id, file, cfg.format);
-      toast.success(`Upload e ingestão OK: ${res.items_imported || 0} itens importados.`);
+      toast.success(t('feeds.uploadOk', { count: res.items_imported || 0 }));
       setFile(null);
       await loadVersions();
       setHighlightNew(true);
       setShowNorm(true);
       setTimeout(() => firstRowRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
     } catch (e) {
-      toast.error(e.status === 413 ? "Arquivo acima do limite de 10 MB." : e.message);
+      toast.error(e.status === 413 ? t('feeds.fileTooLarge') : e.message);
     } finally { setLoading(false); }
   };
 
@@ -204,31 +206,21 @@ export default function Feeds() {
   return (
     <div className="stack" style={{ gap: '24px' }}>
       {showNorm && (
-        <div className="banner ok">
-          <CheckCircle2 size={18} /> Normalizado: preços em centavos, moeda detectada, links limpos.
+        <div className="flex items-center gap-2 p-3 border rounded-md border-emerald-200 bg-emerald-50 text-emerald-800">
+          <CheckCircle2 size={18} /> {t('feeds.normalizedBanner')}
         </div>
       )}
 
       {/* Configurações */}
-      <section className="card stack">
-        <div className="section-title">Configuração do Feed</div>
+      <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-4">
+        <div className="text-base font-semibold">{t('feeds.configTitle')}</div>
 
         {/* Segmented control */}
-        <div className="segmented">
-          <button
-            type="button"
-            className={cfg.source_type === "upload" ? "active" : ""}
-            onClick={() => setCfg({ ...cfg, source_type: "upload", format: "csv" })}
-            disabled={loading}
-          >
-            <FileUp size={16} /> Upload
+        <div className="inline-flex items-center gap-2 p-1 bg-gray-100 border rounded-lg">
+          <button type="button" className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md ${cfg.source_type === 'upload' ? 'bg-accent text-white' : 'bg-transparent'}`} onClick={() => setCfg({ ...cfg, source_type: 'upload', format: 'csv' })} disabled={loading}>
+            <FileUp size={16} /> {t('feeds.tabUpload')}
           </button>
-          <button
-            type="button"
-            className={cfg.source_type === "url" ? "active" : ""}
-            onClick={() => setCfg({ ...cfg, source_type: "url", format: "xml" })}
-            disabled={loading}
-          >
+          <button type="button" className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md ${cfg.source_type === 'url' ? 'bg-accent text-white' : 'bg-transparent'}`} onClick={() => setCfg({ ...cfg, source_type: 'url', format: 'xml' })} disabled={loading}>
             <LinkIcon size={16} /> URL
           </button>
         </div>
@@ -236,7 +228,7 @@ export default function Feeds() {
         {/* Linha: Formato + Campo/Dropzone */}
         <div className="grid-2">
           <div>
-            <label className="label">Formato do feed</label>
+            <label className="label">{t('feeds.format')}</label>
             <select
               className="input"
               value={cfg.format}
@@ -257,41 +249,28 @@ export default function Feeds() {
                 </>
               )}
             </select>
-            <div className="helper">
-              {cfg.format === "tsv" ? "TSV usa Tab como delimitador." : "XML/CSV aceitos."}
-            </div>
+            <div className="helper">{cfg.format === "tsv" ? t('feeds.tsvHint') : t('feeds.xmlCsvHint')}</div>
           </div>
 
           {cfg.source_type === "upload" ? (
             <div>
-              <label className="label">Arquivo</label>
-              <div
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={onDrop}
-                className={`dropzone ${dragOver ? "drag" : ""}`}
-              >
+              <label className="block text-xs text-gray-500 mb-1">{t('feeds.file')}</label>
+              <div onDragOver={(e) => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={onDrop} className={`relative border-2 border-dashed rounded-md p-6 flex items-center gap-3 ${dragOver ? 'bg-gray-50' : ''}`}>
                 <UploadCloud size={28} />
                 <div>
-                  Arraste o arquivo aqui<br />
-                  <span className="muted">ou clique para selecionar (CSV/TSV, máx. 10 MB)</span>
+                  {t('feeds.dropHere')}<br />
+                  <span className="text-sm text-gray-500">{t('feeds.dropHint')}</span>
                 </div>
-                <input
-                  type="file"
-                  accept={acceptFor(cfg.format)}
-                  onChange={(e) => onFilePicked(e.target.files?.[0] || null)}
-                  title=""
-                />
+                <input type="file" accept={acceptFor(cfg.format)} onChange={(e) => onFilePicked(e.target.files?.[0] || null)} title="" className="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
-              {file && <div className="muted" style={{ marginTop: 6 }}>Selecionado: <strong>{file.name}</strong></div>}
-              {/* Mensagens de detecção/aviso para upload */}
-              {formatNote && <div className="helper" style={{ marginTop: 6 }}>{formatNote}</div>}
-              {!formatNote && formatWarn && <div className="error" style={{ marginTop: 6 }}>{formatWarn}</div>}
+              {file && <div className="text-sm text-gray-500 mt-1">{t('feeds.selected')}: <strong>{file.name}</strong></div>}
+              {formatNote && <div className="text-sm text-gray-500 mt-1">{formatNote}</div>}
+              {!formatNote && formatWarn && <div className="text-sm text-red-600 mt-1">{formatWarn}</div>}
             </div>
           ) : (
             <Input
-              label="URL do Feed"
-              placeholder="https://exemplo.com/feed.xml"
+              label="URL"
+              placeholder={t('feeds.urlPlaceholder')}
               value={cfg.url}
               disabled={loading}
               onChange={(e) => { setCfg({ ...cfg, url: e.target.value }); setUrlError(false); }}
@@ -299,28 +278,28 @@ export default function Feeds() {
                 const g = guessFormatFromUrl(cfg.url);
                 if (g && g !== cfg.format) {
                   setCfg((c) => ({ ...c, format: g }));
-                  setFormatNote(`Detectei ${g.toUpperCase()} pela URL e ajustei o formato.`);
+                  setFormatNote(t('feeds.detectedFromUrl', { fmt: g.toUpperCase() }));
                 }
               }}
-              error={urlError ? "Informe uma URL válida." : ""}
-              helper="Ex.: https://exemplo.com/feed.xml — UTM/gclid serão removidos."
+              error={urlError ? t('feeds.invalidUrl') : ""}
+              helper={t('feeds.urlHelper')}
             />
           )}
         </div>
 
         {/* Ações */}
-        <div className="actions">
+        <div className="flex gap-2 flex-wrap">
           {cfg.source_type === "upload" ? (
             <Button onClick={uploadAndIngest} disabled={!file} loading={loading}>
-              Upload + Ingestão
+              {t('feeds.uploadAndIngest')}
             </Button>
           ) : (
             <>
               <Button variant="outline" onClick={saveCfg} disabled={!isDirty || loading}>
-                Salvar Configuração
+                {t('feeds.saveConfig')}
               </Button>
               <Button onClick={ingestUrl} disabled={!isValidUrl(cfg.url)} loading={loading}>
-                Ingerir da URL
+                {t('feeds.ingestFromUrl')}
               </Button>
             </>
           )}
@@ -328,44 +307,33 @@ export default function Feeds() {
       </section>
 
       {/* Histórico */}
-      <section className="card stack">
-        <div className="section-head">
-          <div className="section-title">Histórico de Versões</div>
-          <Button variant="ghost" size="sm" onClick={loadVersions}>
-            <RefreshCw size={16} style={{ marginRight: 6 }} /> Recarregar
-          </Button>
-        </div>
+      <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-4">
+        <Toolbar
+          left={<div className="text-base font-semibold">{t('feeds.history')}</div>}
+          right={<Button variant="ghost" size="sm" onClick={loadVersions}><RefreshCw size={16} className="mr-1" /> {t('common.refresh')}</Button>}
+        />
 
         {versions.length === 0 ? (
-          <div className="empty">
-            <Clock size={18} />
-            Nenhuma versão ainda.
-          </div>
+          <div className="inline-flex items-center gap-2 text-gray-500"><Clock size={18} />{t('feeds.noneYet')}</div>
         ) : (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Quando</th>
-                  <th>Hash</th>
-                  <th>Itens</th>
-                  <th style={{ width: 120 }}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {versions.map((v, i) => (
-                  <tr key={v.hash} ref={i === 0 ? firstRowRef : null} className={highlightNew && i === 0 ? "row-new" : ""}>
-                    <td><Clock size={14} style={{ opacity: .6, marginRight: 6, verticalAlign: "-2px" }} />{new Date(v.created_at).toLocaleString()}</td>
-                    <td className="mono">{v.hash.slice(0, 12)}…</td>
-                    <td>{v.items_count}</td>
-                    <td>
-                        <Link to={`/app/stores/${id}/items`} className="link">Ver itens</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <THead>
+              <Th>{t('feeds.when')}</Th>
+              <Th>Hash</Th>
+              <Th>{t('feeds.items')}</Th>
+              <Th>{t('feeds.actions')}</Th>
+            </THead>
+            <TBody>
+              {versions.map((v, i) => (
+                <Tr key={v.hash} hover ref={i === 0 ? firstRowRef : null} className={highlightNew && i === 0 ? "bg-yellow-50" : ""}>
+                  <Td><Clock size={14} className="opacity-60 mr-1 -translate-y-[2px] inline" />{new Date(v.created_at).toLocaleString()}</Td>
+                  <Td mono>{v.hash.slice(0, 12)}…</Td>
+                  <Td>{v.items_count}</Td>
+                  <Td><Link to={`/app/stores/${id}/items`} className="text-accent dark:text-purple-300 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded">{t('feeds.viewItems')}</Link></Td>
+                </Tr>
+              ))}
+            </TBody>
+          </Table>
         )}
       </section>
     </div>

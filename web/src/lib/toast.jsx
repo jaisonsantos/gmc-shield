@@ -1,6 +1,7 @@
 // web/lib/toast.jsx
 
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { useTranslation } from 'react-i18next';
 
 const ToastCtx = createContext(null);
 
@@ -42,6 +43,16 @@ export function ToastProvider({ children }) {
   return (
     <ToastCtx.Provider value={api}>
       {children}
+      <ToastViewport toasts={toasts} />
+    </ToastCtx.Provider>
+  );
+}
+
+function ToastViewport({ toasts }) {
+  const { t: tr } = useTranslation();
+  const color = (type) =>
+    type === "success" ? "#10b981" : type === "error" ? "#ef4444" : "#3b82f6";
+  return (
       <div
         style={{
           position: "fixed",
@@ -53,13 +64,13 @@ export function ToastProvider({ children }) {
           maxWidth: 360,
         }}
       >
-        {toasts.map((t) => (
+        {toasts.map((toast) => (
           <div
-            key={t.id}
+            key={toast.id}
             style={{
               background: "#111827",
               color: "white",
-              border: `1px solid ${color(t.type)}`,
+              border: `1px solid ${color(toast.type)}`,
               padding: "10px 12px",
               borderRadius: 8,
               boxShadow: "0 6px 20px rgba(0,0,0,.2)",
@@ -69,17 +80,16 @@ export function ToastProvider({ children }) {
               style={{
                 fontWeight: 600,
                 fontSize: 13,
-                color: color(t.type),
+                color: color(toast.type),
                 marginBottom: 4,
               }}
             >
-              {t.type === "success" ? "Tudo certo" : t.type === "error" ? "Ops" : "Info"}
+              {toast.type === "success" ? tr('common.success') : toast.type === "error" ? tr('common.error') : 'Info'}
             </div>
-            <div style={{ fontSize: 14, lineHeight: 1.35 }}>{t.message}</div>
+            <div style={{ fontSize: 14, lineHeight: 1.35 }}>{String(toast.message)}</div>
           </div>
         ))}
       </div>
-    </ToastCtx.Provider>
   );
 }
 

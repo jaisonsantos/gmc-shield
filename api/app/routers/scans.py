@@ -8,9 +8,11 @@ from ..jobs import crawl
 from ..queue import publish_scan_job
 
 router = APIRouter()
+router_v1 = APIRouter(prefix="/stores")
 
 
 @router.post("/{store_id}/scan", status_code=201)
+@router_v1.post("/{store_id}/scan", status_code=201)
 def enqueue_scan(
     store_id: int,
     req: schemas.ScanRequest,
@@ -83,6 +85,7 @@ def enqueue_scan(
 
 
 @router.get("/{store_id}/runs/{run_id}/snapshots", response_model=list[schemas.PageSnapshotOut])
+@router_v1.get("/{store_id}/runs/{run_id}/snapshots", response_model=list[schemas.PageSnapshotOut])
 def list_snapshots(
     store_id: int,
     run_id: int,

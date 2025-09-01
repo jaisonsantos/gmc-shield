@@ -36,7 +36,7 @@ headingLevel: 2
 
 <h1 id="gmc-shield-api-default">Default</h1>
 
-## Auth Google Start
+## auth_google_start_api_auth_google_start_get
 
 <a id="opIdauth_google_start_api_auth_google_start_get"></a>
 
@@ -179,7 +179,9 @@ func main() {
 
 `GET /api/auth/google/start`
 
-<h3 id="auth-google-start-parameters">Parameters</h3>
+*Auth Google Start*
+
+<h3 id="auth_google_start_api_auth_google_start_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -193,20 +195,20 @@ func main() {
 null
 ```
 
-<h3 id="auth-google-start-responses">Responses</h3>
+<h3 id="auth_google_start_api_auth_google_start_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="auth-google-start-responseschema">Response Schema</h3>
+<h3 id="auth_google_start_api_auth_google_start_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## Auth Google Start Content
+## auth_google_start_content_api_auth_google_start_content_get
 
 <a id="opIdauth_google_start_content_api_auth_google_start_content_get"></a>
 
@@ -349,7 +351,9 @@ func main() {
 
 `GET /api/auth/google/start-content`
 
-<h3 id="auth-google-start-content-parameters">Parameters</h3>
+*Auth Google Start Content*
+
+<h3 id="auth_google_start_content_api_auth_google_start_content_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -363,20 +367,20 @@ func main() {
 null
 ```
 
-<h3 id="auth-google-start-content-responses">Responses</h3>
+<h3 id="auth_google_start_content_api_auth_google_start_content_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="auth-google-start-content-responseschema">Response Schema</h3>
+<h3 id="auth_google_start_content_api_auth_google_start_content_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## Auth Google Callback
+## auth_google_callback_api_auth_google_callback_get
 
 <a id="opIdauth_google_callback_api_auth_google_callback_get"></a>
 
@@ -523,7 +527,9 @@ func main() {
 
 `GET /api/auth/google/callback`
 
-<h3 id="auth-google-callback-parameters">Parameters</h3>
+*Auth Google Callback*
+
+<h3 id="auth_google_callback_api_auth_google_callback_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -538,20 +544,20 @@ func main() {
 null
 ```
 
-<h3 id="auth-google-callback-responses">Responses</h3>
+<h3 id="auth_google_callback_api_auth_google_callback_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="auth-google-callback-responseschema">Response Schema</h3>
+<h3 id="auth_google_callback_api_auth_google_callback_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## Healthz
+## healthz_healthz_get
 
 <a id="opIdhealthz_healthz_get"></a>
 
@@ -694,6 +700,8 @@ func main() {
 
 `GET /healthz`
 
+*Healthz*
+
 > Example responses
 
 > 200 Response
@@ -702,19 +710,19 @@ func main() {
 null
 ```
 
-<h3 id="healthz-responses">Responses</h3>
+<h3 id="healthz_healthz_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="healthz-responseschema">Response Schema</h3>
+<h3 id="healthz_healthz_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## Readyz
+## readyz_readyz_get
 
 <a id="opIdreadyz_readyz_get"></a>
 
@@ -857,6 +865,8 @@ func main() {
 
 `GET /readyz`
 
+*Readyz*
+
 > Example responses
 
 > 200 Response
@@ -865,13 +875,13 @@ func main() {
 null
 ```
 
-<h3 id="readyz-responses">Responses</h3>
+<h3 id="readyz_readyz_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="readyz-responseschema">Response Schema</h3>
+<h3 id="readyz_readyz_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
@@ -879,7 +889,7 @@ This operation does not require authentication
 
 <h1 id="gmc-shield-api-ops">ops</h1>
 
-## Worker Health
+## worker_health_api_ops_worker_health_get
 
 <a id="opIdworker_health_api_ops_worker_health_get"></a>
 
@@ -1028,6 +1038,8 @@ func main() {
 
 `GET /api/ops/worker/health`
 
+*Worker Health*
+
 > Example responses
 
 > 200 Response
@@ -1036,20 +1048,20 @@ func main() {
 null
 ```
 
-<h3 id="worker-health-responses">Responses</h3>
+<h3 id="worker_health_api_ops_worker_health_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="worker-health-responseschema">Response Schema</h3>
+<h3 id="worker_health_api_ops_worker_health_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Metrics
+## metrics_api_ops_metrics_get
 
 <a id="opIdmetrics_api_ops_metrics_get"></a>
 
@@ -1192,6 +1204,8 @@ func main() {
 
 `GET /api/ops/metrics`
 
+*Metrics*
+
 > Example responses
 
 > 200 Response
@@ -1200,13 +1214,13 @@ func main() {
 null
 ```
 
-<h3 id="metrics-responses">Responses</h3>
+<h3 id="metrics_api_ops_metrics_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="metrics-responseschema">Response Schema</h3>
+<h3 id="metrics_api_ops_metrics_get-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
@@ -1214,7 +1228,7 @@ This operation does not require authentication
 
 <h1 id="gmc-shield-api-auth">auth</h1>
 
-## Login
+## login_api_auth_login_post
 
 <a id="opIdlogin_api_auth_login_post"></a>
 
@@ -1367,6 +1381,8 @@ func main() {
 
 `POST /api/auth/login`
 
+*Login*
+
 > Body parameter
 
 ```json
@@ -1376,7 +1392,7 @@ func main() {
 }
 ```
 
-<h3 id="login-parameters">Parameters</h3>
+<h3 id="login_api_auth_login_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1393,7 +1409,7 @@ func main() {
 }
 ```
 
-<h3 id="login-responses">Responses</h3>
+<h3 id="login_api_auth_login_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1404,7 +1420,7 @@ func main() {
 This operation does not require authentication
 </aside>
 
-## Whoami
+## whoami_api_auth_whoami_get
 
 <a id="opIdwhoami_api_auth_whoami_get"></a>
 
@@ -1553,6 +1569,8 @@ func main() {
 
 `GET /api/auth/whoami`
 
+*Whoami*
+
 > Example responses
 
 > 200 Response
@@ -1561,13 +1579,13 @@ func main() {
 null
 ```
 
-<h3 id="whoami-responses">Responses</h3>
+<h3 id="whoami_api_auth_whoami_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="whoami-responseschema">Response Schema</h3>
+<h3 id="whoami_api_auth_whoami_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1576,22 +1594,22 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-stores">stores</h1>
 
-## List Stores
+## list_stores_api_stores_get
 
-<a id="opIdlist_stores_api_stores__get"></a>
+<a id="opIdlist_stores_api_stores_get"></a>
 
 > Code samples
 
 ```shell
 # You can also use wget
-curl -X GET /api/stores/ \
+curl -X GET /api/stores \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
 
 ```http
-GET /api/stores/ HTTP/1.1
+GET /api/stores HTTP/1.1
 
 Accept: application/json
 
@@ -1604,7 +1622,7 @@ const headers = {
   'Authorization':'Bearer {access-token}'
 };
 
-fetch('/api/stores/',
+fetch('/api/stores',
 {
   method: 'GET',
 
@@ -1627,7 +1645,7 @@ headers = {
   'Authorization' => 'Bearer {access-token}'
 }
 
-result = RestClient.get '/api/stores/',
+result = RestClient.get '/api/stores',
   params: {
   }, headers: headers
 
@@ -1642,7 +1660,7 @@ headers = {
   'Authorization': 'Bearer {access-token}'
 }
 
-r = requests.get('/api/stores/', headers = headers)
+r = requests.get('/api/stores', headers = headers)
 
 print(r.json())
 
@@ -1664,7 +1682,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('GET','/api/stores/', array(
+    $response = $client->request('GET','/api/stores', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -1681,7 +1699,7 @@ try {
 ```
 
 ```java
-URL obj = new URL("/api/stores/");
+URL obj = new URL("/api/stores");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("GET");
 int responseCode = con.getResponseCode();
@@ -1713,7 +1731,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "/api/stores/", data)
+    req, err := http.NewRequest("GET", "/api/stores", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -1723,7 +1741,9 @@ func main() {
 
 ```
 
-`GET /api/stores/`
+`GET /api/stores`
+
+*List Stores*
 
 Lista lojas do account do usuário atual.
 
@@ -1735,20 +1755,20 @@ Lista lojas do account do usuário atual.
 null
 ```
 
-<h3 id="list-stores-responses">Responses</h3>
+<h3 id="list_stores_api_stores_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="list-stores-responseschema">Response Schema</h3>
+<h3 id="list_stores_api_stores_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Create store
+## create_store_api_stores_post
 
 <a id="opIdcreate_store_api_stores_post"></a>
 
@@ -1911,6 +1931,8 @@ func main() {
 
 `POST /api/stores`
 
+*Create store*
+
 Cria uma loja para o account do usuário autenticado.
 
 > Body parameter
@@ -1926,7 +1948,7 @@ Cria uma loja para o account do usuário autenticado.
 }
 ```
 
-<h3 id="create-store-parameters">Parameters</h3>
+<h3 id="create_store_api_stores_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1940,21 +1962,21 @@ Cria uma loja para o account do usuário autenticado.
 null
 ```
 
-<h3 id="create-store-responses">Responses</h3>
+<h3 id="create_store_api_stores_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="create-store-responseschema">Response Schema</h3>
+<h3 id="create_store_api_stores_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Store overview
+## store_overview_api_stores__store_id__overview_get
 
 <a id="opIdstore_overview_api_stores__store_id__overview_get"></a>
 
@@ -2103,9 +2125,11 @@ func main() {
 
 `GET /api/stores/{store_id}/overview`
 
+*Store overview*
+
 Pequeno resumo da loja para cards/visão geral.
 
-<h3 id="store-overview-parameters">Parameters</h3>
+<h3 id="store_overview_api_stores__store_id__overview_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2119,21 +2143,195 @@ Pequeno resumo da loja para cards/visão geral.
 null
 ```
 
-<h3 id="store-overview-responses">Responses</h3>
+<h3 id="store_overview_api_stores__store_id__overview_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="store-overview-responseschema">Response Schema</h3>
+<h3 id="store_overview_api_stores__store_id__overview_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Update Store
+## list_stores_api_stores__get
+
+<a id="opIdlist_stores_api_stores__get"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /api/stores/ \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```http
+GET /api/stores/ HTTP/1.1
+
+Accept: application/json
+
+```
+
+```javascript
+
+const headers = {
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/api/stores/',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer {access-token}'
+}
+
+result = RestClient.get '/api/stores/',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json',
+  'Authorization': 'Bearer {access-token}'
+}
+
+r = requests.get('/api/stores/', headers = headers)
+
+print(r.json())
+
+```
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+$headers = array(
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer {access-token}',
+);
+
+$client = new \GuzzleHttp\Client();
+
+// Define array of request body.
+$request_body = array();
+
+try {
+    $response = $client->request('GET','/api/stores/', array(
+        'headers' => $headers,
+        'json' => $request_body,
+       )
+    );
+    print_r($response->getBody()->getContents());
+ }
+ catch (\GuzzleHttp\Exception\BadResponseException $e) {
+    // handle exception or api errors.
+    print_r($e->getMessage());
+ }
+
+ // ...
+
+```
+
+```java
+URL obj = new URL("/api/stores/");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"application/json"},
+        "Authorization": []string{"Bearer {access-token}"},
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "/api/stores/", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /api/stores/`
+
+*List Stores*
+
+Lista lojas do account do usuário atual.
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+<h3 id="list_stores_api_stores__get-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
+
+<h3 id="list_stores_api_stores__get-responseschema">Response Schema</h3>
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer
+</aside>
+
+## update_store_api_stores__store_id__patch
 
 <a id="opIdupdate_store_api_stores__store_id__patch"></a>
 
@@ -2291,6 +2489,8 @@ func main() {
 
 `PATCH /api/stores/{store_id}`
 
+*Update Store*
+
 > Body parameter
 
 ```json
@@ -2299,7 +2499,7 @@ func main() {
 }
 ```
 
-<h3 id="update-store-parameters">Parameters</h3>
+<h3 id="update_store_api_stores__store_id__patch-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2314,21 +2514,21 @@ func main() {
 null
 ```
 
-<h3 id="update-store-responses">Responses</h3>
+<h3 id="update_store_api_stores__store_id__patch-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="update-store-responseschema">Response Schema</h3>
+<h3 id="update_store_api_stores__store_id__patch-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## List scan runs
+## list_runs_api_stores__store_id__scan_runs_get
 
 <a id="opIdlist_runs_api_stores__store_id__scan_runs_get"></a>
 
@@ -2477,7 +2677,9 @@ func main() {
 
 `GET /api/stores/{store_id}/scan/runs`
 
-<h3 id="list-scan-runs-parameters">Parameters</h3>
+*List scan runs*
+
+<h3 id="list_runs_api_stores__store_id__scan_runs_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2502,14 +2704,14 @@ func main() {
 ]
 ```
 
-<h3 id="list-scan-runs-responses">Responses</h3>
+<h3 id="list_runs_api_stores__store_id__scan_runs_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-scan-runs-responseschema">Response Schema</h3>
+<h3 id="list_runs_api_stores__store_id__scan_runs_get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -2566,7 +2768,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
-## Get dashboard data for a store
+## get_dashboard_data_api_stores__store_id__dashboard_get
 
 <a id="opIdget_dashboard_data_api_stores__store_id__dashboard_get"></a>
 
@@ -2715,7 +2917,9 @@ func main() {
 
 `GET /api/stores/{store_id}/dashboard`
 
-<h3 id="get-dashboard-data-for-a-store-parameters">Parameters</h3>
+*Get dashboard data for a store*
+
+<h3 id="get_dashboard_data_api_stores__store_id__dashboard_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2729,14 +2933,14 @@ func main() {
 null
 ```
 
-<h3 id="get-dashboard-data-for-a-store-responses">Responses</h3>
+<h3 id="get_dashboard_data_api_stores__store_id__dashboard_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="get-dashboard-data-for-a-store-responseschema">Response Schema</h3>
+<h3 id="get_dashboard_data_api_stores__store_id__dashboard_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2745,7 +2949,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-feeds">feeds</h1>
 
-## Configure feed
+## set_feed_api_stores__store_id__feed_post
 
 <a id="opIdset_feed_api_stores__store_id__feed_post"></a>
 
@@ -2905,6 +3109,8 @@ func main() {
 
 `POST /api/stores/{store_id}/feed`
 
+*Configure feed*
+
 > Body parameter
 
 ```json
@@ -2915,7 +3121,7 @@ func main() {
 }
 ```
 
-<h3 id="configure-feed-parameters">Parameters</h3>
+<h3 id="set_feed_api_stores__store_id__feed_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2930,36 +3136,36 @@ func main() {
 null
 ```
 
-<h3 id="configure-feed-responses">Responses</h3>
+<h3 id="set_feed_api_stores__store_id__feed_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="configure-feed-responseschema">Response Schema</h3>
+<h3 id="set_feed_api_stores__store_id__feed_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Feed versions
+## feed_versions_api_stores__store_id__feed_versions_get
 
-<a id="opIdfeed_versions_api_v1_stores__store_id__feeds_versions_get"></a>
+<a id="opIdfeed_versions_api_stores__store_id__feed_versions_get"></a>
 
 > Code samples
 
 ```shell
 # You can also use wget
-curl -X GET /api/v1/stores/{store_id}/feeds/versions \
+curl -X GET /api/stores/{store_id}/feed/versions \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
 
 ```http
-GET /api/v1/stores/{store_id}/feeds/versions HTTP/1.1
+GET /api/stores/{store_id}/feed/versions HTTP/1.1
 
 Accept: application/json
 
@@ -2972,7 +3178,7 @@ const headers = {
   'Authorization':'Bearer {access-token}'
 };
 
-fetch('/api/v1/stores/{store_id}/feeds/versions',
+fetch('/api/stores/{store_id}/feed/versions',
 {
   method: 'GET',
 
@@ -2995,7 +3201,7 @@ headers = {
   'Authorization' => 'Bearer {access-token}'
 }
 
-result = RestClient.get '/api/v1/stores/{store_id}/feeds/versions',
+result = RestClient.get '/api/stores/{store_id}/feed/versions',
   params: {
   }, headers: headers
 
@@ -3010,7 +3216,7 @@ headers = {
   'Authorization': 'Bearer {access-token}'
 }
 
-r = requests.get('/api/v1/stores/{store_id}/feeds/versions', headers = headers)
+r = requests.get('/api/stores/{store_id}/feed/versions', headers = headers)
 
 print(r.json())
 
@@ -3032,7 +3238,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('GET','/api/v1/stores/{store_id}/feeds/versions', array(
+    $response = $client->request('GET','/api/stores/{store_id}/feed/versions', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -3049,7 +3255,7 @@ try {
 ```
 
 ```java
-URL obj = new URL("/api/v1/stores/{store_id}/feeds/versions");
+URL obj = new URL("/api/stores/{store_id}/feed/versions");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("GET");
 int responseCode = con.getResponseCode();
@@ -3081,7 +3287,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "/api/v1/stores/{store_id}/feeds/versions", data)
+    req, err := http.NewRequest("GET", "/api/stores/{store_id}/feed/versions", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -3091,9 +3297,11 @@ func main() {
 
 ```
 
-`GET /api/v1/stores/{store_id}/feeds/versions`
+`GET /api/stores/{store_id}/feed/versions`
 
-<h3 id="feed-versions-parameters">Parameters</h3>
+*Feed versions*
+
+<h3 id="feed_versions_api_stores__store_id__feed_versions_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3110,21 +3318,21 @@ func main() {
 null
 ```
 
-<h3 id="feed-versions-responses">Responses</h3>
+<h3 id="feed_versions_api_stores__store_id__feed_versions_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="feed-versions-responseschema">Response Schema</h3>
+<h3 id="feed_versions_api_stores__store_id__feed_versions_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Import feed (URL or file)
+## import_feed_api_stores__store_id__feed_import_post
 
 <a id="opIdimport_feed_api_stores__store_id__feed_import_post"></a>
 
@@ -3285,6 +3493,8 @@ func main() {
 
 `POST /api/stores/{store_id}/feed/import`
 
+*Import feed (URL or file)*
+
 > Body parameter
 
 ```yaml
@@ -3295,7 +3505,7 @@ file: string
 
 ```
 
-<h3 id="import-feed-(url-or-file)-parameters">Parameters</h3>
+<h3 id="import_feed_api_stores__store_id__feed_import_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3311,21 +3521,21 @@ file: string
 null
 ```
 
-<h3 id="import-feed-(url-or-file)-responses">Responses</h3>
+<h3 id="import_feed_api_stores__store_id__feed_import_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="import-feed-(url-or-file)-responseschema">Response Schema</h3>
+<h3 id="import_feed_api_stores__store_id__feed_import_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Ingest feed from configured URL
+## ingest_from_url_api_stores__store_id__feed_ingest_post
 
 <a id="opIdingest_from_url_api_stores__store_id__feed_ingest_post"></a>
 
@@ -3474,7 +3684,9 @@ func main() {
 
 `POST /api/stores/{store_id}/feed/ingest`
 
-<h3 id="ingest-feed-from-configured-url-parameters">Parameters</h3>
+*Ingest feed from configured URL*
+
+<h3 id="ingest_from_url_api_stores__store_id__feed_ingest_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3489,21 +3701,21 @@ func main() {
 null
 ```
 
-<h3 id="ingest-feed-from-configured-url-responses">Responses</h3>
+<h3 id="ingest_from_url_api_stores__store_id__feed_ingest_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="ingest-feed-from-configured-url-responseschema">Response Schema</h3>
+<h3 id="ingest_from_url_api_stores__store_id__feed_ingest_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Upload and ingest feed file
+## upload_feed_api_stores__store_id__feed_upload_post
 
 <a id="opIdupload_feed_api_stores__store_id__feed_upload_post"></a>
 
@@ -3662,6 +3874,8 @@ func main() {
 
 `POST /api/stores/{store_id}/feed/upload`
 
+*Upload and ingest feed file*
+
 > Body parameter
 
 ```yaml
@@ -3670,7 +3884,7 @@ file: string
 
 ```
 
-<h3 id="upload-and-ingest-feed-file-parameters">Parameters</h3>
+<h3 id="upload_feed_api_stores__store_id__feed_upload_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3686,21 +3900,21 @@ file: string
 null
 ```
 
-<h3 id="upload-and-ingest-feed-file-responses">Responses</h3>
+<h3 id="upload_feed_api_stores__store_id__feed_upload_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="upload-and-ingest-feed-file-responseschema">Response Schema</h3>
+<h3 id="upload_feed_api_stores__store_id__feed_upload_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## List feed items
+## list_items_api_stores__store_id__items_get
 
 <a id="opIdlist_items_api_stores__store_id__items_get"></a>
 
@@ -3849,7 +4063,9 @@ func main() {
 
 `GET /api/stores/{store_id}/items`
 
-<h3 id="list-feed-items-parameters">Parameters</h3>
+*List feed items*
+
+<h3 id="list_items_api_stores__store_id__items_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -3865,21 +4081,203 @@ func main() {
 null
 ```
 
-<h3 id="list-feed-items-responses">Responses</h3>
+<h3 id="list_items_api_stores__store_id__items_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-feed-items-responseschema">Response Schema</h3>
+<h3 id="list_items_api_stores__store_id__items_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Ingest feed (URL or file)
+## feed_versions_api_v1_stores__store_id__feeds_versions_get
+
+<a id="opIdfeed_versions_api_v1_stores__store_id__feeds_versions_get"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /api/v1/stores/{store_id}/feeds/versions \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```http
+GET /api/v1/stores/{store_id}/feeds/versions HTTP/1.1
+
+Accept: application/json
+
+```
+
+```javascript
+
+const headers = {
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/api/v1/stores/{store_id}/feeds/versions',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer {access-token}'
+}
+
+result = RestClient.get '/api/v1/stores/{store_id}/feeds/versions',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json',
+  'Authorization': 'Bearer {access-token}'
+}
+
+r = requests.get('/api/v1/stores/{store_id}/feeds/versions', headers = headers)
+
+print(r.json())
+
+```
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+$headers = array(
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer {access-token}',
+);
+
+$client = new \GuzzleHttp\Client();
+
+// Define array of request body.
+$request_body = array();
+
+try {
+    $response = $client->request('GET','/api/v1/stores/{store_id}/feeds/versions', array(
+        'headers' => $headers,
+        'json' => $request_body,
+       )
+    );
+    print_r($response->getBody()->getContents());
+ }
+ catch (\GuzzleHttp\Exception\BadResponseException $e) {
+    // handle exception or api errors.
+    print_r($e->getMessage());
+ }
+
+ // ...
+
+```
+
+```java
+URL obj = new URL("/api/v1/stores/{store_id}/feeds/versions");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"application/json"},
+        "Authorization": []string{"Bearer {access-token}"},
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "/api/v1/stores/{store_id}/feeds/versions", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /api/v1/stores/{store_id}/feeds/versions`
+
+*Feed versions*
+
+<h3 id="feed_versions_api_v1_stores__store_id__feeds_versions_get-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|store_id|path|integer|true|none|
+|offset|query|integer|false|none|
+|limit|query|integer|false|none|
+|page|query|any|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+<h3 id="feed_versions_api_v1_stores__store_id__feeds_versions_get-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="feed_versions_api_v1_stores__store_id__feeds_versions_get-responseschema">Response Schema</h3>
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer
+</aside>
+
+## ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post
 
 <a id="opIdingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post"></a>
 
@@ -4040,6 +4438,8 @@ func main() {
 
 `POST /api/v1/stores/{store_id}/feeds/ingest`
 
+*Ingest feed (URL or file)*
+
 > Body parameter
 
 ```yaml
@@ -4050,7 +4450,7 @@ file: string
 
 ```
 
-<h3 id="ingest-feed-(url-or-file)-parameters">Parameters</h3>
+<h3 id="ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -4066,21 +4466,21 @@ file: string
 null
 ```
 
-<h3 id="ingest-feed-(url-or-file)-responses">Responses</h3>
+<h3 id="ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="ingest-feed-(url-or-file)-responseschema">Response Schema</h3>
+<h3 id="ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Items for feed version
+## version_items_api_v1_feeds_versions__version_id__items_get
 
 <a id="opIdversion_items_api_v1_feeds_versions__version_id__items_get"></a>
 
@@ -4229,7 +4629,9 @@ func main() {
 
 `GET /api/v1/feeds/versions/{version_id}/items`
 
-<h3 id="items-for-feed-version-parameters">Parameters</h3>
+*Items for feed version*
+
+<h3 id="version_items_api_v1_feeds_versions__version_id__items_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -4246,14 +4648,14 @@ func main() {
 null
 ```
 
-<h3 id="items-for-feed-version-responses">Responses</h3>
+<h3 id="version_items_api_v1_feeds_versions__version_id__items_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="items-for-feed-version-responseschema">Response Schema</h3>
+<h3 id="version_items_api_v1_feeds_versions__version_id__items_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -4262,7 +4664,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-me">me</h1>
 
-## Get Preferences
+## get_preferences_api_v1_me_preferences_get
 
 <a id="opIdget_preferences_api_v1_me_preferences_get"></a>
 
@@ -4411,6 +4813,8 @@ func main() {
 
 `GET /api/v1/me/preferences`
 
+*Get Preferences*
+
 > Example responses
 
 > 200 Response
@@ -4421,7 +4825,7 @@ func main() {
 }
 ```
 
-<h3 id="get-preferences-responses">Responses</h3>
+<h3 id="get_preferences_api_v1_me_preferences_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -4432,7 +4836,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
-## Put Preferences
+## put_preferences_api_v1_me_preferences_put
 
 <a id="opIdput_preferences_api_v1_me_preferences_put"></a>
 
@@ -4590,6 +4994,8 @@ func main() {
 
 `PUT /api/v1/me/preferences`
 
+*Put Preferences*
+
 > Body parameter
 
 ```json
@@ -4598,7 +5004,7 @@ func main() {
 }
 ```
 
-<h3 id="put-preferences-parameters">Parameters</h3>
+<h3 id="put_preferences_api_v1_me_preferences_put-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -4614,7 +5020,7 @@ func main() {
 }
 ```
 
-<h3 id="put-preferences-responses">Responses</h3>
+<h3 id="put_preferences_api_v1_me_preferences_put-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -4628,7 +5034,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-violations">violations</h1>
 
-## List Violations
+## list_violations_api_stores__store_id__violations_get
 
 <a id="opIdlist_violations_api_stores__store_id__violations_get"></a>
 
@@ -4777,7 +5183,9 @@ func main() {
 
 `GET /api/stores/{store_id}/violations`
 
-<h3 id="list-violations-parameters">Parameters</h3>
+*List Violations*
+
+<h3 id="list_violations_api_stores__store_id__violations_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -4808,7 +5216,7 @@ func main() {
 }
 ```
 
-<h3 id="list-violations-responses">Responses</h3>
+<h3 id="list_violations_api_stores__store_id__violations_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -4822,7 +5230,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-blocks">blocks</h1>
 
-## Create Block
+## create_block_api_stores__store_id__blocks_post
 
 <a id="opIdcreate_block_api_stores__store_id__blocks_post"></a>
 
@@ -4981,6 +5389,8 @@ func main() {
 
 `POST /api/stores/{store_id}/blocks`
 
+*Create Block*
+
 > Body parameter
 
 ```json
@@ -4990,7 +5400,7 @@ func main() {
 }
 ```
 
-<h3 id="create-block-parameters">Parameters</h3>
+<h3 id="create_block_api_stores__store_id__blocks_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5005,21 +5415,21 @@ func main() {
 null
 ```
 
-<h3 id="create-block-responses">Responses</h3>
+<h3 id="create_block_api_stores__store_id__blocks_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="create-block-responseschema">Response Schema</h3>
+<h3 id="create_block_api_stores__store_id__blocks_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## List Blocks
+## list_blocks_api_stores__store_id__blocks_get
 
 <a id="opIdlist_blocks_api_stores__store_id__blocks_get"></a>
 
@@ -5168,7 +5578,9 @@ func main() {
 
 `GET /api/stores/{store_id}/blocks`
 
-<h3 id="list-blocks-parameters">Parameters</h3>
+*List Blocks*
+
+<h3 id="list_blocks_api_stores__store_id__blocks_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5182,21 +5594,21 @@ func main() {
 null
 ```
 
-<h3 id="list-blocks-responses">Responses</h3>
+<h3 id="list_blocks_api_stores__store_id__blocks_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-blocks-responseschema">Response Schema</h3>
+<h3 id="list_blocks_api_stores__store_id__blocks_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Deactivate Block
+## deactivate_block_api_stores__store_id__blocks__block_id__delete
 
 <a id="opIddeactivate_block_api_stores__store_id__blocks__block_id__delete"></a>
 
@@ -5345,7 +5757,9 @@ func main() {
 
 `DELETE /api/stores/{store_id}/blocks/{block_id}`
 
-<h3 id="deactivate-block-parameters">Parameters</h3>
+*Deactivate Block*
+
+<h3 id="deactivate_block_api_stores__store_id__blocks__block_id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5370,7 +5784,7 @@ func main() {
 }
 ```
 
-<h3 id="deactivate-block-responses">Responses</h3>
+<h3 id="deactivate_block_api_stores__store_id__blocks__block_id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -5382,7 +5796,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
-## Deactivate By Feed Item
+## deactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete
 
 <a id="opIddeactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete"></a>
 
@@ -5531,7 +5945,9 @@ func main() {
 
 `DELETE /api/stores/{store_id}/blocks/by-feed-item/{feed_item_id}`
 
-<h3 id="deactivate-by-feed-item-parameters">Parameters</h3>
+*Deactivate By Feed Item*
+
+<h3 id="deactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5556,7 +5972,7 @@ func main() {
 }
 ```
 
-<h3 id="deactivate-by-feed-item-responses">Responses</h3>
+<h3 id="deactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -5570,7 +5986,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-policies">policies</h1>
 
-## List Policies
+## list_policies_api_stores__store_id__policies_get
 
 <a id="opIdlist_policies_api_stores__store_id__policies_get"></a>
 
@@ -5719,7 +6135,9 @@ func main() {
 
 `GET /api/stores/{store_id}/policies`
 
-<h3 id="list-policies-parameters">Parameters</h3>
+*List Policies*
+
+<h3 id="list_policies_api_stores__store_id__policies_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5733,14 +6151,14 @@ func main() {
 null
 ```
 
-<h3 id="list-policies-responses">Responses</h3>
+<h3 id="list_policies_api_stores__store_id__policies_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-policies-responseschema">Response Schema</h3>
+<h3 id="list_policies_api_stores__store_id__policies_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -5749,7 +6167,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-wp">wp</h1>
 
-## Save Credentials
+## save_credentials_api_stores__store_id__wp_credentials_post
 
 <a id="opIdsave_credentials_api_stores__store_id__wp_credentials_post"></a>
 
@@ -5910,6 +6328,8 @@ func main() {
 
 `POST /api/stores/{store_id}/wp/credentials`
 
+*Save Credentials*
+
 > Body parameter
 
 ```json
@@ -5921,7 +6341,7 @@ func main() {
 }
 ```
 
-<h3 id="save-credentials-parameters">Parameters</h3>
+<h3 id="save_credentials_api_stores__store_id__wp_credentials_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -5936,21 +6356,21 @@ func main() {
 null
 ```
 
-<h3 id="save-credentials-responses">Responses</h3>
+<h3 id="save_credentials_api_stores__store_id__wp_credentials_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="save-credentials-responseschema">Response Schema</h3>
+<h3 id="save_credentials_api_stores__store_id__wp_credentials_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Wp Status
+## wp_status_api_stores__store_id__wp_status_get
 
 <a id="opIdwp_status_api_stores__store_id__wp_status_get"></a>
 
@@ -6099,7 +6519,9 @@ func main() {
 
 `GET /api/stores/{store_id}/wp/status`
 
-<h3 id="wp-status-parameters">Parameters</h3>
+*Wp Status*
+
+<h3 id="wp_status_api_stores__store_id__wp_status_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -6125,7 +6547,7 @@ func main() {
 }
 ```
 
-<h3 id="wp-status-responses">Responses</h3>
+<h3 id="wp_status_api_stores__store_id__wp_status_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -6137,7 +6559,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
-## Render Policy
+## render_policy_api_stores__store_id__wp_policies_render_post
 
 <a id="opIdrender_policy_api_stores__store_id__wp_policies_render_post"></a>
 
@@ -6296,6 +6718,8 @@ func main() {
 
 `POST /api/stores/{store_id}/wp/policies/render`
 
+*Render Policy*
+
 > Body parameter
 
 ```json
@@ -6305,7 +6729,7 @@ func main() {
 }
 ```
 
-<h3 id="render-policy-parameters">Parameters</h3>
+<h3 id="render_policy_api_stores__store_id__wp_policies_render_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -6320,21 +6744,21 @@ func main() {
 null
 ```
 
-<h3 id="render-policy-responses">Responses</h3>
+<h3 id="render_policy_api_stores__store_id__wp_policies_render_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="render-policy-responseschema">Response Schema</h3>
+<h3 id="render_policy_api_stores__store_id__wp_policies_render_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Publish Policy
+## publish_policy_api_stores__store_id__wp_policies_publish_post
 
 <a id="opIdpublish_policy_api_stores__store_id__wp_policies_publish_post"></a>
 
@@ -6494,6 +6918,8 @@ func main() {
 
 `POST /api/stores/{store_id}/wp/policies/publish`
 
+*Publish Policy*
+
 > Body parameter
 
 ```json
@@ -6504,7 +6930,7 @@ func main() {
 }
 ```
 
-<h3 id="publish-policy-parameters">Parameters</h3>
+<h3 id="publish_policy_api_stores__store_id__wp_policies_publish_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -6525,7 +6951,7 @@ func main() {
 }
 ```
 
-<h3 id="publish-policy-responses">Responses</h3>
+<h3 id="publish_policy_api_stores__store_id__wp_policies_publish_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -6537,7 +6963,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
-## Sync Blocks
+## sync_blocks_api_stores__store_id__wp_blocks_sync_post
 
 <a id="opIdsync_blocks_api_stores__store_id__wp_blocks_sync_post"></a>
 
@@ -6686,7 +7112,9 @@ func main() {
 
 `POST /api/stores/{store_id}/wp/blocks/sync`
 
-<h3 id="sync-blocks-parameters">Parameters</h3>
+*Sync Blocks*
+
+<h3 id="sync_blocks_api_stores__store_id__wp_blocks_sync_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -6712,7 +7140,7 @@ func main() {
 }
 ```
 
-<h3 id="sync-blocks-responses">Responses</h3>
+<h3 id="sync_blocks_api_stores__store_id__wp_blocks_sync_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -6726,7 +7154,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-appeals">appeals</h1>
 
-## Create Appeal
+## create_appeal_api_stores__store_id__appeals_post
 
 <a id="opIdcreate_appeal_api_stores__store_id__appeals_post"></a>
 
@@ -6875,7 +7303,9 @@ func main() {
 
 `POST /api/stores/{store_id}/appeals`
 
-<h3 id="create-appeal-parameters">Parameters</h3>
+*Create Appeal*
+
+<h3 id="create_appeal_api_stores__store_id__appeals_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -6889,14 +7319,14 @@ func main() {
 null
 ```
 
-<h3 id="create-appeal-responses">Responses</h3>
+<h3 id="create_appeal_api_stores__store_id__appeals_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="create-appeal-responseschema">Response Schema</h3>
+<h3 id="create_appeal_api_stores__store_id__appeals_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6905,7 +7335,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-notifications">notifications</h1>
 
-## List Notifications
+## list_notifications_api_stores__store_id__notifications_get
 
 <a id="opIdlist_notifications_api_stores__store_id__notifications_get"></a>
 
@@ -7054,7 +7484,9 @@ func main() {
 
 `GET /api/stores/{store_id}/notifications`
 
-<h3 id="list-notifications-parameters">Parameters</h3>
+*List Notifications*
+
+<h3 id="list_notifications_api_stores__store_id__notifications_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -7068,14 +7500,14 @@ func main() {
 null
 ```
 
-<h3 id="list-notifications-responses">Responses</h3>
+<h3 id="list_notifications_api_stores__store_id__notifications_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-notifications-responseschema">Response Schema</h3>
+<h3 id="list_notifications_api_stores__store_id__notifications_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -7084,7 +7516,7 @@ OAuth2PasswordBearer
 
 <h1 id="gmc-shield-api-scans">scans</h1>
 
-## Enqueue Scan
+## enqueue_scan_api_stores__store_id__scan_post
 
 <a id="opIdenqueue_scan_api_stores__store_id__scan_post"></a>
 
@@ -7243,6 +7675,8 @@ func main() {
 
 `POST /api/stores/{store_id}/scan`
 
+*Enqueue Scan*
+
 > Body parameter
 
 ```json
@@ -7252,7 +7686,7 @@ func main() {
 }
 ```
 
-<h3 id="enqueue-scan-parameters">Parameters</h3>
+<h3 id="enqueue_scan_api_stores__store_id__scan_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -7267,21 +7701,21 @@ func main() {
 null
 ```
 
-<h3 id="enqueue-scan-responses">Responses</h3>
+<h3 id="enqueue_scan_api_stores__store_id__scan_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="enqueue-scan-responseschema">Response Schema</h3>
+<h3 id="enqueue_scan_api_stores__store_id__scan_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## List Snapshots
+## list_snapshots_api_stores__store_id__runs__run_id__snapshots_get
 
 <a id="opIdlist_snapshots_api_stores__store_id__runs__run_id__snapshots_get"></a>
 
@@ -7430,7 +7864,9 @@ func main() {
 
 `GET /api/stores/{store_id}/runs/{run_id}/snapshots`
 
-<h3 id="list-snapshots-parameters">Parameters</h3>
+*List Snapshots*
+
+<h3 id="list_snapshots_api_stores__store_id__runs__run_id__snapshots_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -7456,14 +7892,14 @@ func main() {
 ]
 ```
 
-<h3 id="list-snapshots-responses">Responses</h3>
+<h3 id="list_snapshots_api_stores__store_id__runs__run_id__snapshots_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-snapshots-responseschema">Response Schema</h3>
+<h3 id="list_snapshots_api_stores__store_id__runs__run_id__snapshots_get-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -7571,9 +8007,500 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2PasswordBearer
 </aside>
 
+## enqueue_scan_api_v1_stores__store_id__scan_post
+
+<a id="opIdenqueue_scan_api_v1_stores__store_id__scan_post"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /api/v1/stores/{store_id}/scan \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```http
+POST /api/v1/stores/{store_id}/scan HTTP/1.1
+
+Content-Type: application/json
+Accept: application/json
+
+```
+
+```javascript
+const inputBody = '{
+  "item_id": "string",
+  "limit_items": 20
+}';
+const headers = {
+  'Content-Type':'application/json',
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/api/v1/stores/{store_id}/scan',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Content-Type' => 'application/json',
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer {access-token}'
+}
+
+result = RestClient.post '/api/v1/stores/{store_id}/scan',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  'Authorization': 'Bearer {access-token}'
+}
+
+r = requests.post('/api/v1/stores/{store_id}/scan', headers = headers)
+
+print(r.json())
+
+```
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+$headers = array(
+    'Content-Type' => 'application/json',
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer {access-token}',
+);
+
+$client = new \GuzzleHttp\Client();
+
+// Define array of request body.
+$request_body = array();
+
+try {
+    $response = $client->request('POST','/api/v1/stores/{store_id}/scan', array(
+        'headers' => $headers,
+        'json' => $request_body,
+       )
+    );
+    print_r($response->getBody()->getContents());
+ }
+ catch (\GuzzleHttp\Exception\BadResponseException $e) {
+    // handle exception or api errors.
+    print_r($e->getMessage());
+ }
+
+ // ...
+
+```
+
+```java
+URL obj = new URL("/api/v1/stores/{store_id}/scan");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("POST");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Content-Type": []string{"application/json"},
+        "Accept": []string{"application/json"},
+        "Authorization": []string{"Bearer {access-token}"},
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("POST", "/api/v1/stores/{store_id}/scan", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`POST /api/v1/stores/{store_id}/scan`
+
+*Enqueue Scan*
+
+> Body parameter
+
+```json
+{
+  "item_id": "string",
+  "limit_items": 20
+}
+```
+
+<h3 id="enqueue_scan_api_v1_stores__store_id__scan_post-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|store_id|path|integer|true|none|
+|body|body|[ScanRequest](#schemascanrequest)|true|none|
+
+> Example responses
+
+> 201 Response
+
+```json
+null
+```
+
+<h3 id="enqueue_scan_api_v1_stores__store_id__scan_post-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Successful Response|Inline|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="enqueue_scan_api_v1_stores__store_id__scan_post-responseschema">Response Schema</h3>
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer
+</aside>
+
+## list_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get
+
+<a id="opIdlist_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```http
+GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots HTTP/1.1
+
+Accept: application/json
+
+```
+
+```javascript
+
+const headers = {
+  'Accept':'application/json',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/api/v1/stores/{store_id}/runs/{run_id}/snapshots',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+```ruby
+require 'rest-client'
+require 'json'
+
+headers = {
+  'Accept' => 'application/json',
+  'Authorization' => 'Bearer {access-token}'
+}
+
+result = RestClient.get '/api/v1/stores/{store_id}/runs/{run_id}/snapshots',
+  params: {
+  }, headers: headers
+
+p JSON.parse(result)
+
+```
+
+```python
+import requests
+headers = {
+  'Accept': 'application/json',
+  'Authorization': 'Bearer {access-token}'
+}
+
+r = requests.get('/api/v1/stores/{store_id}/runs/{run_id}/snapshots', headers = headers)
+
+print(r.json())
+
+```
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+$headers = array(
+    'Accept' => 'application/json',
+    'Authorization' => 'Bearer {access-token}',
+);
+
+$client = new \GuzzleHttp\Client();
+
+// Define array of request body.
+$request_body = array();
+
+try {
+    $response = $client->request('GET','/api/v1/stores/{store_id}/runs/{run_id}/snapshots', array(
+        'headers' => $headers,
+        'json' => $request_body,
+       )
+    );
+    print_r($response->getBody()->getContents());
+ }
+ catch (\GuzzleHttp\Exception\BadResponseException $e) {
+    // handle exception or api errors.
+    print_r($e->getMessage());
+ }
+
+ // ...
+
+```
+
+```java
+URL obj = new URL("/api/v1/stores/{store_id}/runs/{run_id}/snapshots");
+HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+con.setRequestMethod("GET");
+int responseCode = con.getResponseCode();
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(con.getInputStream()));
+String inputLine;
+StringBuffer response = new StringBuffer();
+while ((inputLine = in.readLine()) != null) {
+    response.append(inputLine);
+}
+in.close();
+System.out.println(response.toString());
+
+```
+
+```go
+package main
+
+import (
+       "bytes"
+       "net/http"
+)
+
+func main() {
+
+    headers := map[string][]string{
+        "Accept": []string{"application/json"},
+        "Authorization": []string{"Bearer {access-token}"},
+    }
+
+    data := bytes.NewBuffer([]byte{jsonReq})
+    req, err := http.NewRequest("GET", "/api/v1/stores/{store_id}/runs/{run_id}/snapshots", data)
+    req.Header = headers
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    // ...
+}
+
+```
+
+`GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots`
+
+*List Snapshots*
+
+<h3 id="list_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|store_id|path|integer|true|none|
+|run_id|path|integer|true|none|
+|limit|query|integer|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "feed_item_id": "string",
+    "url": "string",
+    "http_status": 0,
+    "extracted": {},
+    "screenshot_path": "string",
+    "html_path": "string",
+    "fetched_at": "2019-08-24T14:15:22Z"
+  }
+]
+```
+
+<h3 id="list_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
+
+<h3 id="list_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+*Response List Snapshots Api V1 Stores  Store Id  Runs  Run Id  Snapshots Get*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Response List Snapshots Api V1 Stores  Store Id  Runs  Run Id  Snapshots Get|[[PageSnapshotOut](#schemapagesnapshotout)]|false|none|none|
+|» PageSnapshotOut|[PageSnapshotOut](#schemapagesnapshotout)|false|none|none|
+|»» feed_item_id|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|string|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» url|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|string|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» http_status|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|integer|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» extracted|object|true|none|none|
+|»» screenshot_path|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|string|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» html_path|any|false|none|none|
+
+*anyOf*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|string|false|none|none|
+
+*or*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»»» *anonymous*|null|false|none|none|
+
+*continued*
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|»» fetched_at|string(date-time)|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2PasswordBearer
+</aside>
+
 <h1 id="gmc-shield-api-google-mc">google-mc</h1>
 
-## List Accounts
+## list_accounts_api_google_mc_accounts_get
 
 <a id="opIdlist_accounts_api_google_mc_accounts_get"></a>
 
@@ -7722,6 +8649,8 @@ func main() {
 
 `GET /api/google/mc/accounts`
 
+*List Accounts*
+
 > Example responses
 
 > 200 Response
@@ -7730,20 +8659,20 @@ func main() {
 null
 ```
 
-<h3 id="list-accounts-responses">Responses</h3>
+<h3 id="list_accounts_api_google_mc_accounts_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 
-<h3 id="list-accounts-responseschema">Response Schema</h3>
+<h3 id="list_accounts_api_google_mc_accounts_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## List Products
+## list_products_api_google_mc__merchant_id__products_get
 
 <a id="opIdlist_products_api_google_mc__merchant_id__products_get"></a>
 
@@ -7892,7 +8821,9 @@ func main() {
 
 `GET /api/google/mc/{merchant_id}/products`
 
-<h3 id="list-products-parameters">Parameters</h3>
+*List Products*
+
+<h3 id="list_products_api_google_mc__merchant_id__products_get-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -7908,21 +8839,21 @@ func main() {
 null
 ```
 
-<h3 id="list-products-responses">Responses</h3>
+<h3 id="list_products_api_google_mc__merchant_id__products_get-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="list-products-responseschema">Response Schema</h3>
+<h3 id="list_products_api_google_mc__merchant_id__products_get-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 OAuth2PasswordBearer
 </aside>
 
-## Import Products
+## import_products_api_google_mc__merchant_id__import_post
 
 <a id="opIdimport_products_api_google_mc__merchant_id__import_post"></a>
 
@@ -8074,11 +9005,13 @@ func main() {
 
 `POST /api/google/mc/{merchant_id}/import`
 
+*Import Products*
+
 Importa produtos do GMC para os itens do feed da loja (source_type='gmc').
 - Cria/atualiza `Feed` e `FeedVersion`.
 - Upsert em `FeedItem` (chave única store_id+item_id).
 
-<h3 id="import-products-parameters">Parameters</h3>
+<h3 id="import_products_api_google_mc__merchant_id__import_post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -8093,14 +9026,14 @@ Importa produtos do GMC para os itens do feed da loja (source_type='gmc').
 null
 ```
 
-<h3 id="import-products-responses">Responses</h3>
+<h3 id="import_products_api_google_mc__merchant_id__import_post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Successful Response|Inline|
 |422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation Error|[HTTPValidationError](#schemahttpvalidationerror)|
 
-<h3 id="import-products-responseschema">Response Schema</h3>
+<h3 id="import_products_api_google_mc__merchant_id__import_post-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -9293,3 +10226,4 @@ continued
 |---|---|---|---|---|
 |policies|object|true|none|none|
 |» **additionalProperties**|object|false|none|none|
+

@@ -1,1 +1,3194 @@
-{"openapi": "3.1.0", "info": {"title": "GMC Shield API", "version": "0.1.0"}, "paths": {"/api/ops/worker/health": {"get": {"tags": ["ops"], "summary": "Worker Health", "operationId": "worker_health_api_ops_worker_health_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/ops/metrics": {"get": {"tags": ["ops"], "summary": "Metrics", "operationId": "metrics_api_ops_metrics_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}}}, "/api/auth/login": {"post": {"tags": ["auth"], "summary": "Login", "operationId": "login_api_auth_login_post", "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/UserLogin"}}}, "required": true}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Token"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/auth/whoami": {"get": {"tags": ["auth"], "summary": "Whoami", "operationId": "whoami_api_auth_whoami_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/stores": {"get": {"tags": ["stores"], "summary": "List Stores", "description": "Lista lojas do account do usu\u00e1rio atual.", "operationId": "list_stores_api_stores_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}, "security": [{"OAuth2PasswordBearer": []}]}, "post": {"tags": ["stores"], "summary": "Create store", "description": "Cria uma loja para o account do usu\u00e1rio autenticado.", "operationId": "create_store_api_stores_post", "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoreCreate"}}}, "required": true}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/stores/{store_id}/overview": {"get": {"tags": ["stores"], "summary": "Store overview", "description": "Pequeno resumo da loja para cards/vis\u00e3o geral.", "operationId": "store_overview_api_stores__store_id__overview_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/": {"get": {"tags": ["stores"], "summary": "List Stores", "description": "Lista lojas do account do usu\u00e1rio atual.", "operationId": "list_stores_api_stores__get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/stores/{store_id}": {"patch": {"tags": ["stores"], "summary": "Update Store", "operationId": "update_store_api_stores__store_id__patch", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoreUpdate"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/scan/runs": {"get": {"tags": ["stores"], "summary": "List scan runs", "operationId": "list_runs_api_stores__store_id__scan_runs_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 20, "title": "Limit"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/ScanRunOut"}, "title": "Response List Runs Api Stores  Store Id  Scan Runs Get"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/dashboard": {"get": {"tags": ["stores"], "summary": "Get dashboard data for a store", "operationId": "get_dashboard_data_api_stores__store_id__dashboard_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/feed": {"post": {"tags": ["feeds"], "summary": "Configure feed", "operationId": "set_feed_api_stores__store_id__feed_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/FeedConfig"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/feed/versions": {"get": {"tags": ["feeds"], "summary": "Feed versions", "operationId": "feed_versions_api_stores__store_id__feed_versions_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "offset", "in": "query", "required": false, "schema": {"type": "integer", "default": 0, "title": "Offset"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Limit"}}, {"name": "page", "in": "query", "required": false, "schema": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Page"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/feed/import": {"post": {"tags": ["feeds"], "summary": "Import feed (URL or file)", "operationId": "import_feed_api_stores__store_id__feed_import_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "async", "in": "query", "required": false, "schema": {"type": "boolean", "default": false, "title": "Async"}}], "requestBody": {"required": true, "content": {"multipart/form-data": {"schema": {"$ref": "#/components/schemas/Body_import_feed_api_stores__store_id__feed_import_post"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/feed/ingest": {"post": {"tags": ["feeds"], "summary": "Ingest feed from configured URL", "operationId": "ingest_from_url_api_stores__store_id__feed_ingest_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "async", "in": "query", "required": false, "schema": {"type": "boolean", "default": false, "title": "Async"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/feed/upload": {"post": {"tags": ["feeds"], "summary": "Upload and ingest feed file", "operationId": "upload_feed_api_stores__store_id__feed_upload_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "async", "in": "query", "required": false, "schema": {"type": "boolean", "default": false, "title": "Async"}}], "requestBody": {"required": true, "content": {"multipart/form-data": {"schema": {"$ref": "#/components/schemas/Body_upload_feed_api_stores__store_id__feed_upload_post"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/items": {"get": {"tags": ["feeds"], "summary": "List feed items", "operationId": "list_items_api_stores__store_id__items_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer", "default": 1, "title": "Page"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Limit"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/v1/stores/{store_id}/feeds/versions": {"get": {"tags": ["feeds"], "summary": "Feed versions", "operationId": "feed_versions_api_v1_stores__store_id__feeds_versions_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "offset", "in": "query", "required": false, "schema": {"type": "integer", "default": 0, "title": "Offset"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Limit"}}, {"name": "page", "in": "query", "required": false, "schema": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Page"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/v1/stores/{store_id}/feeds/ingest": {"post": {"tags": ["feeds"], "summary": "Ingest feed (URL or file)", "operationId": "ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "async", "in": "query", "required": false, "schema": {"type": "boolean", "default": false, "title": "Async"}}], "requestBody": {"content": {"multipart/form-data": {"schema": {"allOf": [{"$ref": "#/components/schemas/Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post"}], "title": "Body"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/v1/feeds/versions/{version_id}/items": {"get": {"tags": ["feeds"], "summary": "Items for feed version", "operationId": "version_items_api_v1_feeds_versions__version_id__items_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "version_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Version Id"}}, {"name": "offset", "in": "query", "required": false, "schema": {"type": "integer", "default": 0, "title": "Offset"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Limit"}}, {"name": "page", "in": "query", "required": false, "schema": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Page"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/v1/me/preferences": {"get": {"tags": ["me"], "summary": "Get Preferences", "operationId": "get_preferences_api_v1_me_preferences_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Preferences"}}}}}, "security": [{"OAuth2PasswordBearer": []}]}, "put": {"tags": ["me"], "summary": "Put Preferences", "operationId": "put_preferences_api_v1_me_preferences_put", "requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/Preferences"}}}, "required": true}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Preferences"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/stores/{store_id}/violations": {"get": {"tags": ["violations"], "summary": "List Violations", "operationId": "list_violations_api_stores__store_id__violations_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer", "default": 1, "title": "Page"}}, {"name": "per_page", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Per Page"}}, {"name": "run_id", "in": "query", "required": false, "schema": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Run Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ViolationPage"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/blocks": {"post": {"tags": ["blocks"], "summary": "Create Block", "operationId": "create_block_api_stores__store_id__blocks_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BlockCreate"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}, "get": {"tags": ["blocks"], "summary": "List Blocks", "operationId": "list_blocks_api_stores__store_id__blocks_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/blocks/{block_id}": {"delete": {"tags": ["blocks"], "summary": "Deactivate Block", "operationId": "deactivate_block_api_stores__store_id__blocks__block_id__delete", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "block_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Block Id"}}], "responses": {"204": {"description": "Successful Response"}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/blocks/by-feed-item/{feed_item_id}": {"delete": {"tags": ["blocks"], "summary": "Deactivate By Feed Item", "operationId": "deactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "feed_item_id", "in": "path", "required": true, "schema": {"type": "string", "title": "Feed Item Id"}}], "responses": {"204": {"description": "Successful Response"}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/policies": {"get": {"tags": ["policies"], "summary": "List Policies", "operationId": "list_policies_api_stores__store_id__policies_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/wp/credentials": {"post": {"tags": ["wp"], "summary": "Save Credentials", "operationId": "save_credentials_api_stores__store_id__wp_credentials_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WpCredsIn"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/wp/status": {"get": {"tags": ["wp"], "summary": "Wp Status", "operationId": "wp_status_api_stores__store_id__wp_status_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WpStatusOut"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/wp/policies/render": {"post": {"tags": ["wp"], "summary": "Render Policy", "operationId": "render_policy_api_stores__store_id__wp_policies_render_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PolicyRenderIn"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/wp/policies/publish": {"post": {"tags": ["wp"], "summary": "Publish Policy", "operationId": "publish_policy_api_stores__store_id__wp_policies_publish_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PolicyPublishIn"}}}}, "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PolicyPublishOut"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/wp/blocks/sync": {"post": {"tags": ["wp"], "summary": "Sync Blocks", "operationId": "sync_blocks_api_stores__store_id__wp_blocks_sync_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "mode", "in": "query", "required": false, "schema": {"enum": ["pull", "push"], "type": "string", "default": "pull", "title": "Mode"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BlockSyncOut"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/appeals": {"post": {"tags": ["appeals"], "summary": "Create Appeal", "operationId": "create_appeal_api_stores__store_id__appeals_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/notifications": {"get": {"tags": ["notifications"], "summary": "List Notifications", "operationId": "list_notifications_api_stores__store_id__notifications_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/scan": {"post": {"tags": ["scans"], "summary": "Enqueue Scan", "operationId": "enqueue_scan_api_stores__store_id__scan_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}], "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ScanRequest"}}}}, "responses": {"201": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/stores/{store_id}/runs/{run_id}/snapshots": {"get": {"tags": ["scans"], "summary": "List Snapshots", "operationId": "list_snapshots_api_stores__store_id__runs__run_id__snapshots_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "store_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Store Id"}}, {"name": "run_id", "in": "path", "required": true, "schema": {"type": "integer", "title": "Run Id"}}, {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Limit"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {"type": "array", "items": {"$ref": "#/components/schemas/PageSnapshotOut"}, "title": "Response List Snapshots Api Stores  Store Id  Runs  Run Id  Snapshots Get"}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/auth/google/start": {"get": {"summary": "Auth Google Start", "operationId": "auth_google_start_api_auth_google_start_get", "parameters": [{"name": "return_to", "in": "query", "required": false, "schema": {"type": "string", "default": "/", "title": "Return To"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/auth/google/start-content": {"get": {"summary": "Auth Google Start Content", "operationId": "auth_google_start_content_api_auth_google_start_content_get", "parameters": [{"name": "return_to", "in": "query", "required": false, "schema": {"type": "string", "default": "/", "title": "Return To"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/auth/google/callback": {"get": {"summary": "Auth Google Callback", "operationId": "auth_google_callback_api_auth_google_callback_get", "parameters": [{"name": "state", "in": "query", "required": true, "schema": {"type": "string", "title": "State"}}, {"name": "code", "in": "query", "required": true, "schema": {"type": "string", "title": "Code"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/google/mc/accounts": {"get": {"tags": ["google-mc"], "summary": "List Accounts", "operationId": "list_accounts_api_google_mc_accounts_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}, "security": [{"OAuth2PasswordBearer": []}]}}, "/api/google/mc/{merchant_id}/products": {"get": {"tags": ["google-mc"], "summary": "List Products", "operationId": "list_products_api_google_mc__merchant_id__products_get", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "merchant_id", "in": "path", "required": true, "schema": {"type": "string", "title": "Merchant Id"}}, {"name": "maxResults", "in": "query", "required": false, "schema": {"type": "integer", "default": 50, "title": "Maxresults"}}, {"name": "pageToken", "in": "query", "required": false, "schema": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Pagetoken"}}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/api/google/mc/{merchant_id}/import": {"post": {"tags": ["google-mc"], "summary": "Import Products", "description": "Importa produtos do GMC para os itens do feed da loja (source_type='gmc').\n- Cria/atualiza `Feed` e `FeedVersion`.\n- Upsert em `FeedItem` (chave \u00fanica store_id+item_id).", "operationId": "import_products_api_google_mc__merchant_id__import_post", "security": [{"OAuth2PasswordBearer": []}], "parameters": [{"name": "merchant_id", "in": "path", "required": true, "schema": {"type": "string", "title": "Merchant Id"}}, {"name": "store_id", "in": "query", "required": true, "schema": {"type": "integer", "description": "Store ID that will receive GMC items", "title": "Store Id"}, "description": "Store ID that will receive GMC items"}], "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}, "422": {"description": "Validation Error", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/HTTPValidationError"}}}}}}}, "/healthz": {"get": {"summary": "Healthz", "operationId": "healthz_healthz_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}}}, "/readyz": {"get": {"summary": "Readyz", "operationId": "readyz_readyz_get", "responses": {"200": {"description": "Successful Response", "content": {"application/json": {"schema": {}}}}}}}}, "components": {"schemas": {"BlockCreate": {"properties": {"feed_item_id": {"type": "string", "title": "Feed Item Id"}, "reason": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Reason"}}, "type": "object", "required": ["feed_item_id"], "title": "BlockCreate"}, "BlockSyncOut": {"properties": {"total": {"type": "integer", "title": "Total"}, "synced": {"type": "integer", "title": "Synced"}, "mode": {"type": "string", "enum": ["pull", "push"], "title": "Mode"}}, "type": "object", "required": ["total", "synced", "mode"], "title": "BlockSyncOut"}, "Body_import_feed_api_stores__store_id__feed_import_post": {"properties": {"source_type": {"type": "string", "title": "Source Type"}, "format": {"type": "string", "title": "Format"}, "url": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Url"}, "file": {"anyOf": [{"type": "string", "format": "binary"}, {"type": "null"}], "title": "File"}}, "type": "object", "required": ["source_type", "format"], "title": "Body_import_feed_api_stores__store_id__feed_import_post"}, "Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post": {"properties": {"url": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Url"}, "format_form": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Format Form"}, "format_json": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Format Json"}, "file": {"anyOf": [{"type": "string", "format": "binary"}, {"type": "null"}], "title": "File"}}, "type": "object", "title": "Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post"}, "Body_upload_feed_api_stores__store_id__feed_upload_post": {"properties": {"format": {"type": "string", "title": "Format"}, "file": {"type": "string", "format": "binary", "title": "File"}}, "type": "object", "required": ["format", "file"], "title": "Body_upload_feed_api_stores__store_id__feed_upload_post"}, "FeedConfig": {"properties": {"source_type": {"type": "string", "title": "Source Type"}, "url": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Url"}, "format": {"type": "string", "title": "Format"}}, "type": "object", "required": ["source_type", "format"], "title": "FeedConfig"}, "HTTPValidationError": {"properties": {"detail": {"items": {"$ref": "#/components/schemas/ValidationError"}, "type": "array", "title": "Detail"}}, "type": "object", "title": "HTTPValidationError"}, "PageSnapshotOut": {"properties": {"feed_item_id": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Feed Item Id"}, "url": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Url"}, "http_status": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Http Status"}, "extracted": {"type": "object", "title": "Extracted"}, "screenshot_path": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Screenshot Path"}, "html_path": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Html Path"}, "fetched_at": {"type": "string", "format": "date-time", "title": "Fetched At"}}, "type": "object", "required": ["extracted", "fetched_at"], "title": "PageSnapshotOut"}, "PolicyPublishIn": {"properties": {"type": {"type": "string", "enum": ["refund", "shipping", "privacy"], "title": "Type"}, "content_md": {"type": "string", "title": "Content Md"}, "status": {"type": "string", "enum": ["publish", "draft"], "title": "Status", "default": "publish"}}, "type": "object", "required": ["type", "content_md"], "title": "PolicyPublishIn"}, "PolicyPublishOut": {"properties": {"type": {"type": "string", "title": "Type"}, "page_id": {"type": "integer", "title": "Page Id"}, "page_url": {"type": "string", "title": "Page Url"}, "published_at": {"type": "string", "format": "date-time", "title": "Published At"}, "version": {"type": "integer", "title": "Version"}}, "type": "object", "required": ["type", "page_id", "page_url", "published_at", "version"], "title": "PolicyPublishOut"}, "PolicyRenderIn": {"properties": {"type": {"type": "string", "enum": ["refund", "shipping", "privacy"], "title": "Type"}, "content_md": {"type": "string", "title": "Content Md"}}, "type": "object", "required": ["type", "content_md"], "title": "PolicyRenderIn"}, "Preferences": {"properties": {"locale": {"anyOf": [{"type": "string", "enum": ["en_US", "pt_BR", "es_ES"]}, {"type": "null"}], "title": "Locale"}}, "type": "object", "title": "Preferences"}, "ScanRequest": {"properties": {"item_id": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Item Id"}, "limit_items": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Limit Items", "default": 20}}, "type": "object", "title": "ScanRequest"}, "ScanRunOut": {"properties": {"id": {"type": "integer", "title": "Id"}, "status": {"type": "string", "title": "Status"}, "started_at": {"anyOf": [{"type": "string", "format": "date-time"}, {"type": "null"}], "title": "Started At"}, "finished_at": {"anyOf": [{"type": "string", "format": "date-time"}, {"type": "null"}], "title": "Finished At"}, "items_total": {"type": "integer", "title": "Items Total"}, "items_ok": {"type": "integer", "title": "Items Ok"}, "items_violation": {"type": "integer", "title": "Items Violation"}}, "type": "object", "required": ["id", "status", "items_total", "items_ok", "items_violation"], "title": "ScanRunOut"}, "StoreCreate": {"properties": {"name": {"type": "string", "title": "Name"}, "platform": {"type": "string", "title": "Platform"}, "base_url": {"type": "string", "title": "Base Url"}, "country": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Country"}, "currency": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Currency"}, "contact_email": {"anyOf": [{"type": "string", "format": "email"}, {"type": "null"}], "title": "Contact Email"}}, "type": "object", "required": ["name", "platform", "base_url"], "title": "StoreCreate"}, "StoreUpdate": {"properties": {"google_merchant_id": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Google Merchant Id"}}, "type": "object", "title": "StoreUpdate"}, "Token": {"properties": {"access_token": {"type": "string", "title": "Access Token"}, "token_type": {"type": "string", "title": "Token Type", "default": "bearer"}}, "type": "object", "required": ["access_token"], "title": "Token"}, "UserLogin": {"properties": {"email": {"type": "string", "format": "email", "title": "Email"}, "password": {"type": "string", "title": "Password"}}, "type": "object", "required": ["email", "password"], "title": "UserLogin"}, "ValidationError": {"properties": {"loc": {"items": {"anyOf": [{"type": "string"}, {"type": "integer"}]}, "type": "array", "title": "Location"}, "msg": {"type": "string", "title": "Message"}, "type": {"type": "string", "title": "Error Type"}}, "type": "object", "required": ["loc", "msg", "type"], "title": "ValidationError"}, "ViolationOut": {"properties": {"id": {"type": "integer", "title": "Id"}, "rule_code": {"type": "string", "title": "Rule Code"}, "severity": {"type": "string", "title": "Severity"}, "message": {"type": "string", "title": "Message"}, "status": {"type": "string", "title": "Status"}, "feed_item_id": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Feed Item Id"}, "run_id": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Run Id"}}, "type": "object", "required": ["id", "rule_code", "severity", "message", "status"], "title": "ViolationOut"}, "ViolationPage": {"properties": {"items": {"items": {"$ref": "#/components/schemas/ViolationOut"}, "type": "array", "title": "Items"}, "page": {"type": "integer", "title": "Page"}, "total": {"type": "integer", "title": "Total"}}, "type": "object", "required": ["items", "page", "total"], "title": "ViolationPage"}, "WpCredsIn": {"properties": {"wp_api_base": {"type": "string", "maxLength": 2083, "minLength": 1, "format": "uri", "title": "Wp Api Base"}, "wp_base_url": {"anyOf": [{"type": "string", "maxLength": 2083, "minLength": 1, "format": "uri"}, {"type": "null"}], "title": "Wp Base Url"}, "wp_user": {"type": "string", "title": "Wp User"}, "wp_app_password": {"type": "string", "title": "Wp App Password"}}, "type": "object", "required": ["wp_api_base", "wp_user", "wp_app_password"], "title": "WpCredsIn"}, "WpStatusOut": {"properties": {"connected": {"type": "boolean", "title": "Connected"}, "site": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Site"}, "wp_api_base": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Wp Api Base"}, "wp_user": {"anyOf": [{"type": "string"}, {"type": "null"}], "title": "Wp User"}, "last_status_at": {"anyOf": [{"type": "string", "format": "date-time"}, {"type": "null"}], "title": "Last Status At"}, "last_block_sync_at": {"anyOf": [{"type": "string", "format": "date-time"}, {"type": "null"}], "title": "Last Block Sync At"}, "last_block_synced": {"anyOf": [{"type": "integer"}, {"type": "null"}], "title": "Last Block Synced"}, "policies": {"additionalProperties": {"type": "object"}, "type": "object", "title": "Policies"}}, "type": "object", "required": ["connected", "last_status_at", "policies"], "title": "WpStatusOut"}}, "securitySchemes": {"OAuth2PasswordBearer": {"type": "oauth2", "flows": {"password": {"scopes": {}, "tokenUrl": "/api/auth/login"}}}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GMC Shield API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/ops/worker/health": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Worker Health",
+        "operationId": "worker_health_api_ops_worker_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/ops/metrics": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Metrics",
+        "operationId": "metrics_api_ops_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/whoami": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Whoami",
+        "operationId": "whoami_api_auth_whoami_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/stores": {
+      "get": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "List Stores",
+        "description": "Lista lojas do account do usu\u00e1rio atual.",
+        "operationId": "list_stores_api_stores_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "Create store",
+        "description": "Cria uma loja para o account do usu\u00e1rio autenticado.",
+        "operationId": "create_store_api_stores_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/stores/{store_id}/overview": {
+      "get": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "Store overview",
+        "description": "Pequeno resumo da loja para cards/vis\u00e3o geral.",
+        "operationId": "store_overview_api_stores__store_id__overview_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/": {
+      "get": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "List Stores",
+        "description": "Lista lojas do account do usu\u00e1rio atual.",
+        "operationId": "list_stores_api_stores__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/stores/{store_id}": {
+      "patch": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "Update Store",
+        "operationId": "update_store_api_stores__store_id__patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/scan/runs": {
+      "get": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "List scan runs",
+        "operationId": "list_runs_api_stores__store_id__scan_runs_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScanRunOut"
+                  },
+                  "title": "Response List Runs Api Stores  Store Id  Scan Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/dashboard": {
+      "get": {
+        "tags": [
+          "stores"
+        ],
+        "summary": "Get dashboard data for a store",
+        "operationId": "get_dashboard_data_api_stores__store_id__dashboard_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/feed": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Configure feed",
+        "operationId": "set_feed_api_stores__store_id__feed_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/feed/versions": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Feed versions",
+        "operationId": "feed_versions_api_stores__store_id__feed_versions_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/feed/import": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Import feed (URL or file)",
+        "operationId": "import_feed_api_stores__store_id__feed_import_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "async",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Async"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_import_feed_api_stores__store_id__feed_import_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/feed/ingest": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Ingest feed from configured URL",
+        "operationId": "ingest_from_url_api_stores__store_id__feed_ingest_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "async",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Async"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/feed/upload": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Upload and ingest feed file",
+        "operationId": "upload_feed_api_stores__store_id__feed_upload_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "async",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Async"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_feed_api_stores__store_id__feed_upload_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/items": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "List feed items",
+        "operationId": "list_items_api_stores__store_id__items_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stores/{store_id}/feeds/versions": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Feed versions",
+        "operationId": "feed_versions_api_v1_stores__store_id__feeds_versions_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stores/{store_id}/feeds/ingest": {
+      "post": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Ingest feed (URL or file)",
+        "operationId": "ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "async",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Async"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/feeds/versions/{version_id}/items": {
+      "get": {
+        "tags": [
+          "feeds"
+        ],
+        "summary": "Items for feed version",
+        "operationId": "version_items_api_v1_feeds_versions__version_id__items_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "version_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Version Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/preferences": {
+      "get": {
+        "tags": [
+          "me"
+        ],
+        "summary": "Get Preferences",
+        "operationId": "get_preferences_api_v1_me_preferences_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preferences"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "me"
+        ],
+        "summary": "Put Preferences",
+        "operationId": "put_preferences_api_v1_me_preferences_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Preferences"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preferences"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/stores/{store_id}/violations": {
+      "get": {
+        "tags": [
+          "violations"
+        ],
+        "summary": "List Violations",
+        "operationId": "list_violations_api_stores__store_id__violations_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Per Page"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViolationPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/blocks": {
+      "post": {
+        "tags": [
+          "blocks"
+        ],
+        "summary": "Create Block",
+        "operationId": "create_block_api_stores__store_id__blocks_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "blocks"
+        ],
+        "summary": "List Blocks",
+        "operationId": "list_blocks_api_stores__store_id__blocks_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/blocks/{block_id}": {
+      "delete": {
+        "tags": [
+          "blocks"
+        ],
+        "summary": "Deactivate Block",
+        "operationId": "deactivate_block_api_stores__store_id__blocks__block_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "block_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Block Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/blocks/by-feed-item/{feed_item_id}": {
+      "delete": {
+        "tags": [
+          "blocks"
+        ],
+        "summary": "Deactivate By Feed Item",
+        "operationId": "deactivate_by_feed_item_api_stores__store_id__blocks_by_feed_item__feed_item_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "feed_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Feed Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/policies": {
+      "get": {
+        "tags": [
+          "policies"
+        ],
+        "summary": "List Policies",
+        "operationId": "list_policies_api_stores__store_id__policies_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/wp/credentials": {
+      "post": {
+        "tags": [
+          "wp"
+        ],
+        "summary": "Save Credentials",
+        "operationId": "save_credentials_api_stores__store_id__wp_credentials_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WpCredsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/wp/status": {
+      "get": {
+        "tags": [
+          "wp"
+        ],
+        "summary": "Wp Status",
+        "operationId": "wp_status_api_stores__store_id__wp_status_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WpStatusOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/wp/policies/render": {
+      "post": {
+        "tags": [
+          "wp"
+        ],
+        "summary": "Render Policy",
+        "operationId": "render_policy_api_stores__store_id__wp_policies_render_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyRenderIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/wp/policies/publish": {
+      "post": {
+        "tags": [
+          "wp"
+        ],
+        "summary": "Publish Policy",
+        "operationId": "publish_policy_api_stores__store_id__wp_policies_publish_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyPublishIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyPublishOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/wp/blocks/sync": {
+      "post": {
+        "tags": [
+          "wp"
+        ],
+        "summary": "Sync Blocks",
+        "operationId": "sync_blocks_api_stores__store_id__wp_blocks_sync_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pull",
+                "push"
+              ],
+              "type": "string",
+              "default": "pull",
+              "title": "Mode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockSyncOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/appeals": {
+      "post": {
+        "tags": [
+          "appeals"
+        ],
+        "summary": "Create Appeal",
+        "operationId": "create_appeal_api_stores__store_id__appeals_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "List Notifications",
+        "operationId": "list_notifications_api_stores__store_id__notifications_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/scan": {
+      "post": {
+        "tags": [
+          "scans"
+        ],
+        "summary": "Enqueue Scan",
+        "operationId": "enqueue_scan_api_stores__store_id__scan_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores/{store_id}/runs/{run_id}/snapshots": {
+      "get": {
+        "tags": [
+          "scans"
+        ],
+        "summary": "List Snapshots",
+        "operationId": "list_snapshots_api_stores__store_id__runs__run_id__snapshots_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSnapshotOut"
+                  },
+                  "title": "Response List Snapshots Api Stores  Store Id  Runs  Run Id  Snapshots Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stores/{store_id}/scan": {
+      "post": {
+        "tags": [
+          "scans"
+        ],
+        "summary": "Enqueue Scan",
+        "operationId": "enqueue_scan_api_v1_stores__store_id__scan_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stores/{store_id}/runs/{run_id}/snapshots": {
+      "get": {
+        "tags": [
+          "scans"
+        ],
+        "summary": "List Snapshots",
+        "operationId": "list_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PageSnapshotOut"
+                  },
+                  "title": "Response List Snapshots Api V1 Stores  Store Id  Runs  Run Id  Snapshots Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/start": {
+      "get": {
+        "summary": "Auth Google Start",
+        "operationId": "auth_google_start_api_auth_google_start_get",
+        "parameters": [
+          {
+            "name": "return_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "/",
+              "title": "Return To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/start-content": {
+      "get": {
+        "summary": "Auth Google Start Content",
+        "operationId": "auth_google_start_content_api_auth_google_start_content_get",
+        "parameters": [
+          {
+            "name": "return_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "/",
+              "title": "Return To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "summary": "Auth Google Callback",
+        "operationId": "auth_google_callback_api_auth_google_callback_get",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "State"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/mc/accounts": {
+      "get": {
+        "tags": [
+          "google-mc"
+        ],
+        "summary": "List Accounts",
+        "operationId": "list_accounts_api_google_mc_accounts_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/google/mc/{merchant_id}/products": {
+      "get": {
+        "tags": [
+          "google-mc"
+        ],
+        "summary": "List Products",
+        "operationId": "list_products_api_google_mc__merchant_id__products_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Merchant Id"
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Maxresults"
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pagetoken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/mc/{merchant_id}/import": {
+      "post": {
+        "tags": [
+          "google-mc"
+        ],
+        "summary": "Import Products",
+        "description": "Importa produtos do GMC para os itens do feed da loja (source_type='gmc').\n- Cria/atualiza `Feed` e `FeedVersion`.\n- Upsert em `FeedItem` (chave \u00fanica store_id+item_id).",
+        "operationId": "import_products_api_google_mc__merchant_id__import_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Merchant Id"
+            }
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Store ID that will receive GMC items",
+              "title": "Store Id"
+            },
+            "description": "Store ID that will receive GMC items"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "summary": "Healthz",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "summary": "Readyz",
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BlockCreate": {
+        "properties": {
+          "feed_item_id": {
+            "type": "string",
+            "title": "Feed Item Id"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "feed_item_id"
+        ],
+        "title": "BlockCreate"
+      },
+      "BlockSyncOut": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "synced": {
+            "type": "integer",
+            "title": "Synced"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "pull",
+              "push"
+            ],
+            "title": "Mode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "synced",
+          "mode"
+        ],
+        "title": "BlockSyncOut"
+      },
+      "Body_import_feed_api_stores__store_id__feed_import_post": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_type",
+          "format"
+        ],
+        "title": "Body_import_feed_api_stores__store_id__feed_import_post"
+      },
+      "Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post": {
+        "properties": {
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "format_form": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format Form"
+          },
+          "format_json": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Format Json"
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "title": "Body_ingest_feed_v1_api_v1_stores__store_id__feeds_ingest_post"
+      },
+      "Body_upload_feed_api_stores__store_id__feed_upload_post": {
+        "properties": {
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "format",
+          "file"
+        ],
+        "title": "Body_upload_feed_api_stores__store_id__feed_upload_post"
+      },
+      "FeedConfig": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_type",
+          "format"
+        ],
+        "title": "FeedConfig"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PageSnapshotOut": {
+        "properties": {
+          "feed_item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feed Item Id"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "http_status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Http Status"
+          },
+          "extracted": {
+            "type": "object",
+            "title": "Extracted"
+          },
+          "screenshot_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Screenshot Path"
+          },
+          "html_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Html Path"
+          },
+          "fetched_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fetched At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "extracted",
+          "fetched_at"
+        ],
+        "title": "PageSnapshotOut"
+      },
+      "PolicyPublishIn": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "refund",
+              "shipping",
+              "privacy"
+            ],
+            "title": "Type"
+          },
+          "content_md": {
+            "type": "string",
+            "title": "Content Md"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "publish",
+              "draft"
+            ],
+            "title": "Status",
+            "default": "publish"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "content_md"
+        ],
+        "title": "PolicyPublishIn"
+      },
+      "PolicyPublishOut": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "page_id": {
+            "type": "integer",
+            "title": "Page Id"
+          },
+          "page_url": {
+            "type": "string",
+            "title": "Page Url"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "page_id",
+          "page_url",
+          "published_at",
+          "version"
+        ],
+        "title": "PolicyPublishOut"
+      },
+      "PolicyRenderIn": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "refund",
+              "shipping",
+              "privacy"
+            ],
+            "title": "Type"
+          },
+          "content_md": {
+            "type": "string",
+            "title": "Content Md"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "content_md"
+        ],
+        "title": "PolicyRenderIn"
+      },
+      "Preferences": {
+        "properties": {
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "en_US",
+                  "pt_BR",
+                  "es_ES"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          }
+        },
+        "type": "object",
+        "title": "Preferences"
+      },
+      "ScanRequest": {
+        "properties": {
+          "item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Item Id"
+          },
+          "limit_items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit Items",
+            "default": 20
+          }
+        },
+        "type": "object",
+        "title": "ScanRequest"
+      },
+      "ScanRunOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "items_total": {
+            "type": "integer",
+            "title": "Items Total"
+          },
+          "items_ok": {
+            "type": "integer",
+            "title": "Items Ok"
+          },
+          "items_violation": {
+            "type": "integer",
+            "title": "Items Violation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "items_total",
+          "items_ok",
+          "items_violation"
+        ],
+        "title": "ScanRunOut"
+      },
+      "StoreCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "platform": {
+            "type": "string",
+            "title": "Platform"
+          },
+          "base_url": {
+            "type": "string",
+            "title": "Base Url"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "contact_email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "platform",
+          "base_url"
+        ],
+        "title": "StoreCreate"
+      },
+      "StoreUpdate": {
+        "properties": {
+          "google_merchant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Google Merchant Id"
+          }
+        },
+        "type": "object",
+        "title": "StoreUpdate"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "Token"
+      },
+      "UserLogin": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserLogin"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ViolationOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "rule_code": {
+            "type": "string",
+            "title": "Rule Code"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "feed_item_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feed Item Id"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "rule_code",
+          "severity",
+          "message",
+          "status"
+        ],
+        "title": "ViolationOut"
+      },
+      "ViolationPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ViolationOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "page",
+          "total"
+        ],
+        "title": "ViolationPage"
+      },
+      "WpCredsIn": {
+        "properties": {
+          "wp_api_base": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Wp Api Base"
+          },
+          "wp_base_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wp Base Url"
+          },
+          "wp_user": {
+            "type": "string",
+            "title": "Wp User"
+          },
+          "wp_app_password": {
+            "type": "string",
+            "title": "Wp App Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "wp_api_base",
+          "wp_user",
+          "wp_app_password"
+        ],
+        "title": "WpCredsIn"
+      },
+      "WpStatusOut": {
+        "properties": {
+          "connected": {
+            "type": "boolean",
+            "title": "Connected"
+          },
+          "site": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site"
+          },
+          "wp_api_base": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wp Api Base"
+          },
+          "wp_user": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wp User"
+          },
+          "last_status_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Status At"
+          },
+          "last_block_sync_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Block Sync At"
+          },
+          "last_block_synced": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Block Synced"
+          },
+          "policies": {
+            "additionalProperties": {
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Policies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "connected",
+          "last_status_at",
+          "policies"
+        ],
+        "title": "WpStatusOut"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/auth/login"
+          }
+        }
+      }
+    }
+  }
+}

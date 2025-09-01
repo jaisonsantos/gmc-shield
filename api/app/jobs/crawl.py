@@ -5,6 +5,7 @@ from ..db import SessionLocal
 from .. import models
 from ..services import crawler, artifacts
 from ..queue import get_rq_queue, get_redis
+from ..observability import log_event
 
 queue = get_rq_queue("crawl")
 
@@ -70,6 +71,17 @@ def process(store_id: int, run_id: int, feed_item_id: str, url: str):
                 extracted=res.get("extracted"),
             )
             db.add(snap)
+            evt = "crawl.snapshot.ok"
+            if res.get("extracted", {}).get("error"):
+                evt = "crawl.snapshot.error"
+            log_event(
+                evt,
+                store_id=store_id,
+                run_id=run_id,
+                feed_item_id=feed_item_id,
+                ua=ua_label,
+                status=res.get("status"),
+            )
         db.commit()
     finally:
         db.close()

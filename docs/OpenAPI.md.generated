@@ -7086,13 +7086,13 @@ OAuth2PasswordBearer
 
 ## Enqueue Scan
 
-<a id="opIdenqueue_scan_api_stores__store_id__scan_post"></a>
+<a id="opIdenqueue_scan_api_v1_stores__store_id__scan_post"></a>
 
 > Code samples
 
 ```shell
 # You can also use wget
-curl -X POST /api/stores/{store_id}/scan \
+curl -X POST /api/v1/stores/{store_id}/scan \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
@@ -7100,7 +7100,7 @@ curl -X POST /api/stores/{store_id}/scan \
 ```
 
 ```http
-POST /api/stores/{store_id}/scan HTTP/1.1
+POST /api/v1/stores/{store_id}/scan HTTP/1.1
 
 Content-Type: application/json
 Accept: application/json
@@ -7118,7 +7118,7 @@ const headers = {
   'Authorization':'Bearer {access-token}'
 };
 
-fetch('/api/stores/{store_id}/scan',
+fetch('/api/v1/stores/{store_id}/scan',
 {
   method: 'POST',
   body: inputBody,
@@ -7142,7 +7142,7 @@ headers = {
   'Authorization' => 'Bearer {access-token}'
 }
 
-result = RestClient.post '/api/stores/{store_id}/scan',
+result = RestClient.post '/api/v1/stores/{store_id}/scan',
   params: {
   }, headers: headers
 
@@ -7158,7 +7158,7 @@ headers = {
   'Authorization': 'Bearer {access-token}'
 }
 
-r = requests.post('/api/stores/{store_id}/scan', headers = headers)
+r = requests.post('/api/v1/stores/{store_id}/scan', headers = headers)
 
 print(r.json())
 
@@ -7181,7 +7181,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('POST','/api/stores/{store_id}/scan', array(
+    $response = $client->request('POST','/api/v1/stores/{store_id}/scan', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -7198,7 +7198,7 @@ try {
 ```
 
 ```java
-URL obj = new URL("/api/stores/{store_id}/scan");
+URL obj = new URL("/api/v1/stores/{store_id}/scan");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("POST");
 int responseCode = con.getResponseCode();
@@ -7231,7 +7231,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("POST", "/api/stores/{store_id}/scan", data)
+    req, err := http.NewRequest("POST", "/api/v1/stores/{store_id}/scan", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -7241,7 +7241,7 @@ func main() {
 
 ```
 
-`POST /api/stores/{store_id}/scan`
+`POST /api/v1/stores/{store_id}/scan`
 
 > Body parameter
 
@@ -7283,20 +7283,20 @@ OAuth2PasswordBearer
 
 ## List Snapshots
 
-<a id="opIdlist_snapshots_api_stores__store_id__runs__run_id__snapshots_get"></a>
+<a id="opIdlist_snapshots_api_v1_stores__store_id__runs__run_id__snapshots_get"></a>
 
 > Code samples
 
 ```shell
 # You can also use wget
-curl -X GET /api/stores/{store_id}/runs/{run_id}/snapshots \
+curl -X GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
 
 ```http
-GET /api/stores/{store_id}/runs/{run_id}/snapshots HTTP/1.1
+GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots HTTP/1.1
 
 Accept: application/json
 
@@ -7309,7 +7309,7 @@ const headers = {
   'Authorization':'Bearer {access-token}'
 };
 
-fetch('/api/stores/{store_id}/runs/{run_id}/snapshots',
+fetch('/api/v1/stores/{store_id}/runs/{run_id}/snapshots',
 {
   method: 'GET',
 
@@ -7332,7 +7332,7 @@ headers = {
   'Authorization' => 'Bearer {access-token}'
 }
 
-result = RestClient.get '/api/stores/{store_id}/runs/{run_id}/snapshots',
+result = RestClient.get '/api/v1/stores/{store_id}/runs/{run_id}/snapshots',
   params: {
   }, headers: headers
 
@@ -7347,7 +7347,7 @@ headers = {
   'Authorization': 'Bearer {access-token}'
 }
 
-r = requests.get('/api/stores/{store_id}/runs/{run_id}/snapshots', headers = headers)
+r = requests.get('/api/v1/stores/{store_id}/runs/{run_id}/snapshots', headers = headers)
 
 print(r.json())
 
@@ -7369,7 +7369,7 @@ $client = new \GuzzleHttp\Client();
 $request_body = array();
 
 try {
-    $response = $client->request('GET','/api/stores/{store_id}/runs/{run_id}/snapshots', array(
+    $response = $client->request('GET','/api/v1/stores/{store_id}/runs/{run_id}/snapshots', array(
         'headers' => $headers,
         'json' => $request_body,
        )
@@ -7386,7 +7386,7 @@ try {
 ```
 
 ```java
-URL obj = new URL("/api/stores/{store_id}/runs/{run_id}/snapshots");
+URL obj = new URL("/api/v1/stores/{store_id}/runs/{run_id}/snapshots");
 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 con.setRequestMethod("GET");
 int responseCode = con.getResponseCode();
@@ -7418,7 +7418,7 @@ func main() {
     }
 
     data := bytes.NewBuffer([]byte{jsonReq})
-    req, err := http.NewRequest("GET", "/api/stores/{store_id}/runs/{run_id}/snapshots", data)
+    req, err := http.NewRequest("GET", "/api/v1/stores/{store_id}/runs/{run_id}/snapshots", data)
     req.Header = headers
 
     client := &http.Client{}
@@ -7428,7 +7428,7 @@ func main() {
 
 ```
 
-`GET /api/stores/{store_id}/runs/{run_id}/snapshots`
+`GET /api/v1/stores/{store_id}/runs/{run_id}/snapshots`
 
 <h3 id="list-snapshots-parameters">Parameters</h3>
 
@@ -7467,11 +7467,11 @@ func main() {
 
 Status Code **200**
 
-*Response List Snapshots Api Stores  Store Id  Runs  Run Id  Snapshots Get*
+*Response List Snapshots Api V1 Stores  Store Id  Runs  Run Id  Snapshots Get*
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Response List Snapshots Api Stores  Store Id  Runs  Run Id  Snapshots Get|[[PageSnapshotOut](#schemapagesnapshotout)]|false|none|none|
+|Response List Snapshots Api V1 Stores  Store Id  Runs  Run Id  Snapshots Get|[[PageSnapshotOut](#schemapagesnapshotout)]|false|none|none|
 |» PageSnapshotOut|[PageSnapshotOut](#schemapagesnapshotout)|false|none|none|
 |»» feed_item_id|any|false|none|none|
 
@@ -9293,3 +9293,4 @@ continued
 |---|---|---|---|---|
 |policies|object|true|none|none|
 |» **additionalProperties**|object|false|none|none|
+

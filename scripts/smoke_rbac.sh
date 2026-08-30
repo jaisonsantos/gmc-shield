@@ -8,7 +8,7 @@ FEED="${FEED:-docs/seed/demo_feed.xml}"
 LIMIT="${LIMIT:-50}"
 RECRAWL="${RECRAWL:-false}"
 EMAIL="${EMAIL:-owner@gmcshield.dev}"
-PASSWORD="${PASSWORD:-demo}"     # hoje o login aceita qualquer senha; deixei por simetria
+PASSWORD="${PASSWORD:-}"
 QUIET="${QUIET:-false}"
 
 usage() {
@@ -63,6 +63,10 @@ ok "API ok"
 if [[ -n "${TOKEN:-}" ]]; then
   ok "Usando TOKEN fornecido no ambiente"
 else
+  if [[ -z "$PASSWORD" ]]; then
+    err "Defina PASSWORD no ambiente ou use --password para executar o login do smoke test."
+    exit 1
+  fi
   RESP_LOGIN=$(curl -s -X POST "$API/api/auth/login" -H "Content-Type: application/json" \
     -d "{\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\"}" || true)
   TOKEN=$(echo "$RESP_LOGIN" | { $JQ '.access_token' 2>/dev/null || true; })

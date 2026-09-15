@@ -17,19 +17,36 @@ from ..services.google_mc import google_api_request
 router = APIRouter()
 settings = Settings()
 
+
+def _parse_merchant_id_from_account_name(account_name: str) -> str:
+    """
+    Extract merchant ID from Merchant API account name format.
+    Format: accounts/MERCHANT_ID
+    """
+    if account_name.startswith("accounts/"):
+        return account_name.split("/", 1)[1]
+    return account_name
+
+
 @router.get("/accounts")
 async def list_accounts(
     request: Request,
     principal: Principal = Depends(require_roles("owner", "manager", "viewer")),
     db: Session = Depends(get_db),
 ):
+    """
+    List all Merchant Center accounts accessible by the authenticated user.
+    Uses Merchant API v1 instead of deprecated Content API v2.1.
+    """
     r = get_redis()
     _rate_limit(r, request.client.host or "", "mc:accounts")
     user = db.query(models.User).filter_by(email=principal["email"]).first()
     ga = db.query(models.GoogleAccount).filter_by(user_id=user.id).first() if user else None
     if not ga or not ga.content_scope_granted:
         raise HTTPException(status_code=400, detail="content scope not granted")
-    url = f"{settings.GOOGLE_API_BASE}/content/v2.1/accounts/authinfo"
+    
+    # Merchant API v1: GET /accounts/v1/accounts
+    url = f"{settings.GOOGLE_MERCHANT_API_BASE}/accounts/v1/accounts"
     res = await google_api_request(db, ga, "GET", url)
     log_event("mc.authinfo.ok", user_id=user.id if user else None)
     return res.json()
@@ -39,24 +56,82 @@ async def list_accounts(
 async def list_products(
     merchant_id: str,
     request: Request,
-    maxResults: int = 50,
+    pageSize: int = 50,
     pageToken: str | None = None,
     principal: Principal = Depends(require_roles("owner", "manager", "viewer")),
     db: Session = Depends(get_db),
 ):
+    """
+    List products for a merchant account.
+    Uses Merchant API v1 instead of deprecated Content API v2.1.
+    Note: parameter name changed from maxResults to pageSize (Merchant API standard).
+    """
     r = get_redis()
     _rate_limit(r, request.client.host or "", "mc:products")
     user = db.query(models.User).filter_by(email=principal["email"]).first()
     ga = db.query(models.GoogleAccount).filter_by(user_id=user.id).first() if user else None
     if not ga or not ga.content_scope_granted:
         raise HTTPException(status_code=400, detail="content scope not granted")
-    params = {"maxResults": maxResults}
+    
+    params = {"pageSize": pageSize}
     if pageToken:
         params["pageToken"] = pageToken
-    url = f"{settings.GOOGLE_API_BASE}/content/v2.1/{merchant_id}/products"
+    
+    # Merchant API v1: GET /products/v1/accounts/{account_id}/products
+    url = f"{settings.GOOGLE_MERCHANT_API_BASE}/products/v1/accounts/{merchant_id}/products"
     res = await google_api_request(db, ga, "GET", url, params=params)
     log_event("mc.products.ok", user_id=user.id if user else None, merchant_id=merchant_id)
     return res.json()
+
+
+def _extract_product_attributes(product: dict) -> dict:
+    """
+    Extract and normalize product attributes from Merchant API v1 response format.
+    
+    Merchant API v1 returns:
+    {
+      "name": "accounts/123/products/en~US~SKU123",
+      "offerId": "SKU123",
+      "productAttributes": {
+        "title": "...",
+        "link": "...",
+        "availability": "IN_STOCK",
+        "price": {
+          "amountMicros": "15990000",
+          "currencyCode": "USD"
+        },
+        ...
+      }
+    }
+    """
+    attrs = product.get("productAttributes", {})
+    price_obj = attrs.get("price", {})
+    sale_price_obj = attrs.get("salePrice", {})
+    
+    def _micros_to_cents(micros_str: str | None) -> int | None:
+        """Convert amountMicros (millionths of currency unit) to cents."""
+        try:
+            if micros_str is None:
+                return None
+            micros = int(micros_str)
+            return micros // 10_000  # 1 million micros = 100 cents
+        except (ValueError, TypeError):
+            return None
+    
+    return {
+        "offerId": product.get("offerId") or product.get("id", ""),
+        "title": attrs.get("title"),
+        "link": attrs.get("link"),
+        "availability": attrs.get("availability"),
+        "price_cents": _micros_to_cents(price_obj.get("amountMicros")),
+        "currency": price_obj.get("currencyCode"),
+        "sale_price_cents": _micros_to_cents(sale_price_obj.get("amountMicros")),
+        "brand": attrs.get("brand"),
+        "gtin": attrs.get("gtin"),
+        "mpn": attrs.get("mpn"),
+        "shipping": attrs.get("shipping", []),
+        "raw": product,
+    }
 
 
 @router.post("/{merchant_id}/import")
@@ -68,11 +143,11 @@ async def import_products(
     db: Session = Depends(get_db),
 ):
     """
-    Importa produtos do GMC para os itens do feed da loja (source_type='gmc').
-    - Cria/atualiza `Feed` e `FeedVersion`.
-    - Upsert em `FeedItem` (chave única store_id+item_id).
+    Import products from Merchant Center (via Merchant API v1) into feed items.
+    - Creates/updates `Feed` and `FeedVersion`.
+    - Upserts `FeedItem` (unique key: store_id + item_id).
     """
-    # valida ownership
+    # Validate ownership
     store = (
         db.query(models.Store)
         .filter(models.Store.id == store_id, models.Store.account_id == principal["account_id"])
@@ -81,13 +156,13 @@ async def import_products(
     if not store:
         raise HTTPException(status_code=404, detail="Store not found")
 
-    # require Google Content scope
+    # Require Google Content scope
     user = db.query(models.User).filter_by(email=principal["email"]).first()
     ga = db.query(models.GoogleAccount).filter_by(user_id=user.id).first() if user else None
     if not ga or not ga.content_scope_granted:
         raise HTTPException(status_code=400, detail="content scope not granted")
 
-    # get or create feed
+    # Get or create feed
     feed = (
         db.query(models.Feed)
         .filter(models.Feed.store_id == store_id, models.Feed.source_type == "gmc")
@@ -103,35 +178,36 @@ async def import_products(
         db.add(feed)
         db.flush()
 
-    # iterate all pages
-    params = {"maxResults": 250}
-    url = f"{settings.GOOGLE_API_BASE}/content/v2.1/{merchant_id}/products"
+    # Fetch all pages from Merchant API v1
+    params = {"pageSize": 250}
+    url = f"{settings.GOOGLE_MERCHANT_API_BASE}/products/v1/accounts/{merchant_id}/products"
     products: list[dict] = []
+    
     while True:
         res = await google_api_request(db, ga, "GET", url, params=params)
         data = res.json()
-        products.extend(data.get("resources", []))
+        # Merchant API v1 uses "products" key instead of "resources"
+        products.extend(data.get("products", []))
         token = data.get("nextPageToken")
         if not token:
             break
         params["pageToken"] = token
 
-    # compute deterministic content hash for versioning
+    # Compute deterministic content hash for versioning
     hasher = hashlib.sha256()
     for p in sorted(products, key=lambda x: str(x.get("offerId") or x.get("id"))):
-        price = (p.get("price") or {}).get("value") or ""
-        curr = (p.get("price") or {}).get("currency") or ""
+        attrs = _extract_product_attributes(p)
         parts = [
-            str(p.get("offerId") or p.get("id") or ""),
-            str(p.get("link") or ""),
-            str(price),
-            str(curr),
-            str(p.get("availability") or ""),
+            str(attrs.get("offerId") or ""),
+            str(attrs.get("link") or ""),
+            str(attrs.get("price_cents") or ""),
+            str(attrs.get("currency") or ""),
+            str(attrs.get("availability") or ""),
         ]
         hasher.update("|".join(parts).encode())
     content_hash = hasher.hexdigest()
 
-    # create version if different
+    # Create version if different
     from app import models as m
     existing = (
         db.query(m.FeedVersion)
@@ -143,21 +219,14 @@ async def import_products(
         db.add(ver)
         db.flush()
 
-    # upsert items
+    # Upsert items
     upserted = 0
     for p in products:
-        offer_id = str(p.get("offerId") or p.get("id") or "").strip()
+        attrs = _extract_product_attributes(p)
+        offer_id = str(attrs.get("offerId", "")).strip()
         if not offer_id:
             continue
-        price = p.get("price") or {}
-        sale = p.get("salePrice") or {}
-        def _to_cents(v: str | None) -> int | None:
-            try:
-                if v is None:
-                    return None
-                return int(round(float(v) * 100))
-            except Exception:
-                return None
+
         row = (
             db.query(models.FeedItem)
             .filter(models.FeedItem.store_id == store_id, models.FeedItem.item_id == offer_id)
@@ -165,40 +234,40 @@ async def import_products(
         )
         if row:
             row.feed_id = feed.id
-            row.title = p.get("title")
-            row.link_canonical = p.get("link")
-            row.price_cents = _to_cents(price.get("value"))
-            row.sale_price_cents = _to_cents(sale.get("value"))
-            row.currency = price.get("currency")
-            row.availability = p.get("availability")
-            row.brand = p.get("brand")
-            row.gtin = p.get("gtin")
-            row.mpn = p.get("mpn")
-            row.shipping_json = json.dumps(p.get("shipping") or [])
-            row.raw_json = json.dumps(p)
+            row.title = attrs.get("title")
+            row.link_canonical = attrs.get("link")
+            row.price_cents = attrs.get("price_cents")
+            row.sale_price_cents = attrs.get("sale_price_cents")
+            row.currency = attrs.get("currency")
+            row.availability = attrs.get("availability")
+            row.brand = attrs.get("brand")
+            row.gtin = attrs.get("gtin")
+            row.mpn = attrs.get("mpn")
+            row.shipping_json = json.dumps(attrs.get("shipping") or [])
+            row.raw_json = json.dumps(attrs.get("raw"))
             row.updated_at = func.now()
         else:
             row = models.FeedItem(
                 store_id=store_id,
                 feed_id=feed.id,
                 item_id=offer_id,
-                title=p.get("title"),
-                link_canonical=p.get("link"),
-                price_cents=_to_cents(price.get("value")),
-                sale_price_cents=_to_cents(sale.get("value")),
-                currency=price.get("currency"),
-                availability=p.get("availability"),
-                brand=p.get("brand"),
-                gtin=p.get("gtin"),
-                mpn=p.get("mpn"),
-                shipping_json=json.dumps(p.get("shipping") or []),
-                raw_json=json.dumps(p),
+                title=attrs.get("title"),
+                link_canonical=attrs.get("link"),
+                price_cents=attrs.get("price_cents"),
+                sale_price_cents=attrs.get("sale_price_cents"),
+                currency=attrs.get("currency"),
+                availability=attrs.get("availability"),
+                brand=attrs.get("brand"),
+                gtin=attrs.get("gtin"),
+                mpn=attrs.get("mpn"),
+                shipping_json=json.dumps(attrs.get("shipping") or []),
+                raw_json=json.dumps(attrs.get("raw")),
             )
             db.add(row)
         upserted += 1
     db.commit()
 
-    # persist chosen merchant on store if not set
+    # Persist chosen merchant on store if not set
     if not store.google_merchant_id:
         store.google_merchant_id = str(merchant_id)
         db.add(store)

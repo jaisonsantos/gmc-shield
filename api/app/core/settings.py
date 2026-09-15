@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     )
     GOOGLE_OAUTH_ISSUER: str = "https://accounts.google.com"
     GOOGLE_API_BASE: str = "https://www.googleapis.com"
+    GOOGLE_MERCHANT_API_BASE: str = "https://merchantapi.googleapis.com"
     GOOGLE_AUTH_ENDPOINT: Optional[AnyHttpUrl] = None
     GOOGLE_TOKEN_ENDPOINT: Optional[AnyHttpUrl] = None
     GOOGLE_USERINFO_ENDPOINT: Optional[AnyHttpUrl] = None
